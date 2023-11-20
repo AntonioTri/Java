@@ -2,6 +2,7 @@ package Lezione20_11_23;
 
 public class HandlerForMajor0 extends Handler {
 
+    @Override
     public void handleRequest(Request request){
 
         if(request.getValue() < 0){
