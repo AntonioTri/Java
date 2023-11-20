@@ -1,4 +1,4 @@
-package Java.Lezione20_11_23;
+package Lezione20_11_23;
 
 public class Cookie implements Cloneable {
     

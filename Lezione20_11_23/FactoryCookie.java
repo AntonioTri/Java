@@ -1,4 +1,4 @@
-package Java.Lezione20_11_23;
+package Lezione20_11_23;
 
 class FactoryCookie {
 
@@ -7,7 +7,7 @@ class FactoryCookie {
         Cookie Temp = null;
         Cookie prot = new CoconutCookie();
         CookieMachine cm = new CookieMachine(prot);
-        
+
         for (int i = 0; i < 100; i++) {
             Temp = cm.makeCookie();
             Temp.SayHello();
