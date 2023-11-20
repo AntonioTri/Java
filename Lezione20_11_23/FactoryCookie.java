@@ -4,13 +4,13 @@ class FactoryCookie {
 
     public static void main(String[] args){
 
-        Cookie cookie = new Cookie();
-        System.out.println("Ciao, sono il biscotto originale :D");
-
-        for (int i = 0; i < 100; i++){
-
-            Cookie cookie2 = (Cookie)cookie.clone();
-            cookie2.SayHello();
+        Cookie Temp = null;
+        Cookie prot = new CoconutCookie();
+        CookieMachine cm = new CookieMachine(prot);
+        
+        for (int i = 0; i < 100; i++) {
+            Temp = cm.makeCookie();
+            Temp.SayHello();
         }
 
     }
