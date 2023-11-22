@@ -1,3 +1,5 @@
+package FactoryExample;
+
 // Any part that implements the interface ESWeapon
 // can replace that part in any ship
 

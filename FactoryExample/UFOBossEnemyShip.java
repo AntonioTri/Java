@@ -1,3 +1,5 @@
+package FactoryExample;
+
 public class UFOBossEnemyShip extends EnemyShip{
 	
 	// We define the type of ship we want to create

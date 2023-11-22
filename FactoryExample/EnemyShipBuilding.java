@@ -1,3 +1,5 @@
+package FactoryExample;
+
 public abstract class EnemyShipBuilding {
 	
 	// This acts as an ordering mechanism for creating
