@@ -1,15 +1,15 @@
 package Lezione20_11_23;
 
 public class Cookie implements Cloneable {
-    
-    public Object clone(){
 
-        try{
-            Cookie copy = (Cookie)super.clone();
+    public Object clone() {
+
+        try {
+            Cookie copy = (Cookie) super.clone();
             System.out.println("Biscotto creato!");
             return copy;
 
-        } catch (CloneNotSupportedException e){
+        } catch (CloneNotSupportedException e) {
             e.printStackTrace();
             return null;
 
@@ -17,7 +17,7 @@ public class Cookie implements Cloneable {
 
     }
 
-    public void SayHello(){
+    public void SayHello() {
         System.out.println("Ciao, sono un nuovo Biscotto clonato :D");
     }
 

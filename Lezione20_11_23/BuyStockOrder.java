@@ -11,7 +11,7 @@ public class BuyStockOrder implements Order {
 
     }
 
-    public BuyStockOrder(StockTrade stk){
+    public BuyStockOrder(StockTrade stk) {
         stock = stk;
     }
 
