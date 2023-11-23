@@ -1,27 +1,63 @@
 package Progetto_prog_3;
 import Progetto_prog_3.Inputs.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class GamePanel extends JPanel {
     
     //Variabili di ambiente
     private MouseInputs mouseInputs;
     private int deltaX = 100, deltaY = 100;
-    private int XDir = 1, YDir = 1;
+
+    //Questa  variabile permette di gestire la direzione in caso di movimento atonomo
+    //e di invertire questa se l'elemento non deve proseguire oltre, per farlo tornare indietro
+    //private int XDir = 1, YDir = 1;
+
+    private BufferedImage img;
     
-    private int frames = 0;
-    private long lastCheck = 0;
+    
 
     //Costruttore che aggiunge alla creazione un mouseListener per osservare
     //i cambiamenti del mouse,un keyboardListener per ascoltare i tasti premuti dalla tastiera
     public GamePanel(){
 
         mouseInputs = new MouseInputs(this);
+        setPanelSize();
         addKeyListener(new KeyboardInputs(this));
         addMouseListener(mouseInputs);
         addMouseMotionListener(mouseInputs);
+
+        importimage();
+
+    }
+
+    private void importimage() {
+
+        InputStream is = getClass().getResourceAsStream("/Progetto_prog_3/res/Run.png");
+
+        try {
+            img = ImageIO.read(is);
+        } catch (IOException e) {
+            System.out.println("Mammt annur!!!");
+            e.printStackTrace();
+        }
+    
+    }
+
+    private void setPanelSize() {
+
+        Dimension size = new Dimension(1280, 800);
+        setMinimumSize(size);
+        setPreferredSize(size);
+        setMaximumSize(size);
 
     }
 
@@ -51,22 +87,28 @@ public class GamePanel extends JPanel {
 
         super.paintComponent(g);
 
-        g.fillOval(deltaX, deltaY, 100, 100);
-        updateRectangle();
+        //Queste righe di codice sottostanti creano un cerchio che si muove 
+        //Autonomamente nello schermo e che urta nei bordi e gli fa cambiare direzione
+        //g.fillOval(deltaX, deltaY, 100, 100);
+        //updateRectangle();
 
-        //Fps Counter
-        frames++;
-        if(System.currentTimeMillis() - lastCheck > 1000){
-            lastCheck = System.currentTimeMillis();
-            System.out.println("FPS: " + frames);
-            frames = 0;
-        }
 
-        //E' come una chiamata ricorsiva, richiama paintComponent();
+        //g.drawImage(null, x, y, null)
+        g.drawImage(img.getSubimage(0, 0, 128, 128), deltaX, deltaY, null);
+
+
+
 
     }
 
-    private void updateRectangle() {
+    /*
+     * Questo metodo sottostante invece ci permette di dare movimento 
+     * proprio ad un qualche oggetto, in questo caso, dando deltax e deltax come 
+     * argomento di ingresso alla posiizone del rettangolo ( vedi sopra ) cambia la
+     * la posizione del rettangolo in tempo reale
+     * 
+     * 
+     * private void updateRectangle() {
         deltaX += XDir;
         if (deltaX > 400 || deltaX < 0) {
             XDir *= -1;
@@ -77,5 +119,8 @@ public class GamePanel extends JPanel {
             YDir *= -1;
         }
     }
+     * 
+     */
+    
 
 }
