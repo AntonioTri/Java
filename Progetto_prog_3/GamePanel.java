@@ -94,7 +94,7 @@ public class GamePanel extends JPanel {
 
 
         //g.drawImage(null, x, y, null)
-        g.drawImage(img.getSubimage(0, 0, 128, 128), deltaX, deltaY, null);
+        g.drawImage(img.getSubimage(123*3, 0, 128, 128), deltaX, deltaY, null);
 
 
 
