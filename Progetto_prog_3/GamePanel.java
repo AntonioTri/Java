@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
+import static Progetto_prog_3.utils.Constants.Directions.*;
 
 public class GamePanel extends JPanel {
     
@@ -18,16 +19,17 @@ public class GamePanel extends JPanel {
     private MouseInputs mouseInputs;
     private int deltaX = 100, deltaY = 100;
 
-    //Questa  variabile permette di gestire la direzione in caso di movimento atonomo
-    //e di invertire questa se l'elemento non deve proseguire oltre, per farlo tornare indietro
-    //private int XDir = 1, YDir = 1;
-
+    //Variabili per la memorizzazione di frame
     private BufferedImage img;
     private BufferedImage[][] animations;
 
+    //Variabili per la gestione dei frame
     private int aniTick, aniIndex, aniSpeed = 15;
 
-    private int playerAction = TROW_SWORD;
+    //Variabile per definire l'azione del player
+    private int playerAction = WALKING;
+    private int playerDir = -1;
+    private boolean moving = false;
     
     
 
@@ -44,6 +46,17 @@ public class GamePanel extends JPanel {
         importimage();
         loadAnimations();
 
+    }
+
+    public void setDirection(int direction){
+
+        this.playerDir = direction;
+        moving = true;
+
+    }
+
+    public void setMoving(boolean moving){
+        this.moving = moving;
     }
 
     //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
@@ -100,24 +113,44 @@ public class GamePanel extends JPanel {
 
     }
 
-    //Questo metodo viene richiamato all'interno del keyListener per modificare
-    //La posizione del rettangolo
-    public void changeDeltaX(int value){
-        this.deltaX += value;
+    private void setAnimation() {
+
+        if (moving) {
+            playerAction = RUNNING;
+        } else {
+            playerAction = IDLE;
+        }
+
     }
 
-    //Questo metodo viene richiamato all'interno del keyListener per modificare
-    //La posizione del rettangolo
-    public void changeDeltaY(int value){
-        this.deltaY += value;
+    private void updatePosition() {
+
+        if (moving) {
+            switch (playerDir) {
+
+                case LEFT:
+                    deltaX -= 5;
+                    break;
+
+                case RIGHT:
+                    deltaX +=5;
+                    break;
+
+                case DOWN:
+                    deltaY +=5;
+                    break;
+
+                case UP:
+                    deltaY -=5;
+                    break;
+        
+            }
+        }
     }
 
-    //Questo metodo invece all'interno del mouseListener per settare la posizione
-    //corrente dell'ovale uguale a quella del mouse
-    public void updatePosition(int x, int y){
-        this.deltaX = x;
-        this.deltaY = y;
-    }
+
+
+    
 
     /* ATTENZIONE! LA FUNZIONE REPAINT SERVE AD AGGIORNARE QUELLO CHE VEDIAMO A SCHERMO */
 
@@ -126,13 +159,8 @@ public class GamePanel extends JPanel {
 
         super.paintComponent(g);
 
-        //Queste righe di codice sottostanti creano un cerchio che si muove 
-        //Autonomamente nello schermo e che urta nei bordi e gli fa cambiare direzione
-        //g.fillOval(deltaX, deltaY, 100, 100);
-        //updateRectangle();
-
-
-        //g.drawImage(null, x, y, null)
+        setAnimation();
+        updatePosition();
 
         updateAnimationTick();
         //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
@@ -145,6 +173,12 @@ public class GamePanel extends JPanel {
     }
 
     
+
+    
+
+    
+
+    //FUNZIONI E MOTI VARI CHE POSSONO TORNARE UTILI IN QUALCHE MODO
 
     /*
      * Questo metodo sottostante invece ci permette di dare movimento 
@@ -165,7 +199,44 @@ public class GamePanel extends JPanel {
         }
     }
      * 
+     * Questo metodo viene richiamato all'interno del keyListener per modificare
+       La posizione del rettangolo
+       public void changeDeltaX(int value){
+        this.deltaX += value;
+      }
+
+     Questo metodo viene richiamato all'interno del keyListener per modificare
+     La posizione del rettangolo
+     public void changeDeltaY(int value){
+        this.deltaY += value;
+     }
+
+     Questo metodo invece all'interno del mouseListener per settare la posizione
+     corrente dell'ovale uguale a quella del mouse
+     public void updatePosition(int x, int y){
+         this.deltaX = x;
+        this.deltaY = y;
+     }
+     * 
+     * 
+     * 
+     * 
+     * Queste righe di codice sottostanti creano un cerchio che si muove 
+        Autonomamente nello schermo e che urta nei bordi e gli fa cambiare direzione
+        g.fillOval(deltaX, deltaY, 100, 100);
+        updateRectangle();
+
+
+        g.drawImage(null, x, y, null)
+     * 
+     * 
+     * 
+     * 
+     * 
+     * Questa  variabile permette di gestire la direzione in caso di movimento atonomo
+        e di invertire questa se l'elemento non deve proseguire oltre, per farlo tornare indietro
+        private int XDir = 1, YDir = 1;
+
      */
     
-
 }

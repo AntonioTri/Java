@@ -1,9 +1,15 @@
 package Progetto_prog_3.Inputs;
 
+import static Progetto_prog_3.utils.Constants.Directions.DOWN;
+import static Progetto_prog_3.utils.Constants.Directions.LEFT;
+import static Progetto_prog_3.utils.Constants.Directions.RIGHT;
+import static Progetto_prog_3.utils.Constants.Directions.UP;
+
+import java.awt.RenderingHints.Key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import Progetto_prog_3.GamePanel;
+import Progetto_prog_3.utils.Constants.Directions.*;
 
 public class KeyboardInputs implements KeyListener{
 
@@ -23,19 +29,19 @@ public class KeyboardInputs implements KeyListener{
 
             case KeyEvent.VK_W:
                 System.out.println("Pressing W");
-                gamePanel.changeDeltaY(-5);
+                gamePanel.setDirection(UP);
                 break;
             case KeyEvent.VK_A:
                 System.out.println("Pressing A");
-                gamePanel.changeDeltaX(-5);
+                gamePanel.setDirection(LEFT);
                 break;
             case KeyEvent.VK_S:
                 System.out.println("Pressing S");
-                gamePanel.changeDeltaY(5);
+                gamePanel.setDirection(DOWN);;
                 break;
             case KeyEvent.VK_D:
                 System.out.println("Pressing D");
-                gamePanel.changeDeltaX(5);
+                gamePanel.setDirection(RIGHT);
                 break;
 
         }
@@ -44,6 +50,17 @@ public class KeyboardInputs implements KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_A:
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_D:
+            
+                gamePanel.setMoving(false);
+
+            default:
+                break;
+        }
     }
 
 	@Override
