@@ -6,10 +6,11 @@ import javax.swing.JPanel;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 
 public class GamePanel extends JPanel {
     
@@ -22,6 +23,11 @@ public class GamePanel extends JPanel {
     //private int XDir = 1, YDir = 1;
 
     private BufferedImage img;
+    private BufferedImage[][] animations;
+
+    private int aniTick, aniIndex, aniSpeed = 15;
+
+    private int playerAction = TROW_SWORD;
     
     
 
@@ -36,12 +42,44 @@ public class GamePanel extends JPanel {
         addMouseMotionListener(mouseInputs);
 
         importimage();
+        loadAnimations();
 
     }
 
+    //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
+    //Se l'indice diventa magiore del numero di frame viene ripristinato a 0 e si riparte da capo
+    private void updateAnimationTick() {
+
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+
+            aniTick = 0;
+            aniIndex++;
+
+            if (aniIndex >= getSpriteAmount(playerAction)) {
+                aniIndex = 0;
+            }
+        }
+    }
+
+    //Questa funzione invece fa il load dei frame di una animazione e li carica in un buffer di immagini
+    private void loadAnimations() {
+
+        animations = new BufferedImage[10][8];
+
+        for(int j=0; j< animations.length ; j++){
+            for(int i=0; i<animations[j].length; i++){
+                animations[j][i] = img.getSubimage(i*128, j*122, 125, 125);
+
+            }
+        }
+    }
+
+    //La funzione precedente fa uso di 'img', ovvero l'intera immagine che viene importata nel programma come un 
+    //file stream gtramite questa funzione 
     private void importimage() {
 
-        InputStream is = getClass().getResourceAsStream("/Progetto_prog_3/res/Run.png");
+        InputStream is = getClass().getResourceAsStream("/Progetto_prog_3/res/Animations.png");
 
         try {
             img = ImageIO.read(is);
@@ -52,6 +90,7 @@ public class GamePanel extends JPanel {
     
     }
 
+    //Questa invece serve solo a settare la grandezza del pannello di gioco
     private void setPanelSize() {
 
         Dimension size = new Dimension(1280, 800);
@@ -94,12 +133,18 @@ public class GamePanel extends JPanel {
 
 
         //g.drawImage(null, x, y, null)
-        g.drawImage(img.getSubimage(123*3, 0, 128, 128), deltaX, deltaY, null);
+
+        updateAnimationTick();
+        //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
+        //mano mano che avanzano i tick di gioco e verra' quindi mostrata una immagine differente ogni 40 tick
+        g.drawImage(animations[playerAction][aniIndex], deltaX, deltaY, null);
         g.drawRect(deltaX, deltaY, WIDTH, HEIGHT);
 
 
 
     }
+
+    
 
     /*
      * Questo metodo sottostante invece ci permette di dare movimento 
