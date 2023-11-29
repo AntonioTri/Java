@@ -1,7 +1,7 @@
 package FactoryExample;
 
 public abstract class EnemyShip {
-	
+
 	private String name;
 	
 	// Newly defined objects that represent weapon & engine
