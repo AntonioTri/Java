@@ -14,23 +14,22 @@ public class Player extends Entity{
 
     //Variabili per la gestione dei frame
     private int aniTick, aniIndex, aniSpeed = 15;
-
     //Variabile per definire l'azione del player
     private int playerAction = TROW_SWORD;
     private boolean left, right, up, down;
-
-
-    private boolean moving = false;
-
+    private float playerSpeed = 2.0f;
+    private boolean moving = false, attacking = false;
     //Variabili per la memorizzazione di frame
     private BufferedImage[][] animations;
     
+
     //Costruttore richiamante la classe estesa
     public Player(int x, int y){
         super(x, y);
         loadAnimations();
     }
 
+    //funzione per fare l'update delle caratterisctiche del personaggio
     public void update(){
         updateAnimationTick();
         setAnimation();
@@ -56,24 +55,66 @@ public class Player extends Entity{
 
             if (aniIndex >= getSpriteAmount(playerAction)) {
                 aniIndex = 0;
+                attacking = false;
             }
         }
     }
 
-
-
+    //Qui viene settata l'animazione in base all'evento di gioco
     private void setAnimation() {
 
+        int startAnimation = playerAction;
+
         if (moving) {
-            playerAction = ATTACK2;
+            playerAction = WALKING;
         } else {
             playerAction = IDLE;
         }
 
+        if (attacking) {
+            playerAction = ATTACK2;
+        }
+
+        /*Se la animazione di arrivo e' diversa dalla animazione di fine funzione
+            allora si e' creato un cambiamento di stato e vengono resettati i valori
+            di scelta fotogramma e di tick di animazione per permettere alla animazione
+            di incominciare dall'inizio e di non fare glitch strani
+        */
+        if (startAnimation != playerAction) {
+            resetAnimationTick();
+        }
+
     }
 
+    //Vengono impostati i valori dell'animazione che deve essere eseguita a 0
+    private void resetAnimationTick() {
+        aniIndex = 0;
+        aniTick = 0;
+    }
+
+    //Ancora, all'interno di questa funzione viene gestito il movimento, impedendo quelli
+    //concorrenti
     private void updatePosition() {
 
+        moving = false;
+
+        //Movimenti destra e sinistra concorrenti non permessi
+        if (left && !right) {
+            x -= playerSpeed;
+            moving = true;
+        } else if (right && !left) {
+            x += playerSpeed;
+            moving = true;
+        }
+
+        //Movimenti sopra e sotto concorrenti non permessi
+        if (up && !down) {
+            y -= playerSpeed;
+            moving = true;
+        } else if (down && !up) {
+            y += playerSpeed;
+            moving = true;
+        }
         
     }
 
@@ -111,6 +152,15 @@ public class Player extends Entity{
 
     }
 
+    //Funzione per settare il movimento a 0 quando viene chiamata
+    public void resetMovement() {
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+    }
+
+    //Funzioni get e set per ottenere e settare lo stato attuale dei movimenti
     public boolean getLeft() {
         return left;
     }
@@ -141,6 +191,10 @@ public class Player extends Entity{
 
     public void setDown(boolean down) {
         this.down = down;
+    }
+
+    public void setAttck(boolean attacking){
+        this.attacking = attacking;
     }
 
     

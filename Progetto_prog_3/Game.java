@@ -25,26 +25,21 @@ public class Game implements Runnable{
 
     }
 
-    private void initClasses() {
-        player = new Player(200, 200);
-    }
-
     private void StartGameLoop(){
         gameThread = new Thread(this);
         gameThread.start();
-
     }
 
-    private void update() {
-        player.update();
-    }
+    //Funzione per inizializzare le classi delle entita presenti
+    private void initClasses() { player = new Player(200, 200); }
+    //Funzione per updatare lo stato degli elementi inizializzati correnti
+    private void update() { player.update(); }
+    //Funzione per fare la paint degli elementi correnti
+    public void render(Graphics g){ player.render(g); }
+    //Funzione per gestire la perdita del focus dalla finestra di gioco
+    public void windowFocusLost() { player.resetMovement(); }
 
-    public void render(Graphics g){
-
-        player.render(g);
-
-    }
-
+    //Funzione per gestire i frame per secondo e gli update per secondo
     @Override
     public void run() {
 
@@ -95,5 +90,7 @@ public class Game implements Runnable{
         return player;
 
     }
+
+	
     
 }
