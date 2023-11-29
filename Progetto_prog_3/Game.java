@@ -2,16 +2,27 @@ package Progetto_prog_3;
 import java.awt.Graphics;
 
 import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.levels.LevelManager;
 
 public class Game implements Runnable{
 
+    //Variabili di ambiente
     private GamePanel gamePanel;
     private GameWindow gameWindow;
     private Thread gameThread;
     private final int SET_FPS = 120;
     private final int SET_UPS = 120;
-
+    private LevelManager levelManager;
     private Player player;
+
+    //Variabili per la mappa
+    public final static int TILES_DEFAULT_SIZE = 32;
+    public final static float SCALE = 1.5f;
+    public final static int TILES_IN_WIDTH = 26;
+    public final static int TILES_IN_HEIGHT = 14;
+    public final static int TILES_SIZE = (int)(TILES_DEFAULT_SIZE * SCALE);
+    public final static int GAME_WIDTH = (TILES_SIZE * TILES_IN_WIDTH);
+    public final static int GAME_HEIGHT = (TILES_SIZE * TILES_IN_HEIGHT);
 
     public Game(){
 
@@ -31,11 +42,20 @@ public class Game implements Runnable{
     }
 
     //Funzione per inizializzare le classi delle entita presenti
-    private void initClasses() { player = new Player(200, 200); }
+    private void initClasses() { 
+        player = new Player(200, 200); 
+        levelManager = new LevelManager(this);
+    }
     //Funzione per updatare lo stato degli elementi inizializzati correnti
-    private void update() { player.update(); }
+    private void update() { 
+        player.update(); 
+        levelManager.update();
+    }
     //Funzione per fare la paint degli elementi correnti
-    public void render(Graphics g){ player.render(g); }
+    public void render(Graphics g){ 
+        levelManager.draw(g);
+        player.render(g); 
+    }
     //Funzione per gestire la perdita del focus dalla finestra di gioco
     public void windowFocusLost() { player.resetMovement(); }
 

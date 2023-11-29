@@ -1,17 +1,12 @@
 package Progetto_prog_3;
+
 import Progetto_prog_3.Inputs.*;
-
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
+import static Progetto_prog_3.Game.GAME_HEIGHT;
+import static Progetto_prog_3.Game.GAME_WIDTH;
 
-import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
-import static Progetto_prog_3.utils.Constants.Directions.*;
 
 public class GamePanel extends JPanel {
     
@@ -39,7 +34,7 @@ public class GamePanel extends JPanel {
     //Questa invece serve solo a settare la grandezza del pannello di gioco
     private void setPanelSize() {
 
-        Dimension size = new Dimension(1280, 800);
+        Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
         setMinimumSize(size);
         setPreferredSize(size);
         setMaximumSize(size);
@@ -51,10 +46,6 @@ public class GamePanel extends JPanel {
         
 
     };
-
-
-
-    
 
     /* ATTENZIONE! LA FUNZIONE REPAINT SERVE AD AGGIORNARE QUELLO CHE VEDIAMO A SCHERMO */
 
@@ -70,13 +61,11 @@ public class GamePanel extends JPanel {
         return game;
     }
 
-    
+}
 
-    
 
-    
 
-    //FUNZIONI E MOTI VARI CHE POSSONO TORNARE UTILI IN QUALCHE MODO
+//FUNZIONI E MOTI VARI CHE POSSONO TORNARE UTILI IN QUALCHE MODO
 
     /*
      * Questo metodo sottostante invece ci permette di dare movimento 
@@ -136,5 +125,3 @@ public class GamePanel extends JPanel {
         private int XDir = 1, YDir = 1;
 
      */
-    
-}

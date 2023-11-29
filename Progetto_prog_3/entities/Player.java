@@ -10,6 +10,8 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import Progetto_prog_3.utils.LoadSave;
+
 public class Player extends Entity{
 
     //Variabili per la gestione dei frame
@@ -124,11 +126,8 @@ public class Player extends Entity{
     //file stream gtramite questa funzione
     private void loadAnimations() {
 
-        InputStream is = getClass().getResourceAsStream("/Progetto_prog_3/res/Animations.png");
+        BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
-        try {
-
-            BufferedImage img = ImageIO.read(is);
             animations = new BufferedImage[10][8];
 
             for(int j=0; j< animations.length ; j++){
@@ -137,18 +136,6 @@ public class Player extends Entity{
 
                 }
             }
-
-        } catch (IOException e) {
-            System.out.println("Mammt annur!!!");
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
 
     }
 
