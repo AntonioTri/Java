@@ -2,46 +2,62 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
-
+import static Progetto_prog_3.utils.HelpMetods.*;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
+import Progetto_prog_3.Game;
 import Progetto_prog_3.utils.LoadSave;
 
 public class Player extends Entity{
 
     //Variabili per la gestione dei frame
     private int aniTick, aniIndex, aniSpeed = 15;
+
     //Variabile per definire l'azione del player
-    private int playerAction = TROW_SWORD;
-    private boolean left, right, up, down;
+    private int playerAction = IDLE;
+    private boolean left, right, up, down, jump;
     private float playerSpeed = 2.0f;
     private boolean moving = false, attacking = false;
+
     //Variabili per la memorizzazione di frame
     private BufferedImage[][] animations;
+    private int[][] levelData;
+
+    //Variabili per le hitbox
+    private float XOffset = 11 * Game.SCALE;
+    private float YOffset = 25 * Game.SCALE;
+
+    //Variabile per la gravita
+    private float airSpeed = 0f;
+    private float gravity = 0.04f * Game.SCALE;
+
+    //Variabili per il salto
+    private float jumpSpeed = -2.25f * Game.SCALE;
+    private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+    private boolean inAir = false;
     
 
     //Costruttore richiamante la classe estesa
-    public Player(int x, int y){
-        super(x, y);
+    public Player(int x, int y, int width, int height){
+        super(x, y, width, height);
         loadAnimations();
+        initHitbox(x, y, 25 * Game.SCALE, 37 * Game.SCALE);
     }
 
     //funzione per fare l'update delle caratterisctiche del personaggio
     public void update(){
+
+        updatePosition();
         updateAnimationTick();
         setAnimation();
-        updatePosition();
+    
     }
     
     //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
     //mano mano che avanzano i tick di gioco e verra' quindi mostrata una immagine differente ogni 40 tick
     public void render(Graphics g){
-        g.drawImage(animations[playerAction][aniIndex], x, y, null);
+        g.drawImage(animations[playerAction][aniIndex], (int)(hitbox.x - XOffset), (int)(hitbox.y - YOffset), hitBoxWidth, hitBoxHeight, null);
+        drawHitbox(g);
         
     }
 
@@ -97,27 +113,77 @@ public class Player extends Entity{
     //Ancora, all'interno di questa funzione viene gestito il movimento, impedendo quelli
     //concorrenti
     private void updatePosition() {
-
+        
         moving = false;
+        if (jump) {
+            jump();
+        }
+
+        if (!left && !right && !inAir) {
+            return;
+        }
+
+        float xSpeed = 0;
+
+
 
         //Movimenti destra e sinistra concorrenti non permessi
-        if (left && !right) {
-            x -= playerSpeed;
-            moving = true;
-        } else if (right && !left) {
-            x += playerSpeed;
-            moving = true;
+        if (left) {
+            xSpeed = - playerSpeed;
+        }
+        if (right) {
+            xSpeed = playerSpeed;
         }
 
-        //Movimenti sopra e sotto concorrenti non permessi
-        if (up && !down) {
-            y -= playerSpeed;
-            moving = true;
-        } else if (down && !up) {
-            y += playerSpeed;
-            moving = true;
-        }
+        if (inAir) {
+
+            if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
+                hitbox.y += airSpeed;
+                airSpeed += gravity;
+                updateXPos(xSpeed);
+
+            } else {
+
+                hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
+                if (airSpeed > 0) {
+                    resetInAir();
+                } else {
+                    airSpeed = fallSpeedAfterCollision;
+                }
+                
+                updateXPos(xSpeed);
+
+            }
+
         
+        } else{
+            updateXPos(xSpeed);
+        }
+
+        moving = true;
+        
+    }
+
+    private void jump() {
+
+        if (inAir) return;
+        
+        inAir = true;
+        airSpeed = jumpSpeed;
+    }
+
+    private void resetInAir() {
+        inAir = false;
+        airSpeed = 0;
+    }
+
+    private void updateXPos(float xSpeed){
+
+        if (canMoveHere(hitbox.x+xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
+            hitbox.x += xSpeed;
+        } else {
+            hitbox.x = getEntityXPosNextWall(hitbox, xSpeed);
+        }
     }
 
 
@@ -132,12 +198,19 @@ public class Player extends Entity{
 
             for(int j=0; j< animations.length ; j++){
                 for(int i=0; i<animations[j].length; i++){
-                    animations[j][i] = img.getSubimage(i*128, j*122, 125, 125);
+                    animations[j][i] = img.getSubimage(i*128, j*128, 128, 128);
 
                 }
             }
 
     }
+
+    public void loadLevelData(int [][] levelData){
+
+        this.levelData = levelData;
+
+    }
+
 
     //Funzione per settare il movimento a 0 quando viene chiamata
     public void resetMovement() {
@@ -178,6 +251,10 @@ public class Player extends Entity{
 
     public void setDown(boolean down) {
         this.down = down;
+    }
+
+    public void setJump(boolean jump){
+        this.jump = jump;
     }
 
     public void setAttck(boolean attacking){
