@@ -16,7 +16,8 @@ public class LoadSave {
     public static final String LEVEL_1_DATA = "level_one_data.png";
 
 
-    
+    //Questa funzione carica i dati di un png in una immagine, date delle varibili, quelle sopra, sceglie quale immagine caricare
+    //Questa dovrebbe essere una factory
     public static BufferedImage getSpriteAtlas(String fileName){
 
         BufferedImage img = null;
@@ -41,6 +42,9 @@ public class LoadSave {
         return img;
     }
 
+    //Questa funzione invece l'ho trovata su internet, non so come funzioni di preciso, utilizza i colori rgb per mappare le
+    //caratteristiceh del livello dallàimmagine level_one_data.png, mappato il terreno poi possono essere posizionati i mattoncini giusti
+    //per la costruzione del livello
     public static int[][] getLevelData(){
 
         int[][] levelData = new int [Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];

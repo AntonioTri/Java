@@ -4,6 +4,7 @@ import static Progetto_prog_3.utils.Constants.Directions.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D.Float;
 import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.utils.LoadSave;
@@ -14,7 +15,7 @@ public class Player extends Entity{
     private int aniTick, aniIndex, aniSpeed = 15;
 
     //Variabile per definire l'azione del player
-    private int playerAction = IDLE;
+    private int playerAction = JUMPING_DOWN;
     private boolean left, right, up, down, jump;
     private float playerSpeed = 2.0f;
     private boolean moving = false, attacking = false;
@@ -84,9 +85,17 @@ public class Player extends Entity{
         int startAnimation = playerAction;
 
         if (moving) {
-            playerAction = WALKING;
+            playerAction = RUNNING;
         } else {
             playerAction = IDLE;
+        }
+
+        if (inAir) {
+            if (airSpeed<0) {
+                playerAction = JUMPING_UP;
+            } else {
+                playerAction = JUMPING_DOWN;
+            }
         }
 
         if (attacking) {
@@ -113,56 +122,46 @@ public class Player extends Entity{
     //Ancora, all'interno di questa funzione viene gestito il movimento, impedendo quelli
     //concorrenti
     private void updatePosition() {
-        
-        moving = false;
-        if (jump) {
-            jump();
-        }
+		moving = false;
 
-        if (!left && !right && !inAir) {
-            return;
-        }
+		if (jump)
+			jump();
+		if (!left && !right && !inAir)
+			return;
 
-        float xSpeed = 0;
+		float xSpeed = 0;
 
+		if (left)
+			xSpeed -= playerSpeed;
+		if (right)
+			xSpeed += playerSpeed;
 
-
-        //Movimenti destra e sinistra concorrenti non permessi
-        if (left) {
-            xSpeed = - playerSpeed;
-        }
-        if (right) {
-            xSpeed = playerSpeed;
-        }
-
-        if (inAir) {
-
-            if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
-                hitbox.y += airSpeed;
-                airSpeed += gravity;
-                updateXPos(xSpeed);
-
-            } else {
-
-                hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
-                if (airSpeed > 0) {
-                    resetInAir();
-                } else {
-                    airSpeed = fallSpeedAfterCollision;
-                }
-                
-                updateXPos(xSpeed);
-
+		if (!inAir){
+			if (!isEntityOnFloor(hitbox, levelData)){
+				inAir = true;
             }
-
-        
-        } else{
-            updateXPos(xSpeed);
         }
 
-        moving = true;
-        
-    }
+
+		if (inAir) {
+			if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
+				hitbox.y += airSpeed;
+				airSpeed += gravity;
+				updateXPos(xSpeed);
+			} else {
+                //Qui c'e un bug strano, il personaggio viene teletrasportato ad una altezza di un tile size in piu'
+				hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
+				if (airSpeed > 0)
+					resetInAir();
+				else
+					airSpeed = fallSpeedAfterCollision;
+				updateXPos(xSpeed);
+			}
+
+		} else
+			updateXPos(xSpeed);
+		moving = true;
+	}
 
     private void jump() {
 

@@ -16,11 +16,11 @@ public class Constants {
         public static final int IDLE = 0;
         public static final int WALKING = 1;
         public static final int RUNNING = 2;
-        public static final int JUMPING = 3;
+        public static final int JUMPING_UP = 3;
         public static final int TROW_SWORD = 4;
         public static final int ATTACK1 = 5;
         public static final int ATTACK2 = 6;
-        public static final int IDLE2 = 7;
+        public static final int JUMPING_DOWN = 7;
         public static final int HURT = 8;
         public static final int DIE = 9;
 
@@ -37,8 +37,8 @@ public class Constants {
                 case WALKING:
                     return 8; 
 
-                case JUMPING:
-                    return 8; 
+                case JUMPING_UP:
+                    return 4; 
 
                 case TROW_SWORD:
                     return 6; 
@@ -49,8 +49,8 @@ public class Constants {
                 case ATTACK2:
                     return 4; 
 
-                case IDLE2:
-                    return 3; 
+                case JUMPING_DOWN:
+                    return 4; 
 
                 case HURT:
                     return 3; 

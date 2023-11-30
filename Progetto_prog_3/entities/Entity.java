@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
+//Classe madre per tutte le entità che dovranno essere create, come i nemici o gli oggetti raccoglibili, implementa una posizione di partenza, 
+//una hitbox, ed un metodo drowhitbox che ci permette di disegnare una linea attorno all'entità in questione
 public abstract class Entity {
     
     public int x, y;
@@ -26,13 +28,6 @@ public abstract class Entity {
         hitbox = new Rectangle2D.Float(x, y, width, height);
 
     }
-
-    // protected void updateHitbox(){
-
-    //     hitbox.x = (int) x;
-    //     hitbox.y = (int) y;
-
-    // }
 
     protected void drawHitbox(Graphics g){
 
