@@ -1,8 +1,9 @@
 package Progetto_prog_3;
 import java.awt.Graphics;
 
-import Progetto_prog_3.entities.Player;
-import Progetto_prog_3.levels.LevelManager;
+import Progetto_prog_3.GameStates.GameState;
+import Progetto_prog_3.GameStates.Menu;
+import Progetto_prog_3.GameStates.Playing;
 
 public class Game implements Runnable{
 
@@ -12,8 +13,7 @@ public class Game implements Runnable{
     private Thread gameThread;
     private final int SET_FPS = 120;
     private final int SET_UPS = 180;
-    private LevelManager levelManager;
-    private Player player;
+    
 
     //Variabili per la mappa
     public final static int TILES_DEFAULT_SIZE = 32;
@@ -23,6 +23,10 @@ public class Game implements Runnable{
     public final static int TILES_SIZE = (int)(TILES_DEFAULT_SIZE * SCALE);
     public final static int GAME_WIDTH = (TILES_SIZE * TILES_IN_WIDTH);
     public final static int GAME_HEIGHT = (TILES_SIZE * TILES_IN_HEIGHT);
+
+    //
+    private Playing playing;
+    private Menu menu;
 
     public Game(){
 
@@ -43,22 +47,48 @@ public class Game implements Runnable{
 
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
-        levelManager = new LevelManager(this);
-        player = new Player(200, 400, (int) (64*SCALE), (int)(64*SCALE) ); 
-        player.loadLevelData(levelManager.getCurrentLevel().getLevelData());
+        menu = new Menu(this);
+        playing = new Playing(this);
     }
     //Funzione per updatare lo stato degli elementi inizializzati correnti
     private void update() { 
-        player.update(); 
-        levelManager.update();
+        //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
+        //Specifici stati come il menù di pausa, di inizio oppure il gioco stesso
+        switch (GameState.state) {
+            case MENU:
+                menu.update();
+                break;
+            
+            case PLAYING:
+                playing.update();
+                break;
+            default:
+                break;
+        }
     }
     //Funzione per fare la paint degli elementi correnti
     public void render(Graphics g){ 
-        levelManager.draw(g);
-        player.render(g); 
+        //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
+        //Specifici stati come il menù di pausa, di inizio oppure il gioco stesso
+        switch (GameState.state) {
+            case MENU:
+                menu.draw(g);
+                break;
+            
+            case PLAYING:
+                playing.draw(g);
+                break;
+            default:
+                break;
+        }
     }
+    
     //Funzione per gestire la perdita del focus dalla finestra di gioco
-    public void windowFocusLost() { player.resetMovement(); }
+    public void windowFocusLost() { 
+        if (GameState.state == GameState.PLAYING) {
+            playing.getPlayer().resetMovement();
+        }
+    }
 
     //Funzione per gestire i frame per secondo e gli update per secondo
     @Override
@@ -107,11 +137,10 @@ public class Game implements Runnable{
         }
     }
 
-    public Player getPlayer(){
-        return player;
-
+    public Menu getMenu(){
+        return menu;
     }
-
-	
-    
+    public Playing getPlaying(){
+        return playing;
+    }
 }
