@@ -62,33 +62,22 @@ public class PauseOverlay {
 
     public void mousePressed(MouseEvent e){
 
-        // if (mouseHovering(e, musicButon) ) {
-        //     if (musicButon.getMouseOver()) {
-        //         musicButon.setMousePressed(true);
-        //     }    
-        // }
-        
-        // if(mouseHovering(e, sfxButton) ){
-        //     if (sfxButton.getMouseOver()) {
-        //         sfxButton.setMousePressed(true);
-        //     }
-        // }
-
-        // musicButon.resetBools();
-        // sfxButton.resetBools();
+        if (mouseHovering(e, musicButon) ) {
+            musicButon.setMousePressed(true);  
+        } else if(mouseHovering(e, sfxButton) ){
+            sfxButton.setMousePressed(true);
+        }
         
     }
 
     public void mouseReleased(MouseEvent e){
 
         if (mouseHovering(e, musicButon) ) {
-            if (musicButon.getMouseOver()) {
+            if (musicButon.getMousePressed()) {
                 musicButon.setMuted(!musicButon.getMuted());
             }    
-        }
-        
-        if(mouseHovering(e, sfxButton) ){
-            if (sfxButton.getMouseOver()) {
+        } else if(mouseHovering(e, sfxButton) ){
+            if (sfxButton.getMousePressed()) {
                 sfxButton.setMuted(!sfxButton.getMuted());
             }
         }
