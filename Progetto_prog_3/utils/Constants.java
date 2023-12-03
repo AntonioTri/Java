@@ -1,5 +1,7 @@
 package Progetto_prog_3.utils;
 
+import Progetto_prog_3.Game;
+
 public class Constants {
 
     //Questa classe contiene dei valori costanti e statici che rappresentano 
@@ -11,6 +13,18 @@ public class Constants {
     //costanti ed utilizziamo la funzione getSpriteAmount per otenere il numero di
     //frame associati alla azione selezionata, così da poter dare una animazione fluida
     //in base alla azione scelta, senza andare a mostrare frame vuoti che comunque verranno inizializzati
+
+    public static class UI{
+
+        public static class Buttons{
+            public static final int BUTTON_DEFAULT_WIDTH = 140;
+            public static final int BUTTON_DEFAULT_HEIGHT = 56;
+            public static final int BUTTON_WIDTH = (int)(BUTTON_DEFAULT_WIDTH * Game.SCALE);
+            public static final int BUTTON_HEIGHT = (int)(BUTTON_DEFAULT_HEIGHT * Game.SCALE);
+        }
+
+    }
+
     public static class PlayerConstants{
 
         public static final int IDLE = 0;
@@ -24,7 +38,15 @@ public class Constants {
         public static final int HURT = 8;
         public static final int DIE = 9;
 
-
+        public class Directions{
+    
+            public static final int LEFT = 0;
+            public static final int UP = 1;
+            public static final int RIGHT = 2;
+            public static final int DOWN = 3;
+    
+        }
+        
         public static int getSpriteAmount(int PLAYER_ACTION){
 
             switch (PLAYER_ACTION) {
@@ -67,13 +89,5 @@ public class Constants {
     }
 
 
-    public class Directions{
-
-        public static final int LEFT = 0;
-        public static final int UP = 1;
-        public static final int RIGHT = 2;
-        public static final int DOWN = 3;
-
-    }
 
 }

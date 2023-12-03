@@ -1,6 +1,6 @@
 package Progetto_prog_3.entities;
 
-import static Progetto_prog_3.utils.Constants.Directions.*;
+import static Progetto_prog_3.utils.Constants.PlayerConstants;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import java.awt.Graphics;
@@ -17,7 +17,7 @@ public class Player extends Entity{
     //Variabile per definire l'azione del player
     private int playerAction = JUMPING_DOWN;
     private boolean left, right, up, down, jump;
-    private float playerSpeed = 2.0f;
+    private float playerSpeed = Game.SCALE;
     private boolean moving = false, attacking = false;
 
     //Variabili per la memorizzazione di frame

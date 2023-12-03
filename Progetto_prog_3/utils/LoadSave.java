@@ -11,10 +11,12 @@ import Progetto_prog_3.Game;
 
 public class LoadSave {
 
+    //Stringe rapparesentative per ottenere una specifica immagine png da caricare
     public static final String PLAYER_ATLAS = "Animations.png";
     public static final String LEVEL_ATLAS = "Terrain.png";
     public static final String LEVEL_1_DATA = "level_one_data.png";
-
+    public static final String MENU_BUTTONS = "button_atlas.png";
+    public static final String MENU_BACKGROUND = "menu_background.png";
 
     //Questa funzione carica i dati di un png in una immagine, date delle varibili, quelle sopra, sceglie quale immagine caricare
     //Questa dovrebbe essere una factory
