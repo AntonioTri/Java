@@ -7,6 +7,8 @@ import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.utils.LoadSave;
 
+//Classe che definisce la schermata di ausa, nella quale coesistono diversi bottoni per diverse
+//Funzionalità legate al gameplay, come il volume, reset del livello, ritorno alla schermata iniziale
 public class PauseOverlay {
     
     private BufferedImage backgroundImg;
@@ -60,6 +62,8 @@ public class PauseOverlay {
 
     }
 
+    //Questo metodo si attiva quando il tasto del mouse viene premuto, 
+    //Modifica lo stato del bottone a premuto permettendo di mostrare lo sprite corretto
     public void mousePressed(MouseEvent e){
 
         if (mouseHovering(e, musicButon) ) {
@@ -70,6 +74,8 @@ public class PauseOverlay {
         
     }
 
+    //Questo metodo ci permette di osservare quando il tasto viene lasciato, dopo che è stato premuto
+    //Setta lo stato opposto in base a quello corrente tramite una sorta di chiamata ricorsiva al contrario
     public void mouseReleased(MouseEvent e){
 
         if (mouseHovering(e, musicButon) ) {
@@ -86,6 +92,8 @@ public class PauseOverlay {
         sfxButton.resetBools();
     }
 
+    //Questa funzione osserva se il mouse sta passando sopra ad un bottone, in tal caso
+    //Setta il suo stato su Hover per mostrare lo sprite corretto
     public void mouseMoved(MouseEvent e){
         musicButon.setMouseOver(false);
         sfxButton.setMouseOver(false);

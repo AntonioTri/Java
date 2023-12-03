@@ -2,6 +2,9 @@ package Progetto_prog_3.UI;
 
 import java.awt.Rectangle;
 
+//Questa superclasse permette la crazione di qualsivoglia bottone
+//Contiene diversi metodi ed attributi utili alla creazione di un bottne come
+//la hitbox rettangolare, la posizione, la larghezza e l'altezza
 public class PauseButtons {
     
     protected int x, y, width, height;
@@ -18,6 +21,8 @@ public class PauseButtons {
     
     }
 
+
+    //Getters e Setters
     private void createHitbox() {
         volumeHitbox = new Rectangle(x, y, width, height);
     }

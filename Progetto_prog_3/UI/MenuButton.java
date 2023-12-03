@@ -1,6 +1,5 @@
 package Progetto_prog_3.UI;
 
-import java.awt.Button;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -73,7 +72,7 @@ public class MenuButton {
 
     }
 
-
+    //Getters e Setters
     public boolean getMouseOver() {
         return mouseOver;
     }

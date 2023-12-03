@@ -32,6 +32,8 @@ public class SoundButton extends PauseButtons{
         }
     }
 
+    //In baso allo stato modificato nel PauseOverlay, vengono settati gli indici
+    //Della matrice degli sprite, permetttendo di mostrare quello giusto di volta in volta
     public void update(){
 
         if (muted) {
@@ -50,6 +52,7 @@ public class SoundButton extends PauseButtons{
         }
     }
 
+    //Getters e Setters
     public void draw(Graphics g){
         g.drawImage(soundImgs[rowIndex][columnIndex], x, y, width, height, null);
     }
