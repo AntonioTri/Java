@@ -7,14 +7,14 @@ import java.awt.image.BufferedImage;
 
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.utils.LoadSave;
-import Progetto_prog_3.utils.Constants.UI.Buttons;
+import static Progetto_prog_3.utils.Constants.UI.Buttons.*;
 
 
 public class MenuButton {
     
     //Variabili di ambiente, posizione e grandezza
     private int xPos, yPos, rowIndex, index;
-    private int xOffsetCenter = Buttons.BUTTON_WIDTH / 2;
+    private int xOffsetCenter =BUTTON_WIDTH / 2;
     
     //Variabili per settare lo sprite
     private boolean mouseOver, mousePressed;
@@ -39,7 +39,7 @@ public class MenuButton {
     //Metodo per inizializzare la hitbox indicata
     private void initButtonHitbox() {
 
-        buttonHitbox = new Rectangle(xPos - xOffsetCenter, yPos, Buttons.BUTTON_WIDTH, Buttons.BUTTON_HEIGHT);
+        buttonHitbox = new Rectangle(xPos - xOffsetCenter, yPos, BUTTON_WIDTH, BUTTON_HEIGHT);
 
     }
 
@@ -49,7 +49,7 @@ public class MenuButton {
         BufferedImage temp = LoadSave.getSpriteAtlas(LoadSave.MENU_BUTTONS);
 
         for (int i = 0; i < imgs.length; i++) {
-            imgs[i] = temp.getSubimage(i * Buttons.BUTTON_DEFAULT_WIDTH , rowIndex * Buttons.BUTTON_DEFAULT_HEIGHT, Buttons.BUTTON_DEFAULT_WIDTH, Buttons.BUTTON_DEFAULT_HEIGHT);
+            imgs[i] = temp.getSubimage(i * BUTTON_DEFAULT_WIDTH , rowIndex * BUTTON_DEFAULT_HEIGHT, BUTTON_DEFAULT_WIDTH, BUTTON_DEFAULT_HEIGHT);
         }
 
     }
@@ -57,7 +57,7 @@ public class MenuButton {
     //Disegno del bottone, con l'indice
     public void draw(Graphics g){
 
-        g.drawImage(imgs[index], xPos - xOffsetCenter, yPos, Buttons.BUTTON_WIDTH, Buttons.BUTTON_HEIGHT, null);
+        g.drawImage(imgs[index], xPos - xOffsetCenter, yPos, BUTTON_WIDTH, BUTTON_HEIGHT, null);
 
     }
 

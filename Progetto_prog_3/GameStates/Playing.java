@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import Progetto_prog_3.Game;
+import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.LevelManager;
 
@@ -12,6 +13,9 @@ public class Playing extends State implements StateMethods{
     
     private Player player;
     private LevelManager levelManager;
+
+    private boolean paused = true;
+    private PauseOverlay pauseOverlay;
     
     public Playing(Game game) {
         super(game);
@@ -23,6 +27,7 @@ public class Playing extends State implements StateMethods{
         levelManager = new LevelManager(game);
         player = new Player(200, 400, (int) (64*Game.SCALE), (int)(64*Game.SCALE) ); 
         player.loadLevelData(levelManager.getCurrentLevel().getLevelData());
+        pauseOverlay = new PauseOverlay();
     }
 
     public Player getPlayer(){
@@ -38,12 +43,14 @@ public class Playing extends State implements StateMethods{
     public void update() {
         levelManager.update();
         player.update();
+        pauseOverlay.update();
     }
 
     @Override
     public void draw(Graphics g) {
         levelManager.draw(g);
         player.render(g);
+        pauseOverlay.draw(g);
     }
 
     @Override
@@ -56,20 +63,23 @@ public class Playing extends State implements StateMethods{
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
+        if (paused) {
+            pauseOverlay.mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
+        if (paused) {
+            pauseOverlay.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseMoved'");
+        if (paused) {
+            pauseOverlay.mouseMoved(e);
+        }
     }
 
     @Override

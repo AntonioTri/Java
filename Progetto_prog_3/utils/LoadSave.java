@@ -17,7 +17,11 @@ public class LoadSave {
     public static final String LEVEL_1_DATA = "level_one_data.png";
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
-
+    public static final String SOUND_BUTTON = "sound_button.png";
+    public static final String PAUSE_BACKGROUND = "pause_menu.png";
+    public static final String VOLUME_BUTTON = "volume_buttons.png";
+    public static final String PRH_BUTTONS = "prh_buttons.png";
+    
     //Questa funzione carica i dati di un png in una immagine, date delle varibili, quelle sopra, sceglie quale immagine caricare
     //Questa dovrebbe essere una factory
     public static BufferedImage getSpriteAtlas(String fileName){
