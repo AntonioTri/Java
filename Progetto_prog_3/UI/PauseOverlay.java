@@ -3,12 +3,12 @@ package Progetto_prog_3.UI;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
-import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
+import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
+import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
 
 //Classe che definisce la schermata di ausa, nella quale coesistono diversi bottoni per diverse
 //Funzionalità legate al gameplay, come il volume, reset del livello, ritorno alla schermata iniziale
@@ -123,28 +123,36 @@ public class PauseOverlay {
         //Questa serie di if else statements, serve a definire un evento specifico nella 
         //Schermata di pausa, se iol mouse si trova sopra ad un bottone e se questo viene premuto
         //Avvia il suo stato e modifica le componenti di gioco come il suono o il Game state
+
+        //Music button
         if (mouseHovering(e, musicButon) ) {
             if (musicButon.getMousePressed()) {
                 musicButon.setMuted(!musicButon.getMuted());
-            }    
+            }
+        //Sound Effects button
         } else if(mouseHovering(e, sfxButton) ){
             if (sfxButton.getMousePressed()) {
                 sfxButton.setMuted(!sfxButton.getMuted());
             }
+        //Home Button
         } else if(mouseHovering(e, homeB) ){
             if (homeB.getMousePressed()) {
                 GameState.state = GameState.MENU;
+                playing.unpauseGame();
             }
+        //Replay Button
         } else if(mouseHovering(e, replayB) ){
             if (replayB.getMousePressed()) {
                 System.out.println("Replay level! WIP");
             }
+        //Unpause Button
         } else if(mouseHovering(e, unpauseB) ){
             if (unpauseB.getMousePressed()) {
                 playing.unpauseGame();
             }
         }
 
+        //Si resetano i valori booleani per resettare gli sprite
         musicButon.resetBools();
         sfxButton.resetBools();
         homeB.resetBools();
