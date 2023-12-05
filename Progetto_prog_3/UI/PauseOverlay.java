@@ -4,7 +4,10 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
+import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.GameStates.GameState;
+import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
 
 //Classe che definisce la schermata di ausa, nella quale coesistono diversi bottoni per diverse
@@ -13,14 +16,39 @@ public class PauseOverlay {
     
     private BufferedImage backgroundImg;
     private int bgX, bgY, bgWidth, bgHeight;
+
+    //Bottoni presenti nell schermata
     private SoundButton musicButon, sfxButton;
+    private PRHButtons homeB, replayB, unpauseB;
 
-    public PauseOverlay(){
+    //Variabile per accedere al game state di "Playing"
+    Playing playing;
 
-        createSoundButtons();
+    public PauseOverlay(Playing playing){
+
+        this.playing = playing;
         loadBackground();
+        createSoundButtons();
+        createPRHButtons();
 
     }
+
+    private void createPRHButtons() {
+
+        //Differenti posizioni in x
+        int homeX = (int)(313 * Game.SCALE);
+        int replayX = (int)(387 * Game.SCALE);
+        int unpauseX = (int)( 461 * Game.SCALE);
+        //Posizione uguale in y
+        int buttonY = (int)(325 * Game.SCALE);
+
+        homeB = new PRHButtons(homeX, buttonY, PRH_BUTTONS_SIZE, PRH_BUTTONS_SIZE, 2);
+        replayB = new PRHButtons(replayX, buttonY, PRH_BUTTONS_SIZE, PRH_BUTTONS_SIZE, 1);
+        unpauseB = new PRHButtons(unpauseX, buttonY, PRH_BUTTONS_SIZE, PRH_BUTTONS_SIZE, 0);
+
+
+    }
+
 
     private void createSoundButtons() {
         int buttonX = (int) (450 * Game.SCALE);
@@ -47,6 +75,9 @@ public class PauseOverlay {
     public void update(){
         musicButon.update();
         sfxButton.update();
+        homeB.update();
+        replayB.update();
+        unpauseB.update();
     }
 
     public void draw(Graphics g){
@@ -56,6 +87,12 @@ public class PauseOverlay {
         //Sound buttons
         sfxButton.draw(g);
         musicButon.draw(g);
+
+        //Home Resume unpause button
+        homeB.draw(g);
+        replayB.draw(g);
+        unpauseB.draw(g);
+
     }
 
     public void mouseDragged(MouseEvent e){
@@ -70,14 +107,22 @@ public class PauseOverlay {
             musicButon.setMousePressed(true);  
         } else if(mouseHovering(e, sfxButton) ){
             sfxButton.setMousePressed(true);
+        } else if (mouseHovering(e, homeB)) {
+            homeB.setMousePressed(true);
+        } else if (mouseHovering(e, replayB)) {
+            replayB.setMousePressed(true);
+        } else if (mouseHovering(e, unpauseB)) {
+            unpauseB.setMousePressed(true);
         }
         
     }
 
     //Questo metodo ci permette di osservare quando il tasto viene lasciato, dopo che è stato premuto
-    //Setta lo stato opposto in base a quello corrente tramite una sorta di chiamata ricorsiva al contrario
     public void mouseReleased(MouseEvent e){
 
+        //Questa serie di if else statements, serve a definire un evento specifico nella 
+        //Schermata di pausa, se iol mouse si trova sopra ad un bottone e se questo viene premuto
+        //Avvia il suo stato e modifica le componenti di gioco come il suono o il Game state
         if (mouseHovering(e, musicButon) ) {
             if (musicButon.getMousePressed()) {
                 musicButon.setMuted(!musicButon.getMuted());
@@ -86,23 +131,47 @@ public class PauseOverlay {
             if (sfxButton.getMousePressed()) {
                 sfxButton.setMuted(!sfxButton.getMuted());
             }
+        } else if(mouseHovering(e, homeB) ){
+            if (homeB.getMousePressed()) {
+                GameState.state = GameState.MENU;
+            }
+        } else if(mouseHovering(e, replayB) ){
+            if (replayB.getMousePressed()) {
+                System.out.println("Replay level! WIP");
+            }
+        } else if(mouseHovering(e, unpauseB) ){
+            if (unpauseB.getMousePressed()) {
+                playing.unpauseGame();
+            }
         }
 
         musicButon.resetBools();
         sfxButton.resetBools();
+        homeB.resetBools();
+        replayB.resetBools();
+        unpauseB.resetBools();
     }
 
     //Questa funzione osserva se il mouse sta passando sopra ad un bottone, in tal caso
     //Setta il suo stato su Hover per mostrare lo sprite corretto
     public void mouseMoved(MouseEvent e){
+
         musicButon.setMouseOver(false);
         sfxButton.setMouseOver(false);
+        homeB.setMouseOver(false);
+        replayB.setMouseOver(false);
+        unpauseB.setMouseOver(false);
 
         if (mouseHovering(e, musicButon)) {
             musicButon.setMouseOver(true);
-        } 
-        if(mouseHovering(e, sfxButton)){
+        } else if(mouseHovering(e, sfxButton)){
             sfxButton.setMouseOver(true);
+        } else if(mouseHovering(e, homeB)){
+            homeB.setMouseOver(true);
+        } else if(mouseHovering(e, replayB)){
+            replayB.setMouseOver(true);
+        } else if(mouseHovering(e, unpauseB)){
+            unpauseB.setMouseOver(true);
         }
     }
 

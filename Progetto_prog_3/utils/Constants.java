@@ -31,6 +31,13 @@ public class Constants {
 
         }
 
+        public static class PhrButtons{
+
+            public static final int PRH_BUTTONS_DEFAULT_SIZE = 56;
+            public static final int PRH_BUTTONS_SIZE = (int) (PRH_BUTTONS_DEFAULT_SIZE * Game.SCALE);
+
+        } 
+
     }
 
     public static class PlayerConstants{
