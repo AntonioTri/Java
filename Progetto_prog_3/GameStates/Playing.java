@@ -1,5 +1,6 @@
 package Progetto_prog_3.GameStates;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -8,6 +9,7 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.LevelManager;
+import Progetto_prog_3.utils.LoadSave;
 
 public class Playing extends State implements StateMethods{
     
@@ -16,6 +18,18 @@ public class Playing extends State implements StateMethods{
 
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
+
+    //Queste variabili mi servono a gestire il movimento della telecamera nel mondo,
+    //CAPTAZIONE WORK IN PROGRESS, ANCORA NON HO ANCORA CAPITO BENE
+    private int xLevelOffset;
+    //Queste due variabili definiscono il bordo dopo il quale la visuale viene regolata e spostata di conseguenza
+    private int leftBorder = (int)(0.5 * Game.GAME_WIDTH);
+    private int rightBorder = (int)(0.5 * Game.GAME_WIDTH);
+    //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
+    private int levelTileWide = LoadSave.getLevelData()[0].length;
+    //Queste ancora non ho capito bene a che servono
+    private int maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
+    private int maxLevelOffsetX = maxTileOffset * Game.TILES_SIZE;
     
     public Playing(Game game) {
         super(game);
@@ -50,12 +64,41 @@ public class Playing extends State implements StateMethods{
         }
     }
 
+    //Questa funzione serve a definire la distanza tra il player ed il bordo,
+    //In caso avvengano alcune verita' vengono definiti i valori per spostare la videocamera
+    private void checkCloseToBorder() {
+
+        //Si estrae la posizione in x del player
+        int playerX = (int) player.getHitbox().x;
+        //Si calcola la differenza tra la posizione attuale e la variabile offset del livello
+        int difference = playerX - xLevelOffset;
+
+        //Se la differenza è maggiore del bordo di destra, al level offset viene aggiunta la differenza
+        //più i lvalore del bordo destro/sinistro 
+        if (difference > rightBorder) {
+            xLevelOffset += difference - rightBorder;
+        } else if(difference < leftBorder){
+            xLevelOffset += difference - leftBorder;
+        }
+
+        //Se il valore invece supera la grandezza massima dei bordi del livello, l'offset viene
+        //settato come la posizione del muro che sta provando ad atraversare così da nono mostrare 
+        //una parte del livello vuota
+        if (xLevelOffset > maxLevelOffsetX) {
+            xLevelOffset = maxLevelOffsetX;
+        } else if (xLevelOffset < 0) {
+            xLevelOffset  = 0;
+        }
+
+    }
+
     @Override
     public void update() {
 
         if (!paused) {
             levelManager.update();
             player.update();
+            checkCloseToBorder();
         } else {
             pauseOverlay.update();
         }
@@ -63,10 +106,16 @@ public class Playing extends State implements StateMethods{
 
     @Override
     public void draw(Graphics g) {
-        levelManager.draw(g);
-        player.render(g);
+        //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
+        levelManager.draw(g, xLevelOffset);
+        player.render(g, xLevelOffset);
 
         if (paused) {
+            //Se il gioco viene messo in pausa, viene disegnato un rettangolo tra il game ed il menù di pausa
+            //Per dare un effetto piacevole alla vista
+            g.setColor(new Color(0,0,0, 140));
+            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+            //Si disegna il menù di pausa sopra al rettangolo opaco precedente
             pauseOverlay.draw(g);
         }
 

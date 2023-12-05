@@ -10,15 +10,17 @@ import Progetto_prog_3.Game;
 public class LoadSave {
 
     //Stringe rapparesentative per ottenere una specifica immagine png da caricare
+    //public static final String LEVEL_1_DATA = "level_one_data.png";
+    public static final String LEVEL_1_DATA = "level_one_data_long.png";
     public static final String PLAYER_ATLAS = "Animations.png";
     public static final String LEVEL_ATLAS = "Terrain.png";
-    public static final String LEVEL_1_DATA = "level_one_data.png";
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
     public static final String SOUND_BUTTON = "sound_button.png";
     public static final String PAUSE_BACKGROUND = "pause_menu.png";
     public static final String VOLUME_BUTTON = "volume_buttons.png";
     public static final String PRH_BUTTONS = "prh_buttons.png";
+    public static final String HOME_BACKGROUND_IMAGE = "background_menu.png";
     
     //Questa funzione carica i dati di un png in una immagine, date delle varibili, quelle sopra, sceglie quale immagine caricare
     //Questa dovrebbe essere una factory
@@ -51,8 +53,8 @@ public class LoadSave {
     //per la costruzione del livello
     public static int[][] getLevelData(){
 
-        int[][] levelData = new int [Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
         BufferedImage img = getSpriteAtlas(LEVEL_1_DATA);
+        int[][] levelData = new int [img.getHeight()][img.getWidth()];
 
         for( int j = 0; j<img.getHeight(); j++){
             for (int i = 0; i < img.getWidth(); i++) {

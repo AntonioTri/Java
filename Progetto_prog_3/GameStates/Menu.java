@@ -19,7 +19,7 @@ public class Menu extends State implements StateMethods {
     //Variabili di ambiente, come i tasti del menù ed il background dello stesso 
     //(il contenitore che contiene i bottoni, non làeffettivo background)
     private MenuButton[] buttons = new MenuButton[3];
-    private BufferedImage backgroundImage;
+    private BufferedImage backgroundImage, actualBackgroundImage;
     private int menuX, menuY, menuWidth, menuHeight;
 
     //Costruttore, che carica i bottoni ed il background di questi
@@ -27,6 +27,7 @@ public class Menu extends State implements StateMethods {
         super(game);
         loadBackground();
         loadButtons();
+        actualBackgroundImage = LoadSave.getSpriteAtlas(LoadSave.HOME_BACKGROUND_IMAGE);
     }
 
     /*
@@ -60,7 +61,7 @@ public class Menu extends State implements StateMethods {
     //Funzione che ci permette di disegnare i bottoni
     @Override
     public void draw(Graphics g) {
-
+        g.drawImage(actualBackgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT,  null);
         g.drawImage(backgroundImage, menuX, menuY, menuWidth, menuHeight, null);
 
        for (MenuButton menuButton : buttons) {

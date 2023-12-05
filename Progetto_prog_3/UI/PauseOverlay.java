@@ -28,6 +28,7 @@ public class PauseOverlay {
     //Variabile per accedere al game state di "Playing"
     Playing playing;
 
+    //Il costruttore inizializza tutti i bottoni presenti
     public PauseOverlay(Playing playing){
 
         this.playing = playing;
@@ -38,6 +39,7 @@ public class PauseOverlay {
 
     }
 
+    //Questa variabile costruisce il bottone del volume
     private void createVolumeButton() {
 
         int volumeX = (int)(309 * Game.SCALE);
@@ -48,6 +50,7 @@ public class PauseOverlay {
 
     }
 
+    //Questo metodo invece chrea i tre bottoni di pausa, reset e ritorno a schermata home
     private void createPRHButtons() {
 
         //Differenti posizioni in x
@@ -64,7 +67,7 @@ public class PauseOverlay {
 
     }
 
-
+    //Questo crea i bottoni Per mettere il muto a effetti sonori e musica in generale 
     private void createSoundButtons() {
         int buttonX = (int) (450 * Game.SCALE);
         int musicX = (int) ( 140 * Game.SCALE);
@@ -112,6 +115,7 @@ public class PauseOverlay {
 
     }
 
+    //Questa funzione serve ad aggiornare la posiizone del bottone del mouse
     public void mouseDragged(MouseEvent e){
         if (volumeButton.getMousePressed()) {
             volumeButton.changeX(e.getX());
@@ -124,7 +128,7 @@ public class PauseOverlay {
 
         if (mouseHovering(e, musicButon) ) {
             musicButon.setMousePressed(true);  
-        } else if(mouseHovering(e, sfxButton) ){
+        } else if(mouseHovering(e, sfxButton)) {
             sfxButton.setMousePressed(true);
         } else if (mouseHovering(e, homeB)) {
             homeB.setMousePressed(true);

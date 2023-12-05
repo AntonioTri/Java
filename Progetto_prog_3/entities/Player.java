@@ -56,8 +56,8 @@ public class Player extends Entity{
     
     //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
     //mano mano che avanzano i tick di gioco e verra' quindi mostrata una immagine differente ogni 40 tick
-    public void render(Graphics g){
-        g.drawImage(animations[playerAction][aniIndex], (int)(hitbox.x - XOffset), (int)(hitbox.y - YOffset), hitBoxWidth, hitBoxHeight, null);
+    public void render(Graphics g, int xLevelOffset){
+        g.drawImage(animations[playerAction][aniIndex], (int)(hitbox.x - XOffset) - xLevelOffset, (int)(hitbox.y - YOffset), hitBoxWidth, hitBoxHeight, null);
         drawHitbox(g);
         
     }
@@ -124,11 +124,19 @@ public class Player extends Entity{
     private void updatePosition() {
 		moving = false;
 
+        //Salto
 		if (jump)
 			jump();
+        //Se non si sta facendo nessuna azione ritorna, non facendo calcoli
 		if (!left && !right && !inAir)
 			return;
+    
+        //Impedimento di movimenti concorrenti
+        if (!inAir && ((!left && !right) || (right && left))) {
+            return;
+        }
 
+        //Cambi del movimento destra e sinistra, si aggiunge una quantità alla velocità
 		float xSpeed = 0;
 
 		if (left)
@@ -149,7 +157,7 @@ public class Player extends Entity{
 				airSpeed += gravity;
 				updateXPos(xSpeed);
 			} else {
-                //Qui c'e un bug strano, il personaggio viene teletrasportato ad una altezza di un tile size in piu'
+                
 				hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
 				if (airSpeed > 0)
 					resetInAir();

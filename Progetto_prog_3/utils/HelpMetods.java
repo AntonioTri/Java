@@ -24,7 +24,9 @@ public class HelpMetods {
     //appartenga ad un muro oppure no, viene verificata la non appartenenza al level data corrente
     private static boolean isSolid(float x , float y, int[][] levelData){
 
-        if (x< 0 || x>= Game.GAME_WIDTH) {
+        //Si prende la grandezza del livello in larghezza (almeno per ora) per vedere se il movimento sia possibilitato
+        int maxWidth = levelData[0].length * Game.TILES_SIZE;
+        if (x< 0 || x>= maxWidth) {
             return true;
         }
         if (y<0 || y>= Game.GAME_HEIGHT) {
