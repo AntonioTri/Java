@@ -9,17 +9,21 @@ import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
 import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
+import static Progetto_prog_3.utils.Constants.UI.VolumeButton.SLIDER_WIDTH;
+import static Progetto_prog_3.utils.Constants.UI.VolumeButton.VOLUME_HEIGHT;
+import static Progetto_prog_3.utils.Constants.UI.VolumeButton.VOLUME_WIDTH;
 
 //Classe che definisce la schermata di ausa, nella quale coesistono diversi bottoni per diverse
 //Funzionalità legate al gameplay, come il volume, reset del livello, ritorno alla schermata iniziale
 public class PauseOverlay {
-    
+
     private BufferedImage backgroundImg;
     private int bgX, bgY, bgWidth, bgHeight;
 
     //Bottoni presenti nell schermata
     private SoundButton musicButon, sfxButton;
     private PRHButtons homeB, replayB, unpauseB;
+    private VolumeButton volumeButton;
 
     //Variabile per accedere al game state di "Playing"
     Playing playing;
@@ -30,6 +34,17 @@ public class PauseOverlay {
         loadBackground();
         createSoundButtons();
         createPRHButtons();
+        createVolumeButton();
+
+    }
+
+    private void createVolumeButton() {
+
+        int volumeX = (int)(309 * Game.SCALE);
+        int volumeY = (int)(278 * Game.SCALE);
+
+        volumeButton = new VolumeButton(volumeX, volumeY, SLIDER_WIDTH, VOLUME_HEIGHT);
+
 
     }
 
@@ -78,6 +93,7 @@ public class PauseOverlay {
         homeB.update();
         replayB.update();
         unpauseB.update();
+        volumeButton.update();
     }
 
     public void draw(Graphics g){
@@ -92,11 +108,14 @@ public class PauseOverlay {
         homeB.draw(g);
         replayB.draw(g);
         unpauseB.draw(g);
+        volumeButton.draw(g);
 
     }
 
     public void mouseDragged(MouseEvent e){
-
+        if (volumeButton.getMousePressed()) {
+            volumeButton.changeX(e.getX());
+        }
     }
 
     //Questo metodo si attiva quando il tasto del mouse viene premuto, 
@@ -113,6 +132,8 @@ public class PauseOverlay {
             replayB.setMousePressed(true);
         } else if (mouseHovering(e, unpauseB)) {
             unpauseB.setMousePressed(true);
+        } else if (mouseHovering(e, volumeButton)) {
+            volumeButton.setMousePressed(true);
         }
         
     }
@@ -151,13 +172,13 @@ public class PauseOverlay {
                 playing.unpauseGame();
             }
         }
-
         //Si resetano i valori booleani per resettare gli sprite
         musicButon.resetBools();
         sfxButton.resetBools();
         homeB.resetBools();
         replayB.resetBools();
         unpauseB.resetBools();
+        volumeButton.resetBools();
     }
 
     //Questa funzione osserva se il mouse sta passando sopra ad un bottone, in tal caso
@@ -169,6 +190,7 @@ public class PauseOverlay {
         homeB.setMouseOver(false);
         replayB.setMouseOver(false);
         unpauseB.setMouseOver(false);
+        volumeButton.setMouseOver(false);
 
         if (mouseHovering(e, musicButon)) {
             musicButon.setMouseOver(true);
@@ -180,6 +202,8 @@ public class PauseOverlay {
             replayB.setMouseOver(true);
         } else if(mouseHovering(e, unpauseB)){
             unpauseB.setMouseOver(true);
+        } else if(mouseHovering(e, volumeButton)){
+            volumeButton.setMouseOver(true);
         }
     }
 

@@ -38,6 +38,19 @@ public class Constants {
 
         } 
 
+        public static class VolumeButton{
+
+            public static final int VOLUME_DEFAUT_HEIGHT = 44;
+            public static final int VOLUME_DEFAUT_WIDTH = 28;
+            public static final int SLIDER_DEFAULT_WIDTH = 215;
+
+            public static final int VOLUME_WIDTH = (int) ( VOLUME_DEFAUT_WIDTH * Game.SCALE);
+            public static final int VOLUME_HEIGHT = (int) ( VOLUME_DEFAUT_HEIGHT * Game.SCALE);
+            public static final int SLIDER_WIDTH = (int) ( SLIDER_DEFAULT_WIDTH * Game.SCALE);
+
+
+        }
+
     }
 
     public static class PlayerConstants{

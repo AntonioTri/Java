@@ -17,7 +17,7 @@ public class Game implements Runnable{
 
     //Variabili per la mappa
     public final static int TILES_DEFAULT_SIZE = 32;
-    public final static float SCALE = 1f;
+    public final static float SCALE = 2f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
     public final static int TILES_SIZE = (int)(TILES_DEFAULT_SIZE * SCALE);
@@ -50,6 +50,7 @@ public class Game implements Runnable{
         menu = new Menu(this);
         playing = new Playing(this);
     }
+
     //Funzione per updatare lo stato degli elementi inizializzati correnti
     private void update() { 
         //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 

@@ -14,7 +14,7 @@ public class Playing extends State implements StateMethods{
     private Player player;
     private LevelManager levelManager;
 
-    private boolean paused = true;
+    private boolean paused = false;
     private PauseOverlay pauseOverlay;
     
     public Playing(Game game) {
@@ -42,6 +42,12 @@ public class Playing extends State implements StateMethods{
 
     public void windowFocusLost() { 
         player.resetMovement(); 
+    }
+
+    public void mouseDragged(MouseEvent e){
+        if (paused) {
+            pauseOverlay.mouseDragged(e);
+        }
     }
 
     @Override
