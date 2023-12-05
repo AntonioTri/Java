@@ -1,7 +1,5 @@
 package Progetto_prog_3.entities;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
 //Classe madre per tutte le entità che dovranno essere create, come i nemici o gli oggetti raccoglibili, implementa una posizione di partenza, 
@@ -31,8 +29,8 @@ public abstract class Entity {
 
     protected void drawHitbox(Graphics g){
 
-        g.setColor(Color.BLUE);
-        g.drawRect((int)hitbox.x, (int)hitbox.y, (int) hitbox.width, (int) hitbox.height);
+        //g.setColor(Color.BLUE);
+        //g.drawRect((int)hitbox.x, (int)hitbox.y, (int) hitbox.width, (int) hitbox.height);
 
     }
 

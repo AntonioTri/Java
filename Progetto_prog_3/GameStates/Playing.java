@@ -25,7 +25,7 @@ public class Playing extends State implements StateMethods{
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
         levelManager = new LevelManager(game);
-        player = new Player(200, 400, (int) (64*Game.SCALE), (int)(64*Game.SCALE) ); 
+        player = new Player(200, 200, (int) (64*Game.SCALE), (int)(64*Game.SCALE) ); 
         player.loadLevelData(levelManager.getCurrentLevel().getLevelData());
         pauseOverlay = new PauseOverlay(this);
     }
