@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.UI.PauseOverlay;
@@ -27,13 +28,16 @@ public class Playing extends State implements StateMethods{
     private int rightBorder = (int)(0.5 * Game.GAME_WIDTH);
     //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
     private int levelTileWide = LoadSave.getLevelData()[0].length;
-    //Queste ancora non ho capito bene a che servono
+    //Queste servono a definire entro quale limite non bisonga più spostare la telecamera
     private int maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
     private int maxLevelOffsetX = maxTileOffset * Game.TILES_SIZE;
+    //Immagini di baground
+    private BufferedImage backgroundImage;
     
     public Playing(Game game) {
         super(game);
         initClasses();
+        backgroundImage = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BACKGROUND_IMAGE);
     }
 
     //Funzione per inizializzare le classi delle entita presenti
@@ -106,6 +110,8 @@ public class Playing extends State implements StateMethods{
 
     @Override
     public void draw(Graphics g) {
+        //Viene disegnato il background
+        //g.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
