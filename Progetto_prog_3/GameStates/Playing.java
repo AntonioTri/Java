@@ -5,12 +5,14 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.utils.LoadSave;
+import static Progetto_prog_3.utils.Constants.Environment.*;
 
 public class Playing extends State implements StateMethods{
     
@@ -32,30 +34,45 @@ public class Playing extends State implements StateMethods{
     private int maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
     private int maxLevelOffsetX = maxTileOffset * Game.TILES_SIZE;
     //Immagini di baground
-    private BufferedImage backgroundImage;
+    private BufferedImage backgroundImage, bigClouds, smallClouds;
+    private int[] smallCloudPos;
+    private Random random = new Random();
     
     public Playing(Game game) {
         super(game);
         initClasses();
-        backgroundImage = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BACKGROUND_IMAGE);
     }
-
+    
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
         levelManager = new LevelManager(game);
         player = new Player(200, 200, (int) (64*Game.SCALE), (int)(64*Game.SCALE) ); 
         player.loadLevelData(levelManager.getCurrentLevel().getLevelData());
         pauseOverlay = new PauseOverlay(this);
+        loadBackground();
+
+    }
+
+    private void loadBackground(){
+
+        //Vengono caricate le immagini dlle nuvole
+        backgroundImage = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BACKGROUND_IMAGE);
+        bigClouds = LoadSave.getSpriteAtlas(LoadSave.BIG_CLOUDS);
+        smallClouds = LoadSave.getSpriteAtlas(LoadSave.SMALL_CLOUDS);
+
+        smallCloudPos = new int[8];
+        for (int i = 0; i < smallCloudPos.length; i++) {
+            smallCloudPos[i] = (int)(random.nextInt((int)( 100 * Game.SCALE)) + (90 * Game.SCALE));
+        }
+
     }
 
     public void unpauseGame(){
         paused = false;
     }
 
-
     public Player getPlayer(){
         return player;
-
     }
 
     public void windowFocusLost() { 
@@ -111,7 +128,11 @@ public class Playing extends State implements StateMethods{
     @Override
     public void draw(Graphics g) {
         //Viene disegnato il background
-        //g.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        g.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        //Vengono agiunte le nuvole
+        drowBigClouds(g);
+        drowSmallClouds(g);
+
         //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
@@ -123,6 +144,20 @@ public class Playing extends State implements StateMethods{
             g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             //Si disegna il menù di pausa sopra al rettangolo opaco precedente
             pauseOverlay.draw(g);
+        }
+
+    }
+
+    private void drowSmallClouds(Graphics g) {
+        for (int i = 0; i < smallCloudPos.length; i++) {
+            g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i -(int) ( xLevelOffset * 0.7), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
+        }
+
+    }
+
+    private void drowBigClouds(Graphics g) {
+        for (int i = 0; i < 3; i++) {
+            g.drawImage(bigClouds, i*BIG_CLOUD_WIDTH -(int) ( xLevelOffset * 0.3) , (int)(204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
         }
 
     }
