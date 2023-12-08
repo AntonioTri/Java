@@ -15,7 +15,6 @@ public class EnemyManager {
     private ArrayList<NightBorne> nightBornes = new ArrayList<>();
 
     public EnemyManager(Playing playing){
-
         this.playing = playing;
         loadEnemyImages();
         addEnemies();
@@ -44,6 +43,7 @@ public class EnemyManager {
 
         for(NightBorne nb : nightBornes){
             g.drawImage(nightBorneArray[nb.getEnemyState()][nb.getAniIndex()], (int)nb.getHitbox().x - xLevelOffset, (int)nb.getHitbox().y, NIGHT_BORNE_WIDHT, NIGHT_BORNE_HEIGHT, null);
+            nb.drawHitbox(g, xLevelOffset);
         }
 
     }

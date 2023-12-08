@@ -15,7 +15,7 @@ public abstract class AbstractEnemy extends Entity{
     private int aniTick, aniSpeed = 25;
     private boolean firstUpdate = true, inAir = false;
     private float fallSpeed, gravity = (float) 0.04 * Game.SCALE;
-    private float wlakSpeed = 1.0f * Game.SCALE;
+    private float wlakSpeed = 0.5f * Game.SCALE;
     private int wlakDir = LEFT;
 
     public AbstractEnemy(float x, float y, int width, int height, int enemyType) {

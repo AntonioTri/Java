@@ -1,10 +1,8 @@
 package Progetto_prog_3.entities;
 
-import static Progetto_prog_3.utils.Constants.PlayerConstants;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import java.awt.Graphics;
-import java.awt.geom.Rectangle2D.Float;
 import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.utils.LoadSave;

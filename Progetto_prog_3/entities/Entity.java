@@ -14,7 +14,7 @@ public abstract class Entity {
 
 
 
-    public Entity(float x, float y, int hitBoxWidth,int hitBoxHeight){
+    public Entity(float x, float y, int hitBoxWidth, int hitBoxHeight){
 
         this.x = x;
         this.y = y;

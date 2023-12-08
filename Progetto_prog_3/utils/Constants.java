@@ -33,8 +33,12 @@ public class Constants {
         public static final int NIGHT_BORNE_HEIGHT = (int)(NIGHT_BORNE_DEFAULT_HEIGHT * Game.SCALE);
         
         //Questo è l'offset di posizionamento della hitbox del naightborne
-        public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(28 * Game.SCALE);
-        public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(40 * Game.SCALE);
+        public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(20 * Game.SCALE);
+        public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(35 * Game.SCALE);
+
+        // public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(60 * Game.SCALE);
+        // public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(60 * Game.SCALE);
+
 
 
         public static int getSpriteAmount(int enemyType, int enemyState){
@@ -128,7 +132,7 @@ public class Constants {
         public static final int DOWN = 3;
 
     }
-    
+
     public static class PlayerConstants{
 
         public static final int IDLE = 0;

@@ -77,7 +77,7 @@ public class HelpMetods {
     public static boolean isEntityOnFloor(Rectangle2D.Float hitbox, int[][] levelData) {
         
         //Controllo sul pixel di estrema destra ed estrema sinistra, se sono entrambi non blocco, allora siamo in aria
-        if (!isSolid(hitbox.x, hitbox.y + hitbox.height + 1, levelData) && !isSolid(hitbox.x + hitbox.width + 1, hitbox.y + hitbox.height, levelData)) {
+        if (!isSolid(hitbox.x, hitbox.y + hitbox.height + 1, levelData) && !isSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, levelData)) {
             return false;
         }
         

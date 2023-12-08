@@ -2,6 +2,9 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 import Progetto_prog_3.Game;
 
 public class NightBorne extends AbstractEnemy{
@@ -13,10 +16,6 @@ public class NightBorne extends AbstractEnemy{
         super(x, y, NIGHT_BORNE_WIDHT, NIGHT_BORNE_HEIGHT, NIGHT_BORNE);
         initHitbox(x, y, (int)(35 * Game.SCALE), (int)(35 * Game.SCALE));
     }
-
-    
-
-
 
     
 }
