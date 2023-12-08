@@ -6,13 +6,13 @@ import java.awt.geom.Rectangle2D;
 //una hitbox, ed un metodo drowhitbox che ci permette di disegnare una linea attorno all'entità in questione
 public abstract class Entity {
     
-    public int x, y;
+    public float x, y;
     protected int hitBoxWidth, hitBoxHeight;
     protected Rectangle2D.Float hitbox;
 
 
 
-    public Entity(int x, int y, int hitBoxWidth,int hitBoxHeight){
+    public Entity(float x, float y, int hitBoxWidth,int hitBoxHeight){
 
         this.x = x;
         this.y = y;

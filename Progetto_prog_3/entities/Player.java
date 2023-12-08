@@ -39,7 +39,7 @@ public class Player extends Entity{
     
 
     //Costruttore richiamante la classe estesa
-    public Player(int x, int y, int width, int height){
+    public Player(float x, float y, int width, int height){
         super(x, y, width, height);
         loadAnimations();
         initHitbox(x, y, 25 * Game.SCALE, 37 * Game.SCALE);

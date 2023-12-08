@@ -14,6 +14,55 @@ public class Constants {
     //frame associati alla azione selezionata, così da poter dare una animazione fluida
     //in base alla azione scelta, senza andare a mostrare frame vuoti che comunque verranno inizializzati
 
+    public static class EnemtConstants{
+
+
+        public static final int NIGHT_BORNE = 0;
+
+        public static final int NIGHT_BORNE_IDLE = 0;
+        public static final int NIGHT_BORNE_RUN = 1;
+        public static final int NIGHT_BORNE_ATTACK = 2;
+        public static final int NIGHT_BORNE_HITTED = 3;
+        public static final int NIGHT_BORNE_DIE = 4; 
+
+
+        public static final int NIGHT_BORNE_DEFAULT_WIDHT = 72;
+        public static final int NIGHT_BORNE_DEFAULT_HEIGHT = 32;
+
+        public static final int NIGHT_BORNE_WIDHT = (int)(NIGHT_BORNE_DEFAULT_WIDHT * Game.SCALE);
+        public static final int NIGHT_BORNE_HEIGHT = (int)(NIGHT_BORNE_DEFAULT_HEIGHT * Game.SCALE);
+
+
+        public static int getSpriteAmount(int enemyType, int enemyState){
+
+            switch (enemyType) {
+                case NIGHT_BORNE:
+                    
+                    switch (enemyState) {
+                        case NIGHT_BORNE_IDLE: return 9;
+                        case NIGHT_BORNE_RUN: return 6;
+                        case NIGHT_BORNE_ATTACK: return 7;
+                        case NIGHT_BORNE_HITTED: return 4;
+                        case NIGHT_BORNE_DIE: return 5;
+                    
+                        default:
+                        return 9;
+                            
+                    }
+            
+                default:
+                return 0;
+            }
+
+
+
+        }
+
+
+
+    }
+
+
     public static class Environment {
 		public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;
 		public static final int BIG_CLOUD_HEIGHT_DEFAULT = 101;

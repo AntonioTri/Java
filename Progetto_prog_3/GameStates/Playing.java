@@ -9,6 +9,7 @@ import java.util.Random;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.UI.PauseOverlay;
+import Progetto_prog_3.entities.EnemyManager;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.utils.LoadSave;
@@ -18,6 +19,7 @@ public class Playing extends State implements StateMethods{
     
     private Player player;
     private LevelManager levelManager;
+    private EnemyManager enemyManager;
 
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
@@ -25,14 +27,18 @@ public class Playing extends State implements StateMethods{
     //Queste variabili mi servono a gestire il movimento della telecamera nel mondo,
     //CAPTAZIONE WORK IN PROGRESS, ANCORA NON HO ANCORA CAPITO BENE
     private int xLevelOffset;
+
     //Queste due variabili definiscono il bordo dopo il quale la visuale viene regolata e spostata di conseguenza
     private int leftBorder = (int)(0.5 * Game.GAME_WIDTH);
     private int rightBorder = (int)(0.5 * Game.GAME_WIDTH);
+
     //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
     private int levelTileWide = LoadSave.getLevelData()[0].length;
+
     //Queste servono a definire entro quale limite non bisonga più spostare la telecamera
     private int maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
     private int maxLevelOffsetX = maxTileOffset * Game.TILES_SIZE;
+
     //Immagini di baground
     private BufferedImage backgroundImage, bigClouds, smallClouds;
     private int[] smallCloudPos;
@@ -46,6 +52,7 @@ public class Playing extends State implements StateMethods{
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
         levelManager = new LevelManager(game);
+        enemyManager = new EnemyManager(this);
         player = new Player(200, 200, (int) (64*Game.SCALE), (int)(64*Game.SCALE) ); 
         player.loadLevelData(levelManager.getCurrentLevel().getLevelData());
         pauseOverlay = new PauseOverlay(this);
@@ -119,7 +126,9 @@ public class Playing extends State implements StateMethods{
         if (!paused) {
             levelManager.update();
             player.update();
+            enemyManager.update();
             checkCloseToBorder();
+
         } else {
             pauseOverlay.update();
         }
@@ -136,6 +145,7 @@ public class Playing extends State implements StateMethods{
         //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
+        enemyManager.draw(g, xLevelOffset);
 
         if (paused) {
             //Se il gioco viene messo in pausa, viene disegnato un rettangolo tra il game ed il menù di pausa
