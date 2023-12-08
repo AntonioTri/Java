@@ -51,8 +51,8 @@ public class Playing extends State implements StateMethods{
     
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
-        levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
+        levelManager = new LevelManager(game);
         player = new Player(200, 200, (int) (64*Game.SCALE), (int)(64*Game.SCALE) ); 
         player.loadLevelData(levelManager.getCurrentLevel().getLevelData());
         pauseOverlay = new PauseOverlay(this);
@@ -124,9 +124,9 @@ public class Playing extends State implements StateMethods{
     public void update() {
 
         if (!paused) {
+            enemyManager.update(levelManager.getCurrentLevel().getLevelData());
             levelManager.update();
             player.update();
-            enemyManager.update();
             checkCloseToBorder();
 
         } else {
@@ -143,9 +143,9 @@ public class Playing extends State implements StateMethods{
         drowSmallClouds(g);
 
         //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
+        enemyManager.draw(g, xLevelOffset);
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
-        enemyManager.draw(g, xLevelOffset);
 
         if (paused) {
             //Se il gioco viene messo in pausa, viene disegnato un rettangolo tra il game ed il menù di pausa

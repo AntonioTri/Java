@@ -33,10 +33,10 @@ public class LoadSave {
 
     //Entity
     public static final String PLAYER_ATLAS = "Animations.png";
-    public static final String NIGHT_BORNE_ATLAS = "crabby_sprite.png";
+    public static final String NIGHT_BORNE_ATLAS = "NightBorne.png";
     
     //Questa funzione carica i dati di un png in una immagine, date delle varibili, quelle sopra, sceglie quale immagine caricare
-    //Questa dovrebbe essere una factory
+    //Questa dovrebbe essere una factory 
     public static BufferedImage getSpriteAtlas(String fileName){
 
         BufferedImage img = null;
@@ -76,8 +76,6 @@ public class LoadSave {
                 int value = color.getRed();
                 
                 if(value >= 48)
-                    value =0;
-                if(value == 11)
                     value = 11;
 
                 levelData[j][i] = value; 
@@ -97,10 +95,9 @@ public class LoadSave {
             for (int i = 0; i < img.getWidth(); i++) {
 
                 Color color = new Color(img.getRGB(i, j));
-                int value = color.getGreen();
+                int value = color.getBlue();
                 
                 if(value == NIGHT_BORNE){
-                    value = 0;
                     list.add(new NightBorne(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
                 }
             }

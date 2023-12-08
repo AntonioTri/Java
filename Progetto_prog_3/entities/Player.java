@@ -58,7 +58,7 @@ public class Player extends Entity{
     //mano mano che avanzano i tick di gioco e verra' quindi mostrata una immagine differente ogni 40 tick
     public void render(Graphics g, int xLevelOffset){
         g.drawImage(animations[playerAction][aniIndex], (int)(hitbox.x - XOffset) - xLevelOffset, (int)(hitbox.y - YOffset), hitBoxWidth, hitBoxHeight, null);
-        drawHitbox(g);
+        drawHitbox(g, xLevelOffset);
         
     }
 

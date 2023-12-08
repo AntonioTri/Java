@@ -26,10 +26,10 @@ public class EnemyManager {
         System.out.println("Enemy Number = " + nightBornes.size());
     }
 
-    public void update(){
+    public void update(int[][] levelData){
 
         for(NightBorne nb : nightBornes){
-            nb.update();
+            nb.update(levelData);
         }
 
     }

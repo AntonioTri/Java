@@ -1,4 +1,6 @@
 package Progetto_prog_3.entities;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
@@ -27,10 +29,10 @@ public abstract class Entity {
 
     }
 
-    protected void drawHitbox(Graphics g){
+    protected void drawHitbox(Graphics g, int xLevelOffset){
 
-        //g.setColor(Color.BLUE);
-        //g.drawRect((int)hitbox.x, (int)hitbox.y, (int) hitbox.width, (int) hitbox.height);
+        g.setColor(Color.BLUE);
+        g.drawRect((int)hitbox.x - xLevelOffset, (int)hitbox.y, (int) hitbox.width, (int) hitbox.height);
 
     }
 

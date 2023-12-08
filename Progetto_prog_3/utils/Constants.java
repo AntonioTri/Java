@@ -26,11 +26,15 @@ public class Constants {
         public static final int NIGHT_BORNE_DIE = 4; 
 
 
-        public static final int NIGHT_BORNE_DEFAULT_WIDHT = 72;
-        public static final int NIGHT_BORNE_DEFAULT_HEIGHT = 32;
+        public static final int NIGHT_BORNE_DEFAULT_WIDHT = 80;
+        public static final int NIGHT_BORNE_DEFAULT_HEIGHT = 80;
 
         public static final int NIGHT_BORNE_WIDHT = (int)(NIGHT_BORNE_DEFAULT_WIDHT * Game.SCALE);
         public static final int NIGHT_BORNE_HEIGHT = (int)(NIGHT_BORNE_DEFAULT_HEIGHT * Game.SCALE);
+        
+        //Questo è l'offset di posizionamento della hitbox del naightborne
+        public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(28 * Game.SCALE);
+        public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(40 * Game.SCALE);
 
 
         public static int getSpriteAmount(int enemyType, int enemyState){
@@ -116,6 +120,15 @@ public class Constants {
 
     }
 
+    public class Directions{
+
+        public static final int LEFT = 0;
+        public static final int UP = 1;
+        public static final int RIGHT = 2;
+        public static final int DOWN = 3;
+
+    }
+    
     public static class PlayerConstants{
 
         public static final int IDLE = 0;
@@ -129,14 +142,6 @@ public class Constants {
         public static final int HURT = 8;
         public static final int DIE = 9;
 
-        public class Directions{
-    
-            public static final int LEFT = 0;
-            public static final int UP = 1;
-            public static final int RIGHT = 2;
-            public static final int DOWN = 3;
-    
-        }
         
         public static int getSpriteAmount(int PLAYER_ACTION){
 
