@@ -27,10 +27,12 @@ public class NightBorne extends AbstractEnemy{
     }
 
     public void update(int[][] levelData, Player player){
-
-        updateMove(levelData, player);
+            
+        if(active){
+            updateMove(levelData, player);
+            updateAttackBox();
+        }
         updateAnimationTick();
-        updateAttackBox();
 
     }
 
@@ -72,15 +74,17 @@ public class NightBorne extends AbstractEnemy{
                     //Se il nightboren può vedere il player si gira verso di esso
                     if (canSeePlayer(levelData, player)) {
                         turnTowardsPlayer(player);
+
+                        //Se il player è abbastanza vicino al nemico, questo farà un attacco
+                        //Dopo aver fatto tutto, il nemico torna a muversi nel livello
+                        if (isPlayerCloseForAttack(player)) {
+                            //Viene sewttato lo stato ad attacco
+                            newState(NIGHT_BORNE_ATTACK);
+                        }
+
                     }
-                    //Se il player è abbastanza vicino al nemico, questo farà un attacco
-                    if (isPlayerCloseForAttack(player)) {
-                        //Viene sewttato lo stato ad attacco
-                        newState(NIGHT_BORNE_ATTACK);
-                    }
-                    //Dopo aver fatto tutto, il nemico torna a muversi nel livello
-                    move(levelData);
                     
+                    move(levelData);
                     break;
                     
                 case NIGHT_BORNE_ATTACK:
@@ -91,12 +95,7 @@ public class NightBorne extends AbstractEnemy{
                         checkEnemyHit(attackBox, player);
                     }
                 case NIGHT_BORNE_HITTED:
-            
-            
-            
-            
-            
-            
+                    
             
             }
         }

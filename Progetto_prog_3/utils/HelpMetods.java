@@ -126,10 +126,15 @@ public class HelpMetods {
         return true;
     }
 
+    //Questa funzione ci permette di riconoscere se dove si sta muovendo l'entità sia un blocco solido oppure no
     public static boolean isFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] levelData) {
-        
-        return isSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
-        
+        //Se la velocità è positiva, ci stiamo muovendo verso destra e controlliamo l'angolo destro
+        if (xSpeed > 0) {
+            return isSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, levelData);
+        //Altrimenti controlliamo l'angolo sinistro
+        } else {
+            return isSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
+        }
     }
 
 

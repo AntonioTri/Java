@@ -20,7 +20,7 @@ public class VolumeButton extends PauseButtons {
         //Modificare cosìil richiamo al costruttore della superclasse serve a posizionare il tasto del volume 
         //esattamente in mezzo alla barra del volume quando il gioco parte
         super(x + width/2 , y, VOLUME_WIDTH, height);
-        volumeHitbox.x -= VOLUME_WIDTH / 2;
+        hitbox.x -= VOLUME_WIDTH / 2;
         buttonX = x + width/2;
         this.x = x;
         this.width = width;
@@ -52,7 +52,7 @@ public class VolumeButton extends PauseButtons {
             index = 2;
         }
 
-        volumeHitbox.x = buttonX - VOLUME_WIDTH / 2;
+        hitbox.x = buttonX - VOLUME_WIDTH / 2;
 
     }
 

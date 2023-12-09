@@ -168,7 +168,8 @@ public class PauseOverlay {
         //Replay Button
         } else if(mouseHovering(e, replayB) ){
             if (replayB.getMousePressed()) {
-                System.out.println("Replay level! WIP");
+                playing.resetAll();
+                playing.unpauseGame();
             }
         //Unpause Button
         } else if(mouseHovering(e, unpauseB) ){
@@ -214,7 +215,7 @@ public class PauseOverlay {
     //Si usa il polimorfismo per la classe PauseButton
     private boolean mouseHovering(MouseEvent e , PauseButtons pb){
 
-        return pb.getVolumeHitbox().contains(e.getX(), e.getY());
+        return pb.getHitbox().contains(e.getX(), e.getY());
         
 
     }

@@ -1,13 +1,10 @@
 package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
-import static Progetto_prog_3.utils.Constants.PlayerConstants.HURT;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
 import static Progetto_prog_3.utils.HelpMetods.*;
-
-import java.awt.geom.Rectangle2D;
-
 import static Progetto_prog_3.utils.Constants.Directions.*;
+import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
 
 public abstract class AbstractEnemy extends Entity{
@@ -124,11 +121,13 @@ public abstract class AbstractEnemy extends Entity{
     public void hurt(int amount){
 
         currentHealth -= amount;
+
         if (currentHealth <= 0) {
             newState(NIGHT_BORNE_DIE);
         } else {
             newState(NIGHT_BORNE_HITTED);
         }
+        
     }
 
     //questo metodo invece ci permette di applicare danno al player se il nemico lo colpisce

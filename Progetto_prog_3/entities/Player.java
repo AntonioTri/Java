@@ -2,7 +2,6 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
@@ -62,6 +61,7 @@ public class Player extends Entity{
 	private int flipW = 1;
 
 	private boolean attackChecked;
+    private int damage = 5;
     private Playing playing;
     
 
@@ -419,8 +419,12 @@ public class Player extends Entity{
         this.attacking = attacking;
     }
 
-    
+    public int getDamage(){
+        return damage;
+    }
 
-    
+    public int getAniIndex() {
+        return aniIndex;
+    }
 
 }

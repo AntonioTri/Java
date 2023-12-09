@@ -8,7 +8,7 @@ import java.awt.Rectangle;
 public class PauseButtons {
     
     protected int x, y, width, height;
-    protected Rectangle volumeHitbox;
+    protected Rectangle hitbox;
 
     public PauseButtons(int x, int y, int width, int height){
         this.x = x;
@@ -24,7 +24,7 @@ public class PauseButtons {
 
     //Getters e Setters
     private void createHitbox() {
-        volumeHitbox = new Rectangle(x, y, width, height);
+        hitbox = new Rectangle(x, y, width, height);
     }
 
     public int getX() {
@@ -59,12 +59,12 @@ public class PauseButtons {
         this.height = height;
     }
 
-    public Rectangle getVolumeHitbox() {
-        return volumeHitbox;
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 
-    public void setVolumeHitbox(Rectangle volumeHitbox) {
-        this.volumeHitbox = volumeHitbox;
+    public void setHitbox(Rectangle hitbox) {
+        this.hitbox = hitbox;
     }
 
 

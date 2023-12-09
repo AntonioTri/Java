@@ -5,12 +5,11 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-
 import Progetto_prog_3.Game;
 import Progetto_prog_3.UI.GameOverOverlay;
+import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.EnemyManager;
 import Progetto_prog_3.entities.Player;
@@ -24,6 +23,7 @@ public class Playing extends State implements StateMethods{
     private LevelManager levelManager;
     private EnemyManager enemyManager;
     private GameOverOverlay gameOverOverlay;
+    private LevelCompletedOverlay levelCompletedOverlay;
 
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
@@ -51,6 +51,8 @@ public class Playing extends State implements StateMethods{
     //Variabile pre identificare il Game Over
     private boolean gameOver = false;
 
+    //level complited
+    private boolean levelCompleted = true;
 
     public Playing(Game game) {
         super(game);
@@ -68,8 +70,75 @@ public class Playing extends State implements StateMethods{
         
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
+        levelCompletedOverlay = new LevelCompletedOverlay(this);
         
         loadBackground();
+
+    }
+
+
+    @Override
+    public void update() {
+        //Se il gioco è in pausa viene fatto l'update solo del pause ovelray
+        if (paused) {
+            pauseOverlay.update();
+        
+        //Se il livello è stato completato l'update del level completed overlay
+        } else if (levelCompleted) {
+            levelCompletedOverlay.update();
+
+        //Altrimenti viene fatto l'update del player e del livello
+        } else if (!gameOver){
+            enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
+            levelManager.update();
+            player.update();
+            checkCloseToBorder();
+    
+        }
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        //Viene disegnato il background
+        g.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        //Vengono agiunte le nuvole
+        drowBigClouds(g);
+        drowSmallClouds(g);
+
+        //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
+        enemyManager.draw(g, xLevelOffset);
+        levelManager.draw(g, xLevelOffset);
+        levelCompletedOverlay.draw(g);
+        player.render(g, xLevelOffset);
+
+        if (paused) {
+            //Se il gioco viene messo in pausa, viene disegnato un rettangolo tra il game ed il menù di pausa
+            //Per dare un effetto piacevole alla vista
+            g.setColor(new Color(0,0,0, 140));
+            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+            //Si disegna il menù di pausa sopra al rettangolo opaco precedente
+            pauseOverlay.draw(g);
+        //Se avviene un gameo over, si diegna il game over overlay
+        } else if (gameOver) {
+            gameOverOverlay.draw(g);
+        //Se il livello viene completato si diegna il level completed overlay
+        } else if (levelCompleted) {
+            levelCompletedOverlay.update();
+        }
+
+    }
+
+    private void drowSmallClouds(Graphics g) {
+        for (int i = 0; i < smallCloudPos.length; i++) {
+            g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i -(int) ( xLevelOffset * 0.7), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
+        }
+
+    }
+
+    private void drowBigClouds(Graphics g) {
+        for (int i = 0; i < 3; i++) {
+            g.drawImage(bigClouds, i*BIG_CLOUD_WIDTH -(int) ( xLevelOffset * 0.3) , (int)(204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
+        }
 
     }
 
@@ -87,22 +156,7 @@ public class Playing extends State implements StateMethods{
 
     }
 
-    public void unpauseGame(){
-        paused = false;
-    }
-
-    public Player getPlayer(){
-        return player;
-    }
-
-    public void windowFocusLost() { 
-        player.resetMovement(); 
-    }
-
     
-
-    
-
     //Questa funzione serve a definire la distanza tra il player ed il bordo,
     //In caso avvengano alcune verita' vengono definiti i valori per spostare la videocamera
     private void checkCloseToBorder() {
@@ -132,80 +186,6 @@ public class Playing extends State implements StateMethods{
     }
 
     @Override
-    public void update() {
-
-        if (!gameOver && !paused ) {
-            enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
-            levelManager.update();
-            player.update();
-            checkCloseToBorder();
-
-        } else {
-            pauseOverlay.update();
-        }
-    }
-
-    @Override
-    public void draw(Graphics g) {
-        //Viene disegnato il background
-        g.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
-        //Vengono agiunte le nuvole
-        drowBigClouds(g);
-        drowSmallClouds(g);
-
-        //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
-        enemyManager.draw(g, xLevelOffset);
-        levelManager.draw(g, xLevelOffset);
-        player.render(g, xLevelOffset);
-
-        if (paused) {
-            //Se il gioco viene messo in pausa, viene disegnato un rettangolo tra il game ed il menù di pausa
-            //Per dare un effetto piacevole alla vista
-            g.setColor(new Color(0,0,0, 140));
-            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
-            //Si disegna il menù di pausa sopra al rettangolo opaco precedente
-            pauseOverlay.draw(g);
-        } else if (gameOver) {
-            gameOverOverlay.draw(g);
-        }
-
-    }
-
-    private void drowSmallClouds(Graphics g) {
-        for (int i = 0; i < smallCloudPos.length; i++) {
-            g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i -(int) ( xLevelOffset * 0.7), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
-        }
-
-    }
-
-    private void drowBigClouds(Graphics g) {
-        for (int i = 0; i < 3; i++) {
-            g.drawImage(bigClouds, i*BIG_CLOUD_WIDTH -(int) ( xLevelOffset * 0.3) , (int)(204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
-        }
-
-    }
-
-    public void resetAll(){
-        //TODO: reset player, enemyes, level things excetera
-        gameOver = false;
-        paused = false;
-        player.resetAll();
-        enemyManager.resetAllEnemyes();
-    }
-
-
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-        
-    }
-
-
-
-    public void checkEnemyHit(Rectangle2D.Float attackBox) {
-        enemyManager.checkEnemyHit(attackBox);
-    }
-
-    @Override
     public void mouseClicked(MouseEvent e) {
         if (!gameOver) {
             if (e.getButton() == MouseEvent.BUTTON1) {
@@ -216,22 +196,38 @@ public class Playing extends State implements StateMethods{
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (!gameOver && paused) {
-            pauseOverlay.mousePressed(e);
+
+        if (!gameOver) {
+            if (paused) {
+                pauseOverlay.mousePressed(e);
+
+            } else if(levelCompleted) {
+                levelCompletedOverlay.mousePressed(e);
+            }
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (!gameOver && paused) {
-            pauseOverlay.mouseReleased(e);
-        }
+
+        if (!gameOver) {
+            if (paused) {
+                pauseOverlay.mouseReleased(e);
+                
+            } else if(levelCompleted) {
+                levelCompletedOverlay.mouseReleased(e);
+            }
+        } 
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (!gameOver && paused) {
-            pauseOverlay.mouseMoved(e);
+        if (!gameOver) {
+            if (paused) {
+                pauseOverlay.mouseMoved(e);
+            } else if(levelCompleted) {
+                levelCompletedOverlay.mouseMoved(e);
+            }
         }
     }
 
@@ -299,7 +295,32 @@ public class Playing extends State implements StateMethods{
         }
     }
 
-   
 
-    
+    public void unpauseGame(){
+        paused = false;
+    }
+
+    public Player getPlayer(){
+        return player;
+    }
+
+    public void windowFocusLost() { 
+        player.resetMovement(); 
+    }
+
+    public void resetAll(){
+        gameOver = false;
+        paused = false;
+        player.resetAll();
+        enemyManager.resetAllEnemyes();
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+        
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        enemyManager.checkEnemyHit(attackBox);
+    }
 }

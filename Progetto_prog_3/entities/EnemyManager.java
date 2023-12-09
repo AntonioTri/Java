@@ -59,17 +59,17 @@ public class EnemyManager {
 
                 nb.drawHitbox(g, xLevelOffset);
                 nb.drawAttackbox(g, xLevelOffset);
+
             }
         }
-
     }
 
+    //Se il player attacca il nemico a questo viene applicato il danno del player
     public void checkEnemyHit(Rectangle2D.Float attackBox){
-
         for (NightBorne nb : nightBornes) {
             //Se il nemico è attivo allora viene fatto un controllo sulle intersezioni tra hitbox
             if (nb.getActive() && attackBox.intersects(nb.getHitbox())) {
-                nb.hurt(10);
+                nb.hurt(playing.getPlayer().getDamage());
                 return;
             }
         }
