@@ -34,7 +34,7 @@ public class Constants {
         
         //Questo è l'offset di posizionamento della hitbox del naightborne
         public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(20 * Game.SCALE);
-        public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(35 * Game.SCALE);
+        public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(33 * Game.SCALE);
 
         // public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(60 * Game.SCALE);
         // public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(60 * Game.SCALE);
@@ -49,9 +49,9 @@ public class Constants {
                     switch (enemyState) {
                         case NIGHT_BORNE_IDLE: return 9;
                         case NIGHT_BORNE_RUN: return 6;
-                        case NIGHT_BORNE_ATTACK: return 7;
-                        case NIGHT_BORNE_HITTED: return 4;
-                        case NIGHT_BORNE_DIE: return 5;
+                        case NIGHT_BORNE_ATTACK: return 12;
+                        case NIGHT_BORNE_HITTED: return 5;
+                        case NIGHT_BORNE_DIE: return 23;
                     
                         default:
                         return 9;

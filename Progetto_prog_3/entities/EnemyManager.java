@@ -25,10 +25,10 @@ public class EnemyManager {
         System.out.println("Enemy Number = " + nightBornes.size());
     }
 
-    public void update(int[][] levelData){
+    public void update(int[][] levelData, Player player){
 
         for(NightBorne nb : nightBornes){
-            nb.update(levelData);
+            nb.update(levelData, player);
         }
 
     }
@@ -39,10 +39,14 @@ public class EnemyManager {
 
     };
 
+    //  ATTENZIONE !!!!!!!!!
+    //LA HITBOX STA SEMPRE NELLO STESSO MODO E NON C'E' MODO DI SPOSTARLA, SE SI VUOLE CENTRARE IL TIZIO DENTRO LA HITBOX, BISOGNA
+    //SPOSTARE IL DISEGNO QUANDO VIENE DISEGNATO LO SPRITE, ALTRIMENTI A VOGLIA DI IMPAZZIRE
     private void drawNightBornes(Graphics g, int xLevelOffset) {
 
         for(NightBorne nb : nightBornes){
-            g.drawImage(nightBorneArray[nb.getEnemyState()][nb.getAniIndex()], (int)nb.getHitbox().x - xLevelOffset, (int)nb.getHitbox().y, NIGHT_BORNE_WIDHT, NIGHT_BORNE_HEIGHT, null);
+            //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
+            g.drawImage(nightBorneArray[nb.getEnemyState()][nb.getAniIndex()], (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X, (int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y, NIGHT_BORNE_WIDHT, NIGHT_BORNE_HEIGHT, null);
             nb.drawHitbox(g, xLevelOffset);
         }
 
@@ -50,7 +54,7 @@ public class EnemyManager {
 
     private void loadEnemyImages() {
         
-        nightBorneArray = new BufferedImage[5][9];
+        nightBorneArray = new BufferedImage[5][23];
         BufferedImage temp = LoadSave.getSpriteAtlas(LoadSave.NIGHT_BORNE_ATLAS);
         for(int j = 0; j < nightBorneArray.length; j++){
             for (int i = 0; i < nightBorneArray[j].length; i++) {

@@ -1,13 +1,11 @@
 package Progetto_prog_3.utils;
 
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-
 import Progetto_prog_3.Game;
 
 public class HelpMetods {
 
-    //Questa funzione ci indica de gli spazi attorno al nostro giocatore sono solidi oppure no
+    //Questa funzione ci indica de gli spazi attorno alla nostra entità sono solidi oppure no
     //Nel caso siano disponibili spazi in cui muoversi, viene ritornato vero, altrimenti se viene
     //ritornato falso, significa che la hitbox del personagio si sta compenetrando con un muro e viene impedito il movimento
     //in quella direzione
@@ -19,6 +17,42 @@ public class HelpMetods {
 						return true;
 		return false;
 	}
+
+    
+
+    //Questo metodo serve alle entità perpermettere loro di capire se non vi sono ostacoli tra esse ed un'altra entità
+    //Così da permettere una determinata azione
+    public static boolean isPathClear(int[][] levelData, Rectangle2D.Float hitbox, Rectangle2D.Float hitbox2, int YTile) {
+        
+        int firstXTile = (int)(hitbox.x / Game.TILES_SIZE);
+        int secondXTile = (int)(hitbox2.x / Game.TILES_SIZE);
+
+        if (firstXTile > secondXTile) {
+
+            return areAllTileWalkable(secondXTile, firstXTile, YTile, levelData);
+
+        } else {
+
+            return areAllTileWalkable(firstXTile, secondXTile, YTile, levelData);
+
+        }
+
+    }
+
+    //Viene controllato in questo metodo hce il percorso tra un blocco ed un altro blocco sia libero e che non ci siano ostacoli
+    public static boolean areAllTileWalkable(int xStart, int xEnd, int y, int[][] levelData){
+
+        for (int i = 0; i < xEnd - xStart; i++) {
+                if (isTileSolid(xStart + i, y , levelData)) {
+                    return false;
+                }
+                if (!isTileSolid(xStart + i, y + 1, levelData)) {
+                    return false;
+                }
+            }
+
+        return true;
+    }
 
     //Questa funzione viene utilizzata dalla precedente per osservare se il pixel della direzione in cui ci si muove
     //appartenga ad un muro oppure no, viene verificata la non appartenenza al level data corrente
@@ -36,13 +70,21 @@ public class HelpMetods {
         float xIndex = x / Game.TILES_SIZE;
         float yIndex = y / Game.TILES_SIZE;
 
-        int value = levelData[(int)yIndex][(int)xIndex];
+        return isTileSolid((int)xIndex, (int)yIndex, levelData);
+    
+    }
+
+    //Controlliamo qui se il blocco in questione sia solido
+    public static boolean isTileSolid(int xTile, int yTile, int[][] levelData){
+
+        int value = levelData[yTile][xTile];
 
         if (value >= 48 || value <0 || value != 11) {
             return true;
         } 
 
         return false;
+        
     }
 
     //Questa funzione serve per le colisioni sui muri destra e sinistra, vengono calcolati gli offset, ovvero la distanza tra gli elementi
