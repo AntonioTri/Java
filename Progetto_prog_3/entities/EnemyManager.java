@@ -1,6 +1,7 @@
 package Progetto_prog_3.entities;
 
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -28,7 +29,10 @@ public class EnemyManager {
     public void update(int[][] levelData, Player player){
 
         for(NightBorne nb : nightBornes){
-            nb.update(levelData, player);
+            //Se il nemico è attivo allora viene fatto un update
+            if (nb.getActive()) {
+                nb.update(levelData, player);
+            }
         }
 
     }
@@ -45,12 +49,41 @@ public class EnemyManager {
     private void drawNightBornes(Graphics g, int xLevelOffset) {
 
         for(NightBorne nb : nightBornes){
-            //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
-            g.drawImage(nightBorneArray[nb.getEnemyState()][nb.getAniIndex()], (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X, (int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y, NIGHT_BORNE_WIDHT, NIGHT_BORNE_HEIGHT, null);
-            nb.drawHitbox(g, xLevelOffset);
+            //Se il nemico è attivo allora viene fatto un repaint
+            if (nb.getActive()){
+                //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
+                g.drawImage(nightBorneArray[nb.getEnemyState()][nb.getAniIndex()], 
+                            (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
+                            ((int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y)  ,
+                            NIGHT_BORNE_WIDHT * nb.flipW(), NIGHT_BORNE_HEIGHT, null);
+
+                nb.drawHitbox(g, xLevelOffset);
+                nb.drawAttackbox(g, xLevelOffset);
+            }
         }
 
     }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox){
+
+        for (NightBorne nb : nightBornes) {
+            //Se il nemico è attivo allora viene fatto un controllo sulle intersezioni tra hitbox
+            if (nb.getActive() && attackBox.intersects(nb.getHitbox())) {
+                nb.hurt(10);
+                return;
+            }
+        }
+    }
+
+    public void resetAllEnemyes(){
+
+        for (NightBorne nb : nightBornes) {
+            nb.resetEnemy();
+        }
+
+    }
+
+
 
     private void loadEnemyImages() {
         

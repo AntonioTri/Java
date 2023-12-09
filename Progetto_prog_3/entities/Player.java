@@ -2,9 +2,13 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
+
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
 
 public class Player extends Entity{
@@ -33,33 +37,150 @@ public class Player extends Entity{
     //Variabili per il salto
     private float jumpSpeed = -2.25f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
-    private boolean inAir = false;
+    private boolean inAir = true;
+
+    // StatusBarUI
+	private BufferedImage statusBarImg;
+
+	private int statusBarWidth = (int) (192 * Game.SCALE);
+	private int statusBarHeight = (int) (58 * Game.SCALE);
+	private int statusBarX = (int) (10 * Game.SCALE);
+	private int statusBarY = (int) (10 * Game.SCALE);
+
+	private int healthBarWidth = (int) (150 * Game.SCALE);
+	private int healthBarHeight = (int) (4 * Game.SCALE);
+	private int healthBarXStart = (int) (34 * Game.SCALE);
+	private int healthBarYStart = (int) (14 * Game.SCALE);
+
+    //Variabili per definire la vita del giocatore
+    private int maxHealth = 10;
+	private int currentHealth = maxHealth;
+	private int healthWidth = healthBarWidth;
+
+
+	private int flipX = 0;
+	private int flipW = 1;
+
+	private boolean attackChecked;
+    private Playing playing;
     
 
     //Costruttore richiamante la classe estesa
-    public Player(float x, float y, int width, int height){
+    public Player(float x, float y, int width, int height, Playing playing){
         super(x, y, width, height);
+        this.playing = playing;
         loadAnimations();
         initHitbox(x, y, 25 * Game.SCALE, 37 * Game.SCALE);
+        initAttackBox();
+    }
+
+    private void initAttackBox(){
+
+        attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(30 * Game.SCALE));
+
     }
 
     //funzione per fare l'update delle caratterisctiche del personaggio
     public void update(){
 
+        updateHealthBar();
+
+        if (currentHealth <= 0 ) {
+            playing.setGameOver(true);
+            return;
+        }
+
         updatePosition();
+
+        if (attacking) {
+            checkAttack();
+        }
+
         updateAnimationTick();
         setAnimation();
-    
+        updateAttackBox();
+        
     }
     
+    
+
+    //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso    
+    private void updateAttackBox() {
+
+        if (right) {
+            attackBox.x = hitbox.x + hitbox.width;
+
+        } else if (left) {
+            attackBox.x = hitbox.x - hitbox.width + (int)(Game.SCALE * 9);
+
+        }
+
+        attackBox.y = hitbox.y + (Game.SCALE * 5);
+
+    }
+
     //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
     //mano mano che avanzano i tick di gioco e verra' quindi mostrata una immagine differente ogni 40 tick
     public void render(Graphics g, int xLevelOffset){
-        g.drawImage(animations[playerAction][aniIndex], (int)(hitbox.x - XOffset) - xLevelOffset, (int)(hitbox.y - YOffset), hitBoxWidth, hitBoxHeight, null);
+
+        //In questa draw vi scorrono diverse logiche, la prima è la scelta dello sprite da utilizzare
+        //La seconda è che l'immagine viene disegnata con uno spostamento
+        //La terza è che  vengono aggiunte variabili di "flip", se il personagio cammina verso destra è tutto apposto
+        //Se va verso sinistra, l'immagine viene mostrata riflessa al contrario rispetto al suo asse y, e per ovviare a questo problema
+        //Le viene sommato un offset agiuntivo per spostarla di nuovo nella posizione corretta 
+        g.drawImage(animations[playerAction][aniIndex], (int)(hitbox.x - XOffset) - xLevelOffset + flipX, (int)(hitbox.y - YOffset), hitBoxWidth * flipW, hitBoxHeight, null);
         drawHitbox(g, xLevelOffset);
         
+        drowAttackBox(g, xLevelOffset);
+        drawUI(g);
+    }
+    
+    private void drowAttackBox(Graphics g, int levelOffsetX) {
+        g.setColor(Color.RED);
+        g.drawRect((int)attackBox.x - levelOffsetX, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
     }
 
+    //Disegna la UI di gioco, per ora soltanto la health bar e la power bar
+    private void drawUI(Graphics g) {
+
+        g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
+        g.setColor(Color.RED);
+        g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
+
+    }
+
+    private void updateHealthBar() {
+        healthWidth = (int) ((currentHealth / (float)maxHealth) * healthBarWidth);
+    }
+
+    //Metodo che ci permette di modifdicare il valore degli HP
+    public void changeHealth(int value){
+
+        currentHealth += value;
+
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            //GAME OVER HAPPENS
+
+        } else if (currentHealth >= maxHealth){
+            currentHealth = maxHealth;
+        }
+
+    } 
+
+    //Viene fatto un controllo ogni volta che il player attacca per vdere se sta colpendo un nemico
+    //in tal caso deve applicare i danni a quel nemico
+    private void checkAttack() {
+
+        if (attackChecked && aniIndex != 1) {
+            return;
+        }
+
+        attackChecked = true;
+        playing.checkEnemyHit(attackBox);
+    }
+    
+    
     //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
     //Se l'indice diventa magiore del numero di frame viene ripristinato a 0 e si riparte da capo
     private void updateAnimationTick() {
@@ -73,6 +194,7 @@ public class Player extends Entity{
             if (aniIndex >= getSpriteAmount(playerAction)) {
                 aniIndex = 0;
                 attacking = false;
+                attackChecked = false;
             }
         }
     }
@@ -137,10 +259,17 @@ public class Player extends Entity{
         //Cambi del movimento destra e sinistra, si aggiunge una quantità alla velocità
 		float xSpeed = 0;
 
-		if (left)
+		if (left){
 			xSpeed -= playerSpeed;
-		if (right)
+            flipX = hitBoxWidth - 33;
+            flipW = -1;
+        }
+        
+        if (right){
 			xSpeed += playerSpeed;
+            flipX = 0;
+            flipW = 1;
+        }
 
 		if (!inAir){
 			if (!isEntityOnFloor(hitbox, levelData)){
@@ -191,6 +320,28 @@ public class Player extends Entity{
         }
     }
 
+    //Questo metodo ci serve a resettare tutte le caratteristiche del giocatore se ne si trova il bisogno
+    public void resetAll() {
+
+        resetMovement();
+        inAir = false;
+        attacking = false;
+        moving = false;
+        playerAction = IDLE;
+        currentHealth = maxHealth;
+
+        //Resetta la posizione del personaggio nelle variabili x ed y memorizate e mai usate
+        hitbox.x = x;
+        hitbox.y = y;
+
+        if (isEntityOnFloor(hitbox, levelData)) {
+            inAir = true;
+        }
+
+    }
+
+    
+
 
     //Questa funzione invece fa il load dei frame di una animazione e li carica in un buffer di immagini
     //La funzione precedente fa uso di 'img', ovvero l'intera immagine che viene importata nel programma come un 
@@ -207,6 +358,8 @@ public class Player extends Entity{
 
                 }
             }
+
+        statusBarImg = LoadSave.getSpriteAtlas(LoadSave.HEALT_POWER_BAR);
 
     }
 
@@ -265,6 +418,8 @@ public class Player extends Entity{
     public void setAttck(boolean attacking){
         this.attacking = attacking;
     }
+
+    
 
     
 

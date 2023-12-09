@@ -11,7 +11,8 @@ public abstract class Entity {
     public float x, y;
     protected int hitBoxWidth, hitBoxHeight;
     protected Rectangle2D.Float hitbox;
-
+    // AttackBox
+	protected Rectangle2D.Float attackBox;
 
 
     public Entity(float x, float y, int hitBoxWidth, int hitBoxHeight){

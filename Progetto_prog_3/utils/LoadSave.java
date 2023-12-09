@@ -30,6 +30,7 @@ public class LoadSave {
     public static final String VOLUME_BUTTON = "volume_buttons.png";
     public static final String PRH_BUTTONS = "prh_buttons.png";
     public static final String HOME_BACKGROUND_IMAGE = "background_menu.png";
+    public static final String HEALT_POWER_BAR = "health_power_bar.png";
 
     //Entity
     public static final String PLAYER_ATLAS = "Animations.png";

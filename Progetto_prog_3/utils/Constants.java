@@ -14,6 +14,8 @@ public class Constants {
     //frame associati alla azione selezionata, così da poter dare una animazione fluida
     //in base alla azione scelta, senza andare a mostrare frame vuoti che comunque verranno inizializzati
 
+
+    //Variabili statidche per definire I nemici, per ora soltanto i nightbornes
     public static class EnemtConstants{
 
 
@@ -36,11 +38,8 @@ public class Constants {
         public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(20 * Game.SCALE);
         public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(33 * Game.SCALE);
 
-        // public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(60 * Game.SCALE);
-        // public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(60 * Game.SCALE);
-
-
-
+        //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
+        //con uno switch sul tipo di nemuco fa il return adeguato
         public static int getSpriteAmount(int enemyType, int enemyState){
 
             switch (enemyType) {
@@ -66,11 +65,32 @@ public class Constants {
 
         }
 
+        //Metodo che ci permette di ritornare il valore di HP ( Punti vita ) dato uno specifico nemico
+        public static int getMaxHealth(int enemyType){
+            switch (enemyType) {
+                case NIGHT_BORNE:
+                    return 20;
+                default:
+                    return 0;
+            }
+        }
+
+         //Metodo che ci permette di ritornare il valore di DANNO dato uno specifico nemico
+        public static int getEnemyDamage(int enemyType){
+
+            switch (enemyType) {
+                case NIGHT_BORNE:
+                    return 4;
+                default:
+                    return 0;
+            }
+
+         }
 
 
     }
 
-
+    //Variabili statidche per definire la grandezza dell'ambiente
     public static class Environment {
 		public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;
 		public static final int BIG_CLOUD_HEIGHT_DEFAULT = 101;
@@ -86,7 +106,7 @@ public class Constants {
 
 
     public static class UI{
-
+        //Variabili statidche per definire la grandezza dei bottoni
         public static class Buttons{
             public static final int BUTTON_DEFAULT_WIDTH = 140;
             public static final int BUTTON_DEFAULT_HEIGHT = 56;
@@ -94,6 +114,7 @@ public class Constants {
             public static final int BUTTON_HEIGHT = (int)(BUTTON_DEFAULT_HEIGHT * Game.SCALE);
         }
 
+        //Variabili statidche per definire la grandezza dei bottoni di pausa
         public static class PauseButtons{
 
             public static final int SUOND_SIZE_DEFAULT = 42;
@@ -102,6 +123,7 @@ public class Constants {
 
         }
 
+        //Variabili statidche per definire la grandezza dei bottoni di reset, home e resume
         public static class PhrButtons{
 
             public static final int PRH_BUTTONS_DEFAULT_SIZE = 56;
@@ -109,6 +131,7 @@ public class Constants {
 
         } 
 
+        //Variabili statidche per definire la grandezza della barra del volume
         public static class VolumeButton{
 
             public static final int VOLUME_DEFAUT_HEIGHT = 44;
@@ -124,7 +147,8 @@ public class Constants {
 
     }
 
-    public class Directions{
+    //Variabili statidche per definire i movimenti standard globali
+    public static class Directions{
 
         public static final int LEFT = 0;
         public static final int UP = 1;
@@ -133,6 +157,7 @@ public class Constants {
 
     }
 
+    //Variabili statidche per definire gli stati del player
     public static class PlayerConstants{
 
         public static final int IDLE = 0;
@@ -146,7 +171,7 @@ public class Constants {
         public static final int HURT = 8;
         public static final int DIE = 9;
 
-        
+        //Metodo per ottenere il numero di sprite corrispetivo in base all'azione del player
         public static int getSpriteAmount(int PLAYER_ACTION){
 
             switch (PLAYER_ACTION) {

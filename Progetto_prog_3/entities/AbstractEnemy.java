@@ -1,10 +1,13 @@
 package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.PlayerConstants.HURT;
+import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
 import static Progetto_prog_3.utils.HelpMetods.*;
 
-import static Progetto_prog_3.utils.Constants.Directions.*;
+import java.awt.geom.Rectangle2D;
 
+import static Progetto_prog_3.utils.Constants.Directions.*;
 import Progetto_prog_3.Game;
 
 public abstract class AbstractEnemy extends Entity{
@@ -18,11 +21,21 @@ public abstract class AbstractEnemy extends Entity{
     protected int wlakDir = LEFT;
     protected int enemyTileY;
     protected float attackDistance = Game.TILES_SIZE;
+    protected boolean attackChecked;
+    
+    //Variabili per la vita
+    protected int maxHealth, currentHealth;
+
+    //Variabile per osservare se è morto oppure no
+    protected boolean active = true;
 
     public AbstractEnemy(float x, float y, int width, int height, int enemyType) {
+        //In base al tipo di nemico che stiamo instanziando, vengono definite caratteristiche uniche come il danno o la vita massima
         super(x, y, width, height);
         this.enemyType = enemyType;
         initHitbox(x, y, width, height);
+        maxHealth = getMaxHealth(enemyType);
+        currentHealth = maxHealth;
     
     }
 
@@ -107,6 +120,26 @@ public abstract class AbstractEnemy extends Entity{
 
     }
 
+    //Questo metodo ci poermette di causare danno ad un nemico se questo viene colpito dal player
+    public void hurt(int amount){
+
+        currentHealth -= amount;
+        if (currentHealth <= 0) {
+            newState(NIGHT_BORNE_DIE);
+        } else {
+            newState(NIGHT_BORNE_HITTED);
+        }
+    }
+
+    //questo metodo invece ci permette di applicare danno al player se il nemico lo colpisce
+    protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
+        if (attackBox.intersects(player.hitbox)) {
+            //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
+            player.changeHealth(-getEnemyDamage(enemyType));
+        }
+        attackChecked = true;
+    }
+
     protected void updateAnimationTick(){
 
         aniTick++;
@@ -117,8 +150,12 @@ public abstract class AbstractEnemy extends Entity{
 
             if (aniIndex >= getSpriteAmount(enemyType, enemyState)) {
                 aniIndex = 0;
-                if (enemyState == NIGHT_BORNE_ATTACK) {
-                    enemyState = NIGHT_BORNE_IDLE;
+
+                //Se avviene un cambiamento di stato, andremo a fare solo una animazione di quello stato
+                switch (enemyState) {
+                    case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> enemyState = IDLE;
+                    case NIGHT_BORNE_DIE -> active = false;
+
                 }
             }
         }
@@ -149,6 +186,7 @@ public abstract class AbstractEnemy extends Entity{
     
     }
     
+    //Questo metodo ci serve a cambiare direzione del movimento quando ne si trova bisogno
     protected void changeWalkDir() {
         if (wlakDir == LEFT) {
             wlakDir = RIGHT;
@@ -157,6 +195,21 @@ public abstract class AbstractEnemy extends Entity{
         }
     }
 
+    //Questo metodo ci permette di resettare i valori del nemico in questione ai valori di partenza del livello quando ne si trova bisogno
+    public void resetEnemy(){
+
+        hitbox.x = x;
+        hitbox.y = y;
+        firstUpdate = true;
+        currentHealth = maxHealth;
+        newState(NIGHT_BORNE_IDLE);
+        active = true;
+        fallSpeed = 0;
+    }
+
+    public boolean getActive(){
+        return active;
+    }
 
     public int getAniIndex(){
         return aniIndex;
