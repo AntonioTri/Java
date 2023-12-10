@@ -2,6 +2,7 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
+import static Progetto_prog_3.utils.Constants.GRAVITY;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -14,12 +15,10 @@ import Progetto_prog_3.utils.LoadSave;
 public class Player extends Entity{
 
     //Variabili per la gestione dei frame
-    private int aniTick, aniIndex, aniSpeed = 15;
+    private int aniSpeed = 15;
 
     //Variabile per definire l'azione del player
-    private int playerAction = JUMPING_DOWN;
     private boolean left, right, up, down, jump;
-    private float playerSpeed = Game.SCALE;
     private boolean moving = false, attacking = false;
 
     //Variabili per la memorizzazione di frame
@@ -30,14 +29,9 @@ public class Player extends Entity{
     private float XOffset = 11 * Game.SCALE;
     private float YOffset = 25 * Game.SCALE;
 
-    //Variabile per la gravita
-    private float airSpeed = 0f;
-    private float gravity = 0.04f * Game.SCALE;
-
     //Variabili per il salto
     private float jumpSpeed = -2.25f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
-    private boolean inAir = true;
 
     // StatusBarUI
 	private BufferedImage statusBarImg;
@@ -52,11 +46,8 @@ public class Player extends Entity{
 	private int healthBarXStart = (int) (34 * Game.SCALE);
 	private int healthBarYStart = (int) (14 * Game.SCALE);
 
-    //Variabili per definire la vita del giocatore
-    private int maxHealth = 10;
-	private int currentHealth = maxHealth;
+    //Variabili per definire la barra della vita del giocatore
 	private int healthWidth = healthBarWidth;
-
 
 	private int flipX = 0;
 	private int flipW = 1;
@@ -70,9 +61,16 @@ public class Player extends Entity{
     public Player(float x, float y, int width, int height, Playing playing){
         super(x, y, width, height);
         this.playing = playing;
+        initStates();
         loadAnimations();
         initHitbox(x, y, 25 * Game.SCALE, 37 * Game.SCALE);
         initAttackBox();
+    }
+
+    private void initStates(){
+        this.state = IDLE;
+        this.maxHealth = 10;
+        this.currentHealth = this.maxHealth;
     }
 
     private void initAttackBox(){
@@ -127,16 +125,11 @@ public class Player extends Entity{
         //La terza è che  vengono aggiunte variabili di "flip", se il personagio cammina verso destra è tutto apposto
         //Se va verso sinistra, l'immagine viene mostrata riflessa al contrario rispetto al suo asse y, e per ovviare a questo problema
         //Le viene sommato un offset agiuntivo per spostarla di nuovo nella posizione corretta 
-        g.drawImage(animations[playerAction][aniIndex], (int)(hitbox.x - XOffset) - xLevelOffset + flipX, (int)(hitbox.y - YOffset), hitBoxWidth * flipW, hitBoxHeight, null);
+        g.drawImage(animations[state][aniIndex], (int)(hitbox.x - XOffset) - xLevelOffset + flipX, (int)(hitbox.y - YOffset), hitBoxWidth * flipW, hitBoxHeight, null);
         drawHitbox(g, xLevelOffset);
         
         drowAttackBox(g, xLevelOffset);
         drawUI(g);
-    }
-    
-    private void drowAttackBox(Graphics g, int levelOffsetX) {
-        g.setColor(Color.RED);
-        g.drawRect((int)attackBox.x - levelOffsetX, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
     }
 
     //Disegna la UI di gioco, per ora soltanto la health bar e la power bar
@@ -190,7 +183,7 @@ public class Player extends Entity{
             aniTick = 0;
             aniIndex++;
 
-            if (aniIndex >= getSpriteAmount(playerAction)) {
+            if (aniIndex >= getSpriteAmount(state)) {
                 aniIndex = 0;
                 attacking = false;
                 attackChecked = false;
@@ -201,24 +194,24 @@ public class Player extends Entity{
     //Qui viene settata l'animazione in base all'evento di gioco
     private void setAnimation() {
 
-        int startAnimation = playerAction;
+        int startAnimation = state;
 
         if (moving) {
-            playerAction = RUNNING;
+            state = RUNNING;
         } else {
-            playerAction = IDLE;
+            state = IDLE;
         }
 
         if (inAir) {
             if (airSpeed<0) {
-                playerAction = JUMPING_UP;
+                state = JUMPING_UP;
             } else {
-                playerAction = JUMPING_DOWN;
+                state = JUMPING_DOWN;
             }
         }
 
         if (attacking) {
-            playerAction = ATTACK2;
+            state = ATTACK2;
         }
 
         /*Se la animazione di arrivo e' diversa dalla animazione di fine funzione
@@ -226,7 +219,7 @@ public class Player extends Entity{
             di scelta fotogramma e di tick di animazione per permettere alla animazione
             di incominciare dall'inizio e di non fare glitch strani
         */
-        if (startAnimation != playerAction) {
+        if (startAnimation != state) {
             resetAnimationTick();
         }
 
@@ -259,13 +252,13 @@ public class Player extends Entity{
 		float xSpeed = 0;
 
 		if (left){
-			xSpeed -= playerSpeed;
+			xSpeed -= walkSpeed;
             flipX = hitBoxWidth - 33;
             flipW = -1;
         }
         
         if (right){
-			xSpeed += playerSpeed;
+			xSpeed += walkSpeed;
             flipX = 0;
             flipW = 1;
         }
@@ -280,7 +273,7 @@ public class Player extends Entity{
 		if (inAir) {
 			if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
 				hitbox.y += airSpeed;
-				airSpeed += gravity;
+				airSpeed += GRAVITY;
 				updateXPos(xSpeed);
 			} else {
                 
@@ -292,8 +285,8 @@ public class Player extends Entity{
 				updateXPos(xSpeed);
 			}
 
-		} else
-			updateXPos(xSpeed);
+		} else updateXPos(xSpeed);
+        
 		moving = true;
 	}
 
@@ -323,10 +316,10 @@ public class Player extends Entity{
     public void resetAll() {
 
         resetMovement();
-        inAir = false;
+        inAir = true;
         attacking = false;
         moving = false;
-        playerAction = IDLE;
+        state = IDLE;
         currentHealth = maxHealth;
 
         //Resetta la posizione del personaggio nelle variabili x ed y memorizate e mai usate
@@ -338,9 +331,6 @@ public class Player extends Entity{
         }
 
     }
-
-    
-
 
     //Questa funzione invece fa il load dei frame di una animazione e li carica in un buffer di immagini
     //La funzione precedente fa uso di 'img', ovvero l'intera immagine che viene importata nel programma come un 
@@ -426,8 +416,6 @@ public class Player extends Entity{
         return damage;
     }
 
-    public int getAniIndex() {
-        return aniIndex;
-    }
+    
 
 }

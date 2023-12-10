@@ -36,6 +36,7 @@ public class HelpMetods {
 
     }
 
+    //Questa funzione restituisce il punto di spawn del player
     public static Point GetPlayerSpawnPoint(BufferedImage img){
 
         for( int j = 0; j<img.getHeight(); j++){

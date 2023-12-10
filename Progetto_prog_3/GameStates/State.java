@@ -1,11 +1,10 @@
 package Progetto_prog_3.GameStates;
 
 import java.awt.event.MouseEvent;
-
 import Progetto_prog_3.Game;
 import Progetto_prog_3.UI.MenuButton;
 
-public class State {
+public abstract class State {
     
     protected Game game;
 

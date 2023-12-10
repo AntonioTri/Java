@@ -1,5 +1,4 @@
 package Progetto_prog_3.utils;
-
 import Progetto_prog_3.Game;
 
 public class Constants {
@@ -13,6 +12,9 @@ public class Constants {
     //costanti ed utilizziamo la funzione getSpriteAmount per otenere il numero di
     //frame associati alla azione selezionata, così da poter dare una animazione fluida
     //in base alla azione scelta, senza andare a mostrare frame vuoti che comunque verranno inizializzati
+
+    //Gravità
+    public static final float GRAVITY = 0.04f * Game.SCALE;
 
 
     //Variabili statidche per definire I nemici, per ora soltanto i nightbornes

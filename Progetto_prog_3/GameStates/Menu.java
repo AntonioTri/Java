@@ -139,7 +139,7 @@ public class Menu extends State implements StateMethods {
 
     private void resetButtons() {
         for (MenuButton mb : buttons) {
-            mb.resetBooleans();
+            mb.resetBools();
         }
     }
 

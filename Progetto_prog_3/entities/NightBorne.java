@@ -2,9 +2,6 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
-
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
 
@@ -36,11 +33,6 @@ public class NightBorne extends AbstractEnemy{
 
     }
 
-    public void drawAttackbox(Graphics g, int xLevelOffset){
-        g.setColor(Color.RED);
-        g.drawRect((int)(attackBox.x -xLevelOffset), (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
-    }
-
     //In base al movimento se sia destro o sinistro l'attackbox viene posizionata a destra o a sinistra della hitbox
     private void updateAttackBox() {
         if (wlakDir == LEFT) {
@@ -64,10 +56,10 @@ public class NightBorne extends AbstractEnemy{
 
         } else{
             //!!!!! QUESTA PROBABILMENTE DEVE ESSERE TRASFORMATA IN UNA FUNZIONE A MOMENTO IN UI CI SARANNO TANTI NEMICI !!!!!!!
-            switch (enemyState) {
+            switch (state) {
                 //Lo stato del Nightborne viene impostato a running da subito
                 case NIGHT_BORNE_IDLE:
-                    enemyState = NIGHT_BORNE_RUN;
+                    state = NIGHT_BORNE_RUN;
                     break;
                 //Se lo stato è quello del running vengono fatti dei controlli
                 case NIGHT_BORNE_RUN:
@@ -101,24 +93,6 @@ public class NightBorne extends AbstractEnemy{
         }
     }
 
-
-    
-
-    public int flipX(){
-        if (wlakDir == LEFT) {
-            return hitBoxWidth - 8;
-        } else{
-            return 0;
-        }
-    }
-
-    public int flipW(){
-        if (wlakDir == LEFT) {
-            return -1;
-        } else{
-            return 1;
-        }
-    }
 
     
 }

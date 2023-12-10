@@ -5,12 +5,9 @@ import java.awt.image.BufferedImage;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
 
-public class SoundButton extends PauseButtons{
+public class SoundButton extends AbstractButtons{
 
     private BufferedImage[][] soundImgs;
-    //Variabili per le sprite
-    private boolean mouseOver = false, mousePressed = false;
-    private int rowIndex, columnIndex;
     //Questa flag serve a capire se siamo nella riga del volumepresente o nella riga del volume mutato;
     private boolean muted;
 
@@ -34,6 +31,7 @@ public class SoundButton extends PauseButtons{
 
     //In baso allo stato modificato nel PauseOverlay, vengono settati gli indici
     //Della matrice degli sprite, permetttendo di mostrare quello giusto di volta in volta
+    @Override
     public void update(){
 
         if (muted) {
@@ -56,26 +54,13 @@ public class SoundButton extends PauseButtons{
     public void draw(Graphics g){
         g.drawImage(soundImgs[rowIndex][columnIndex], x, y, width, height, null);
     }
-    
-    public void setMousePressed(boolean mousePressed){
-        this.mousePressed = mousePressed;
-    }
-
-    public void setMouseOver(boolean mouseOver){
-        this.mouseOver = mouseOver;
-    }
 
     public void setMuted(boolean muted) {
         this.muted = muted;
     }
 
-    public void resetBools() {
-		mouseOver = false;
-		mousePressed = false;
-	}
-
-    public boolean getMousePressed(){ return mousePressed;}
-    public boolean getMouseOver(){ return mouseOver;}
-    public boolean getMuted(){ return muted;}
+    public boolean getMuted(){ 
+        return muted;
+    }
 
 }

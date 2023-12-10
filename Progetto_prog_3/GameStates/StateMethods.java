@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+//Interfaccia per metodi statici
 public interface StateMethods {
     public void update();
     public void draw(Graphics g);

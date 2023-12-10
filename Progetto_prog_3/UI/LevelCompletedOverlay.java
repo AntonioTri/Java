@@ -11,7 +11,7 @@ import Progetto_prog_3.utils.LoadSave;
 
 import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
 
-public class LevelCompletedOverlay {
+public class LevelCompletedOverlay implements MenusOverlayInterface {
     
     Playing playing;
     private PRHButtons menuButton, nextButton;
@@ -44,7 +44,7 @@ public class LevelCompletedOverlay {
 
     }
 
-
+    @Override
     public void draw(Graphics g){
         // Added after youtube upload
 		g.setColor(new Color(0, 0, 0, 200));
@@ -56,15 +56,18 @@ public class LevelCompletedOverlay {
 
     };
 
+    @Override
     public void update(){
         menuButton.update();
         nextButton.update();
     }
 
-    private boolean mouseHovering(PauseButtons button, MouseEvent e){
+    @Override
+    public boolean mouseHovering(AbstractButtons button, MouseEvent e){
         return button.getHitbox().contains(e.getX(), e.getY());
     }
     
+    @Override
     public void mouseMoved(MouseEvent e){
         nextButton.setMouseOver(false);
         menuButton.setMouseOver(false);
@@ -76,6 +79,7 @@ public class LevelCompletedOverlay {
         }
     }
 
+    @Override
     public void mousePressed(MouseEvent e){
         if (mouseHovering(menuButton, e)) {
             menuButton.setMousePressed(true);
@@ -84,6 +88,7 @@ public class LevelCompletedOverlay {
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e){
         if (mouseHovering(menuButton, e) && menuButton.getMousePressed()) {
             playing.resetAll();
@@ -95,5 +100,9 @@ public class LevelCompletedOverlay {
         menuButton.resetBools();
         nextButton.resetBools();
 
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
     }
 }

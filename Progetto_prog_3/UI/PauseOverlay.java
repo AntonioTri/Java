@@ -11,11 +11,10 @@ import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
 import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
 import static Progetto_prog_3.utils.Constants.UI.VolumeButton.SLIDER_WIDTH;
 import static Progetto_prog_3.utils.Constants.UI.VolumeButton.VOLUME_HEIGHT;
-import static Progetto_prog_3.utils.Constants.UI.VolumeButton.VOLUME_WIDTH;
 
 //Classe che definisce la schermata di ausa, nella quale coesistono diversi bottoni per diverse
 //Funzionalità legate al gameplay, come il volume, reset del livello, ritorno alla schermata iniziale
-public class PauseOverlay {
+public class PauseOverlay implements MenusOverlayInterface{
 
     private BufferedImage backgroundImg;
     private int bgX, bgY, bgWidth, bgHeight;
@@ -46,7 +45,6 @@ public class PauseOverlay {
         int volumeY = (int)(278 * Game.SCALE);
 
         volumeButton = new VolumeButton(volumeX, volumeY, SLIDER_WIDTH, VOLUME_HEIGHT);
-
 
     }
 
@@ -90,7 +88,9 @@ public class PauseOverlay {
     
     }
 
+    @Override
     public void update(){
+
         musicButon.update();
         sfxButton.update();
         homeB.update();
@@ -99,6 +99,7 @@ public class PauseOverlay {
         volumeButton.update();
     }
 
+    @Override
     public void draw(Graphics g){
         //Background
         g.drawImage(backgroundImg, bgX, bgY, bgWidth, bgHeight, null);
@@ -116,6 +117,7 @@ public class PauseOverlay {
     }
 
     //Questa funzione serve ad aggiornare la posiizone del bottone del mouse
+    @Override
     public void mouseDragged(MouseEvent e){
         if (volumeButton.getMousePressed()) {
             volumeButton.changeX(e.getX());
@@ -124,25 +126,27 @@ public class PauseOverlay {
 
     //Questo metodo si attiva quando il tasto del mouse viene premuto, 
     //Modifica lo stato del bottone a premuto permettendo di mostrare lo sprite corretto
+    @Override
     public void mousePressed(MouseEvent e){
 
-        if (mouseHovering(e, musicButon) ) {
+        if (mouseHovering(musicButon, e) ) {
             musicButon.setMousePressed(true);  
-        } else if(mouseHovering(e, sfxButton)) {
+        } else if(mouseHovering(sfxButton, e)) {
             sfxButton.setMousePressed(true);
-        } else if (mouseHovering(e, homeB)) {
+        } else if (mouseHovering(homeB, e)) {
             homeB.setMousePressed(true);
-        } else if (mouseHovering(e, replayB)) {
+        } else if (mouseHovering(replayB, e)) {
             replayB.setMousePressed(true);
-        } else if (mouseHovering(e, unpauseB)) {
+        } else if (mouseHovering(unpauseB, e)) {
             unpauseB.setMousePressed(true);
-        } else if (mouseHovering(e, volumeButton)) {
+        } else if (mouseHovering(volumeButton, e)) {
             volumeButton.setMousePressed(true);
         }
         
     }
 
     //Questo metodo ci permette di osservare quando il tasto viene lasciato, dopo che è stato premuto
+    @Override
     public void mouseReleased(MouseEvent e){
 
         //Questa serie di if else statements, serve a definire un evento specifico nella 
@@ -150,29 +154,29 @@ public class PauseOverlay {
         //Avvia il suo stato e modifica le componenti di gioco come il suono o il Game state
 
         //Music button
-        if (mouseHovering(e, musicButon) ) {
+        if (mouseHovering(musicButon, e) ) {
             if (musicButon.getMousePressed()) {
                 musicButon.setMuted(!musicButon.getMuted());
             }
         //Sound Effects button
-        } else if(mouseHovering(e, sfxButton) ){
+        } else if(mouseHovering(sfxButton, e) ){
             if (sfxButton.getMousePressed()) {
                 sfxButton.setMuted(!sfxButton.getMuted());
             }
         //Home Button
-        } else if(mouseHovering(e, homeB) ){
+        } else if(mouseHovering(homeB, e) ){
             if (homeB.getMousePressed()) {
                 GameState.state = GameState.MENU;
                 playing.unpauseGame();
             }
         //Replay Button
-        } else if(mouseHovering(e, replayB) ){
+        } else if(mouseHovering(replayB, e) ){
             if (replayB.getMousePressed()) {
                 playing.resetAll();
                 playing.unpauseGame();
             }
         //Unpause Button
-        } else if(mouseHovering(e, unpauseB) ){
+        } else if(mouseHovering(unpauseB, e) ){
             if (unpauseB.getMousePressed()) {
                 playing.unpauseGame();
             }
@@ -188,6 +192,7 @@ public class PauseOverlay {
 
     //Questa funzione osserva se il mouse sta passando sopra ad un bottone, in tal caso
     //Setta il suo stato su Hover per mostrare lo sprite corretto
+    @Override
     public void mouseMoved(MouseEvent e){
 
         musicButon.setMouseOver(false);
@@ -197,23 +202,24 @@ public class PauseOverlay {
         unpauseB.setMouseOver(false);
         volumeButton.setMouseOver(false);
 
-        if (mouseHovering(e, musicButon)) {
+        if (mouseHovering(musicButon, e)) {
             musicButon.setMouseOver(true);
-        } else if(mouseHovering(e, sfxButton)){
+        } else if(mouseHovering(sfxButton, e)){
             sfxButton.setMouseOver(true);
-        } else if(mouseHovering(e, homeB)){
+        } else if(mouseHovering(homeB, e)){
             homeB.setMouseOver(true);
-        } else if(mouseHovering(e, replayB)){
+        } else if(mouseHovering(replayB, e)){
             replayB.setMouseOver(true);
-        } else if(mouseHovering(e, unpauseB)){
+        } else if(mouseHovering(unpauseB, e)){
             unpauseB.setMouseOver(true);
-        } else if(mouseHovering(e, volumeButton)){
+        } else if(mouseHovering(volumeButton, e)){
             volumeButton.setMouseOver(true);
         }
     }
 
     //Si usa il polimorfismo per la classe PauseButton
-    private boolean mouseHovering(MouseEvent e , PauseButtons pb){
+    @Override
+    public boolean mouseHovering(AbstractButtons pb, MouseEvent e ){
 
         return pb.getHitbox().contains(e.getX(), e.getY());
         

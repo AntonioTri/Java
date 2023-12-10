@@ -14,6 +14,8 @@ public class Game implements Runnable{
     private Thread gameThread;
     private final int SET_FPS = 120;
     private final int SET_UPS = 180;
+    public int frame = 0;
+    public int update = 0;
     
 
     //Variabili per la mappa
@@ -104,11 +106,11 @@ public class Game implements Runnable{
 
         double timePerFrame = 1000000000.0 / SET_FPS;
         double timePerUpdate = 1000000000.0 / SET_UPS;
-        
-        long previousTime = System.nanoTime();
-        
+
         int frames = 0;
         int updates = 0;
+        
+        long previousTime = System.nanoTime();
         long lastCheck = System.currentTimeMillis();
 
         double deltaU = 0;
@@ -135,14 +137,20 @@ public class Game implements Runnable{
             }
 
             //Fps Counter
-            
             if(System.currentTimeMillis() - lastCheck >= 1000){
                 lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
+                frame = frames;
+                update = updates;
                 frames = 0;
                 updates = 0;
             }
         }
+    }
+
+    //Qusto metodo ritorna una stringa formattata che contiene gli FPS e gli UPS
+    public String getFpsUps(){
+        return "FPS: " + frame + " | UPS: " + update;
+        
     }
 
     public Menu getMenu(){

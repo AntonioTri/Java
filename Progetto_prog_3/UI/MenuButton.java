@@ -3,20 +3,17 @@ package Progetto_prog_3.UI;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.UI.Buttons.*;
 
 
-public class MenuButton {
+public class MenuButton extends AbstractButtons {
     
     //Variabili di ambiente, posizione e grandezza
-    private int xPos, yPos, rowIndex, index;
-    private int xOffsetCenter =BUTTON_WIDTH / 2;
+    private int xPos, yPos;
+    private int xOffsetCenter = BUTTON_WIDTH / 2;
     
-    //Variabili per settare lo sprite
-    private boolean mouseOver, mousePressed;
     private Rectangle buttonHitbox;
     private BufferedImage [] imgs;
     
@@ -56,54 +53,17 @@ public class MenuButton {
     //Disegno del bottone, con l'indice
     public void draw(Graphics g){
 
-        g.drawImage(imgs[index], xPos - xOffsetCenter, yPos, BUTTON_WIDTH, BUTTON_HEIGHT, null);
-
-    }
-
-    public void update(){
-
-        index = 0;
-        if (mouseOver) {
-            index = 1;
-        }
-        if (mousePressed) {
-            index = 2;
-        }
+        g.drawImage(imgs[columnIndex], xPos - xOffsetCenter, yPos, BUTTON_WIDTH, BUTTON_HEIGHT, null);
 
     }
 
     //Getters e Setters
-    public boolean getMouseOver() {
-        return mouseOver;
-    }
-
-
-    public void setMouseOver(boolean mouseOver) {
-        this.mouseOver = mouseOver;
-    }
-
-
-    public boolean getMousePressed() {
-        return mousePressed;
-    }
-
-    public void setMousePressed(boolean mousePressed) {
-        this.mousePressed = mousePressed;
-    }
-
     public void applyGameState(){
         GameState.state = state;
     }
 
     public Rectangle getHitbox(){
         return this.buttonHitbox;
-    }
-
-    public void resetBooleans(){
-
-        mouseOver = false;
-        mousePressed = false;
-
     }
 
 }

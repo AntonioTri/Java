@@ -111,6 +111,9 @@ public class Playing extends State implements StateMethods{
         enemyManager.draw(g, xLevelOffset);
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
+        //Vengono scritti gli FPS e gli UPS a schermo
+        g.setColor(Color.white);
+		g.drawString(game.getFpsUps(), 30, Game.GAME_HEIGHT - 20);
         
         if (paused) {
             //Se il gioco viene messo in pausa, viene disegnato un rettangolo tra il game ed il menù di pausa
@@ -186,6 +189,9 @@ public class Playing extends State implements StateMethods{
         }
 
     }
+
+    //I seguenti metodi in override servono a passare le keyevent, i tasti premuti della tastiera e del mouse
+    //a diversi oggetti, come il giocatore, oppure ai vari menù di overlay quando sono presenti 
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -297,6 +303,7 @@ public class Playing extends State implements StateMethods{
         }
     }
 
+    //Getters e Setters
     public void resetAll(){
         gameOver = false;
         paused = false;

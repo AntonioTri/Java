@@ -6,15 +6,13 @@ import java.awt.image.BufferedImage;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.UI.VolumeButton.*;
 
-public class VolumeButton extends PauseButtons {
+public class VolumeButton extends AbstractButtons {
 
     private BufferedImage[] imgs;
     private BufferedImage slider;
 
     private int index = 0;
     private int buttonX, minX, maxX;
-
-    private boolean mouseOver, mousePressed;
 
     public VolumeButton(int x, int y, int width, int height) {
         //Modificare cosìil richiamo al costruttore della superclasse serve a posizionare il tasto del volume 
@@ -30,7 +28,7 @@ public class VolumeButton extends PauseButtons {
 
     }
     
-        private void loadImages(){
+    private void loadImages(){
         BufferedImage temp = LoadSave.getSpriteAtlas(LoadSave.VOLUME_BUTTON);
         imgs = new BufferedImage[3];
 
@@ -42,6 +40,7 @@ public class VolumeButton extends PauseButtons {
 
     }
 
+    @Override
     public void update(){
 
         index = 0;
@@ -72,29 +71,5 @@ public class VolumeButton extends PauseButtons {
 
 
     }
-
-    public void resetBools(){
-
-        mouseOver = false;
-        mousePressed = false;
-
-    }
-
-    public boolean getMouseOver() {
-        return mouseOver;
-    }
-
-    public void setMouseOver(boolean mouseOver) {
-        this.mouseOver = mouseOver;
-    }
-
-    public boolean getMousePressed() {
-        return mousePressed;
-    }
-
-    public void setMousePressed(boolean mousePressed) {
-        this.mousePressed = mousePressed;
-    };
-
 
 }

@@ -8,6 +8,8 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Playing;
 
+//Overlay di morte ancora da fare, per adesso scrive due scritte a schermo per indicare la morte
+// e riporta l'utente nella schermata home
 public class GameOverOverlay {
 
     private Playing playing;

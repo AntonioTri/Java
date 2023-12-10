@@ -6,6 +6,8 @@ import java.awt.event.KeyListener;
 import Progetto_prog_3.GamePanel;
 import Progetto_prog_3.GameStates.GameState;
 
+//Questa classe è colei che permette di osservare la pressione dei tasti DELLA TASTIERA durante il gioco
+//Avvengono determinati eventi talvolta che uno specifico tasto viene Hoverato, premuto o rilasciato
 public class KeyboardInputs implements KeyListener{
 
     private GamePanel gamePanel;

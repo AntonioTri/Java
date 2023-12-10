@@ -4,24 +4,20 @@ import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
+import static Progetto_prog_3.utils.Constants.GRAVITY;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
 
 public abstract class AbstractEnemy extends Entity{
 
     //Variabili di ambiente
-    protected int aniIndex, enemyState, enemyType;
-    protected int aniTick, aniSpeed = 20;
-    protected boolean firstUpdate = true, inAir = false;
-    protected float fallSpeed, gravity = (float) 0.04 * Game.SCALE;
-    protected float wlakSpeed = 0.8f * Game.SCALE;
+    protected int enemyType;
+    protected int aniSpeed = 20;
+    protected boolean firstUpdate = true;
     protected int wlakDir = LEFT;
     protected int enemyTileY;
     protected float attackDistance = Game.TILES_SIZE;
     protected boolean attackChecked;
-    
-    //Variabili per la vita
-    protected int maxHealth, currentHealth;
 
     //Variabile per osservare se è morto oppure no
     protected boolean active = true;
@@ -30,6 +26,7 @@ public abstract class AbstractEnemy extends Entity{
         //In base al tipo di nemico che stiamo instanziando, vengono definite caratteristiche uniche come il danno o la vita massima
         super(x, y, width, height);
         this.enemyType = enemyType;
+        this.walkSpeed *= 0.8f;
         initHitbox(x, y, width, height);
         maxHealth = getMaxHealth(enemyType);
         currentHealth = maxHealth;
@@ -63,8 +60,6 @@ public abstract class AbstractEnemy extends Entity{
         }
         return false;
     }
-    
-    
 
     //Questo metodo ci dice se il player si trova in range di visione per far muovere il nemico verso il player
     protected boolean isPlayerInRange(Player player) {
@@ -86,8 +81,8 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //Metodo che cambia lo stato del nemico in questione
-    protected void newState(int enemyState){
-        this.enemyState = enemyState;
+    protected void newState(int state){
+        this.state = state;
         aniIndex = 0;
         aniTick = 0;
     }
@@ -99,9 +94,9 @@ public abstract class AbstractEnemy extends Entity{
 
             //In base alla direzione corrente viene fato muovere a destra o a sinistra
             if (wlakDir == LEFT) {
-                xSpeed = -wlakSpeed;
+                xSpeed = -walkSpeed;
             } else {
-                xSpeed = wlakSpeed;
+                xSpeed = walkSpeed;
             }
             
             //Viene controllata la prossima posizione in cui muoversi
@@ -147,12 +142,12 @@ public abstract class AbstractEnemy extends Entity{
             aniTick = 0;
             aniIndex++;
 
-            if (aniIndex >= getSpriteAmount(enemyType, enemyState)) {
+            if (aniIndex >= getSpriteAmount(enemyType, state)) {
                 aniIndex = 0;
 
                 //Se avviene un cambiamento di stato, andremo a fare solo una animazione di quello stato
-                switch (enemyState) {
-                    case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> enemyState = IDLE;
+                switch (state) {
+                    case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> state = IDLE;
                     case NIGHT_BORNE_DIE -> active = false;
 
                 }
@@ -160,14 +155,15 @@ public abstract class AbstractEnemy extends Entity{
         }
     }
 
+    //Metodo che permette la caduta del nemico sul terreno al momento dello spawn
     protected void updateInAir(int[][] levelData){
 
-        if (canMoveHere(hitbox.x, hitbox.y + fallSpeed, hitbox.width, hitbox.height, levelData)) {
-            hitbox.y += fallSpeed;
-            fallSpeed += gravity;
+        if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
+            hitbox.y += airSpeed;
+            airSpeed += GRAVITY;
         } else {
             inAir = false;
-            hitbox.y = getEntityYPosFloorRoofRelative(hitbox, fallSpeed);
+            hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
             //Otteniamo in questo modo la posiizone in y, che rimane costante, il nemico nono salta, si muove solo a destra e a sinistra
             //La calcoliamo solo una volta
             enemyTileY = (int)(hitbox.y / Game.TILES_SIZE);
@@ -203,7 +199,25 @@ public abstract class AbstractEnemy extends Entity{
         currentHealth = maxHealth;
         newState(NIGHT_BORNE_IDLE);
         active = true;
-        fallSpeed = 0;
+        airSpeed = 0;
+    }
+
+    //I successivi due metodi ci permettono di modificare la direzione del movimento o per 
+    //meglio dire, il modo in cui viene disegnato uno sprite, per dare l'illusione che il nemico stia
+    //facendo una zione oppure l'altra
+    public int flipX(){
+        if (wlakDir == LEFT) {
+            return hitBoxWidth - 8;
+        } else{
+            return 0;
+        }
+    }
+    public int flipW(){
+        if (wlakDir == LEFT) {
+            return -1;
+        } else{
+            return 1;
+        }
     }
 
     public boolean getActive(){
@@ -214,9 +228,7 @@ public abstract class AbstractEnemy extends Entity{
         return aniIndex;
     }
 
-    public int getEnemyState(){
-        return enemyState;
-    }
+    
 
 
 }

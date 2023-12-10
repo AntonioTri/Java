@@ -59,13 +59,13 @@ public class EnemyManager {
             //Se il nemico è attivo allora viene fatto un repaint
             if (nb.getActive()){
                 //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
-                g.drawImage(nightBorneArray[nb.getEnemyState()][nb.getAniIndex()], 
+                g.drawImage(nightBorneArray[nb.getState()][nb.getAniIndex()], 
                             (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
                             ((int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y),
                             NIGHT_BORNE_WIDHT * nb.flipW(), NIGHT_BORNE_HEIGHT, null);
 
                 nb.drawHitbox(g, xLevelOffset);
-                nb.drawAttackbox(g, xLevelOffset);
+                nb.drowAttackBox(g, xLevelOffset);
 
             }
         }

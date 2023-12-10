@@ -3,9 +3,11 @@ package Progetto_prog_3.Inputs;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import Progetto_prog_3.GamePanel;
 import Progetto_prog_3.GameStates.GameState;
+
+//Questa classe è colei che permette di osservare la pressione dei tasti DEL MOUSE durante il gioco
+//Avvengono determinati eventi talvolta che uno specifico tasto viene Hoverato, premuto o rilasciato
 
 public class MouseInputs implements MouseListener, MouseMotionListener {
 

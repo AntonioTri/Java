@@ -4,9 +4,7 @@ import static Progetto_prog_3.Game.TILES_SIZE;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
 import java.util.ArrayList;
-import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.utils.LoadSave;
@@ -35,6 +33,7 @@ public class LevelManager {
         }
     }
 
+    //Il seguente metodo importa i blochetti del terreno da posizionare poi nella mappa
     private void importSprite() {
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.LEVEL_ATLAS);
         levelSprite = new BufferedImage[48];
@@ -43,11 +42,10 @@ public class LevelManager {
                 int index = j*12 + i;
                 levelSprite[index] = img.getSubimage(i*32, j * 32, 32, 32);
             }
-
         }
-
     }
 
+    //Qui disegnamo la mapa di gioco
     public void draw(Graphics g, int xLevelOffset){
 
         for(int j = 0; j<Game.TILES_IN_HEIGHT; j++){
@@ -59,28 +57,20 @@ public class LevelManager {
                 
             }
         }
-
-
-
     }
 
-    public Level getCurrentLevel(){
-
-        return levels.get(levelIndex);
-
-    }
-
-
-    public void update(){
-
-
-
-    }
-
-    public int getAmountOfLevels(){
-        return levelIndex;
-    }
-
+    /*
+     * Il seguente metodo quando chiamato carica il prossimo livello
+     * Esegue diversi passaggi, aumenta l'indice del livello, così da poter scorrere al successivo
+     * Se il numero dell'indice è maggiore o uguale al numero di livello disponibili, viene resettato a 0
+     * e si viene riportati al menù di partenza.
+     * 
+     * Se non fosse così verrebbe caricato il livello successivo andando a prendere dall'array list,
+     * l'elemento di indice 'levelIndex' tramite il metodo get(), dal game scendiamo allo stato di Playing e
+     * aggiungiamo i nemici in base ai nuovi dati del livello ottenuti, diamo al player le informazioni del livello
+     * per permettergli di interagire con l'ambiente, e viene settato il massimo livello di spostamento della telecamerta
+     * 
+    */
     public void loadNextLevel() {
         levelIndex++;
         if (levelIndex >= levels.size()) {
@@ -93,6 +83,20 @@ public class LevelManager {
         game.getPlaying().getEnemyManager().addEnemies(newLevel);
         game.getPlaying().getPlayer().loadLevelData(newLevel.getLD());
         game.getPlaying().setMaxLevelOffset(newLevel.getLevelOffset());
+    }
+
+
+    //Getters e Setters
+    public Level getCurrentLevel(){
+        return levels.get(levelIndex);
+    }
+
+    public void update(){
+
+    }
+
+    public int getAmountOfLevels(){
+        return levelIndex;
     }
 
 }
