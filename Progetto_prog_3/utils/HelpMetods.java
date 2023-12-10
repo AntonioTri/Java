@@ -1,9 +1,80 @@
 package Progetto_prog_3.utils;
 
+import java.awt.Color;
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.entities.NightBorne;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE;
+
 
 public class HelpMetods {
+    
+    //Questa funzione invece l'ho trovata su internet, non so come funzioni di preciso, utilizza i colori rgb per mappare le
+    //caratteristiceh del livello dallàimmagine level_one_data.png, mappato il terreno poi possono essere posizionati i mattoncini giusti
+    //per la costruzione del livello
+    public static int[][] getLevelData(BufferedImage img){
+
+        int[][] levelData = new int [img.getHeight()][img.getWidth()];
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getRed();
+                
+                if(value >= 48)
+                    value = 11;
+
+                levelData[j][i] = value; 
+            }
+        }
+
+        return levelData;
+
+    }
+
+    public static Point GetPlayerSpawnPoint(BufferedImage img){
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getRed();
+                
+                if(value == 255){
+                    return new Point(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+                }
+            }
+        }
+
+       return new Point(1 * Game.TILES_SIZE, 1 * Game.TILES_SIZE);
+
+    }
+
+    //Metodo che ci permette data una immagine levelData, ovvero un livello, di posizionare i nemici nella mappa di gioco
+    public static ArrayList<NightBorne> getNightBornes(BufferedImage img){
+
+        ArrayList<NightBorne> list = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                
+                if(value == NIGHT_BORNE){
+                    list.add(new NightBorne(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+
+        return list;
+
+    }
+
 
     //Questa funzione ci indica de gli spazi attorno alla nostra entità sono solidi oppure no
     //Nel caso siano disponibili spazi in cui muoversi, viene ritornato vero, altrimenti se viene

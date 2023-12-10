@@ -4,6 +4,7 @@ import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
@@ -75,9 +76,7 @@ public class Player extends Entity{
     }
 
     private void initAttackBox(){
-
         attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(30 * Game.SCALE));
-
     }
 
     //funzione per fare l'update delle caratterisctiche del personaggio
@@ -364,12 +363,9 @@ public class Player extends Entity{
     }
 
     public void loadLevelData(int [][] levelData){
-
         this.levelData = levelData;
-
     }
-
-
+    
     //Funzione per settare il movimento a 0 quando viene chiamata
     public void resetMovement() {
         left = false;
@@ -378,7 +374,14 @@ public class Player extends Entity{
         down = false;
     }
 
-    //Funzioni get e set per ottenere e settare lo stato attuale dei movimenti
+    //Funzioni get e set per ottenere e settare lo stato attuale degli attributi del player
+    public void setSpawnPoint(Point spawn){
+        this.x = spawn.x;
+        this.y = spawn.y;
+        hitbox.x = x;
+        hitbox.y = y;
+    }
+
     public boolean getLeft() {
         return left;
     }

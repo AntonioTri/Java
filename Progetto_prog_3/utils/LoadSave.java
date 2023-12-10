@@ -3,8 +3,11 @@ package Progetto_prog_3.utils;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import Progetto_prog_3.Game;
@@ -36,7 +39,61 @@ public class LoadSave {
     //Entity
     public static final String PLAYER_ATLAS = "Animations.png";
     public static final String NIGHT_BORNE_ATLAS = "NightBorne.png";
+
     
+
+    public static BufferedImage[] getAllLevels(){
+
+        //Dichiariamo un URL contenente le risorse per il livello
+        URL url = LoadSave.class.getResource("/Progetto_prog_3/res/lvls");
+        File file = null;
+
+        //Try catch per gestire gli errori
+        try {
+            file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        //Dichiariamo due array di File, il primo importa tramite il metodo listFile, i file dell'url dichiarato sopra
+        //Il secondo è semplicemente vuoto
+        File[] files = file.listFiles();
+        File[] sortedFiles = new File[files.length];
+
+        //Viene eseguito un algoritmo poco efficiente per ordinare i file nel caso non vengano ordinati di default
+        //In ogni caso fa 6 iterazioni
+        for (int i = 0; i < sortedFiles.length; i++) {
+            for (int j = 0; j < files.length; j++) {
+                if (files[j].getName().equals((i + 1) + ".png")) {
+                    sortedFiles[i] = files[j];
+                }
+            }
+        }
+
+        //Check per controllare se sono stati effettivamente presi i file oppure no
+        // for (File f : sortedFiles) {
+        //     System.out.println("File: " + f.getName());
+        // }
+
+        //Memorizziamo i file come immagini in un aray di immagini
+        BufferedImage[] imgs = new BufferedImage[sortedFiles.length];
+        
+        for (int i = 0; i < imgs.length; i++) {
+
+            try {
+                imgs[i] = ImageIO.read(sortedFiles[i]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        return imgs;
+
+    }
+
+
     //Questa funzione carica i dati di un png in una immagine, date delle varibili, quelle sopra, sceglie quale immagine caricare
     //Questa dovrebbe essere una factory 
     public static BufferedImage getSpriteAtlas(String fileName){
@@ -62,52 +119,9 @@ public class LoadSave {
 
         return img;
     }
+    
 
-    //Questa funzione invece l'ho trovata su internet, non so come funzioni di preciso, utilizza i colori rgb per mappare le
-    //caratteristiceh del livello dallàimmagine level_one_data.png, mappato il terreno poi possono essere posizionati i mattoncini giusti
-    //per la costruzione del livello
-    public static int[][] getLevelData(){
-
-        BufferedImage img = getSpriteAtlas(LEVEL_1_DATA);
-        int[][] levelData = new int [img.getHeight()][img.getWidth()];
-
-        for( int j = 0; j<img.getHeight(); j++){
-            for (int i = 0; i < img.getWidth(); i++) {
-
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getRed();
-                
-                if(value >= 48)
-                    value = 11;
-
-                levelData[j][i] = value; 
-            }
-        }
-
-        return levelData;
-
-    }
-
-    public static ArrayList<NightBorne> getNightBornes(){
-
-        BufferedImage img = getSpriteAtlas(LEVEL_1_DATA);
-        ArrayList<NightBorne> list = new ArrayList<>();
-
-        for( int j = 0; j<img.getHeight(); j++){
-            for (int i = 0; i < img.getWidth(); i++) {
-
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getBlue();
-                
-                if(value == NIGHT_BORNE){
-                    list.add(new NightBorne(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
-                }
-            }
-        }
-
-        return list;
-
-    }
+    
 
 
 }

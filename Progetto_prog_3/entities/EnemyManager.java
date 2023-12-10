@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
 
@@ -18,21 +19,27 @@ public class EnemyManager {
     public EnemyManager(Playing playing){
         this.playing = playing;
         loadEnemyImages();
-        addEnemies();
     }
 
-    private void addEnemies() {
-        nightBornes = LoadSave.getNightBornes();
+    public void addEnemies(Level level) {
+        nightBornes = level.getnNightBornes();
         System.out.println("Enemy Number = " + nightBornes.size());
     }
 
     public void update(int[][] levelData, Player player){
 
+        boolean isAnyActive = false;
+
         for(NightBorne nb : nightBornes){
             //Se il nemico è attivo allora viene fatto un update
             if (nb.getActive()) {
                 nb.update(levelData, player);
+                isAnyActive = true;
             }
+        }
+
+        if (!isAnyActive) {
+            playing.setLevelComplited(true);
         }
 
     }
@@ -54,7 +61,7 @@ public class EnemyManager {
                 //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
                 g.drawImage(nightBorneArray[nb.getEnemyState()][nb.getAniIndex()], 
                             (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
-                            ((int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y)  ,
+                            ((int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y),
                             NIGHT_BORNE_WIDHT * nb.flipW(), NIGHT_BORNE_HEIGHT, null);
 
                 nb.drawHitbox(g, xLevelOffset);

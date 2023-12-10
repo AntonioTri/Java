@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
 
@@ -58,7 +59,6 @@ public class LevelCompletedOverlay {
     public void update(){
         menuButton.update();
         nextButton.update();
-
     }
 
     private boolean mouseHovering(PauseButtons button, MouseEvent e){
@@ -86,9 +86,10 @@ public class LevelCompletedOverlay {
 
     public void mouseReleased(MouseEvent e){
         if (mouseHovering(menuButton, e) && menuButton.getMousePressed()) {
-            System.out.println("Menu");
+            playing.resetAll();
+            GameState.state = GameState.MENU;
         } else if (mouseHovering(nextButton, e) && nextButton.getMousePressed()) {
-            System.out.println("Next level");
+            playing.loadNextLevel();
         }
 
         menuButton.resetBools();
