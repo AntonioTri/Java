@@ -16,6 +16,43 @@ public class Constants {
     //Gravità
     public static final float GRAVITY = 0.04f * Game.SCALE;
 
+    //Velocità dell'animazione
+    public static final int ANI_SPEED = 25;
+
+
+    //Variabili statiche per definire le caratteristiche delle loot boxes e delle pozioni
+    public static class ObjectConstants {
+
+		public static final int RED_POTION = 0;
+		public static final int BLUE_POTION = 1;
+		public static final int BARREL = 2;
+		public static final int BOX = 3;
+
+		public static final int RED_POTION_VALUE = 15;
+		public static final int BLUE_POTION_VALUE = 10;
+
+		public static final int CONTAINER_WIDTH_DEFAULT = 40;
+		public static final int CONTAINER_HEIGHT_DEFAULT = 30;
+		public static final int CONTAINER_WIDTH = (int) (Game.SCALE * CONTAINER_WIDTH_DEFAULT);
+		public static final int CONTAINER_HEIGHT = (int) (Game.SCALE * CONTAINER_HEIGHT_DEFAULT);
+
+		public static final int POTION_WIDTH_DEFAULT = 12;
+		public static final int POTION_HEIGHT_DEFAULT = 16;
+		public static final int POTION_WIDTH = (int) (Game.SCALE * POTION_WIDTH_DEFAULT);
+		public static final int POTION_HEIGHT = (int) (Game.SCALE * POTION_HEIGHT_DEFAULT);
+
+        //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
+		public static int getSpriteAmount(int objectType) {
+			switch (objectType) {
+			case RED_POTION, BLUE_POTION:
+				return 7;
+			case BARREL, BOX:
+				return 8;
+			}
+			return 1;
+		}
+	}
+
 
     //Variabili statidche per definire I nemici, per ora soltanto i nightbornes
     public static class EnemtConstants{
@@ -41,7 +78,7 @@ public class Constants {
         public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(33 * Game.SCALE);
 
         //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
-        //con uno switch sul tipo di nemuco fa il return adeguato
+        //con uno switch sul tipo di nemico fa il return adeguato
         public static int getSpriteAmount(int enemyType, int enemyState){
 
             switch (enemyType) {

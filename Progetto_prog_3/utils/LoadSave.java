@@ -1,17 +1,12 @@
 package Progetto_prog_3.utils;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import Progetto_prog_3.Game;
-import Progetto_prog_3.entities.NightBorne;
 
 public class LoadSave {
 
@@ -25,23 +20,23 @@ public class LoadSave {
     public static final String BIG_CLOUDS = "enviroment/big_clouds.png";
     
     //UI
-    public static final String MENU_BUTTONS = "UI/button_atlas.png";
-    public static final String PAUSE_BACKGROUND = "UI/pause_menu.png";
-    public static final String MENU_BACKGROUND = "UI/menu_background.png";
-    public static final String SOUND_BUTTON = "UI/sound_button.png";
-    public static final String VOLUME_BUTTON = "UI/volume_buttons.png";
-    public static final String PRH_BUTTONS = "UI/prh_buttons.png";
-    public static final String HOME_BACKGROUND_IMAGE = "UI/background_menu.png";
-    public static final String HEALT_POWER_BAR = "UI/health_power_bar.png";
-    public static final String LEVEL_COMPLITED = "UI/level_completed_sprite.png";
+    public static final String MENU_BUTTONS = "ui/button_atlas.png";
+    public static final String PAUSE_BACKGROUND = "ui/pause_menu.png";
+    public static final String MENU_BACKGROUND = "ui/menu_background.png";
+    public static final String SOUND_BUTTON = "ui/sound_button.png";
+    public static final String VOLUME_BUTTON = "ui/volume_buttons.png";
+    public static final String PRH_BUTTONS = "ui/prh_buttons.png";
+    public static final String HOME_BACKGROUND_IMAGE = "ui/background_menu.png";
+    public static final String HEALT_POWER_BAR = "ui/health_power_bar.png";
+    public static final String LEVEL_COMPLITED = "ui/level_completed_sprite.png";
 
     //Entity
     public static final String PLAYER_ATLAS = "entity/Animations.png";
     public static final String NIGHT_BORNE_ATLAS = "entity/NightBorne.png";
 
     //Loot
-    public static final String BOXES_SPRITE = "loot/objects_sprite.png";
-    public static final String POTIONS = "loot/potions_sprite.png";
+    public static final String BOXES_SPRITE = "loot/objects_sprites.png";
+    public static final String POTIONS = "loot/potions_sprites.png";
     
 
     public static BufferedImage[] getAllLevels(){

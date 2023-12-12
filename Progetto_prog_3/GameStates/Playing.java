@@ -14,6 +14,7 @@ import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.EnemyManager;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.LevelManager;
+import Progetto_prog_3.objects.ObjectManager;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.Environment.*;
 
@@ -24,6 +25,7 @@ public class Playing extends State implements StateMethods{
     private EnemyManager enemyManager;
     private GameOverOverlay gameOverOverlay;
     private LevelCompletedOverlay levelCompletedOverlay;
+    private ObjectManager objectManager;
 
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
@@ -73,6 +75,7 @@ public class Playing extends State implements StateMethods{
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
         levelCompletedOverlay = new LevelCompletedOverlay(this);
+        objectManager = new ObjectManager(this);
         
         loadBackground();
 
@@ -93,6 +96,7 @@ public class Playing extends State implements StateMethods{
         } else if (!gameOver){
             enemyManager.update(levelManager.getCurrentLevel().getLD(), player);
             levelManager.update();
+            objectManager.update();
             player.update();
             checkCloseToBorder();
     
@@ -111,6 +115,7 @@ public class Playing extends State implements StateMethods{
         enemyManager.draw(g, xLevelOffset);
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
+        objectManager.draw(g, xLevelOffset);
         //Vengono scritti gli FPS e gli UPS a schermo
         g.setColor(Color.white);
 		g.drawString(game.getFpsUps(), 30, Game.GAME_HEIGHT - 20);
@@ -333,29 +338,33 @@ public class Playing extends State implements StateMethods{
     public void unpauseGame(){
         paused = false;
     }
-
-    public Player getPlayer(){
-        return player;
-    }
-
+    
     public void windowFocusLost() { 
         player.resetMovement(); 
     }
-
+    
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
     }
-
+    
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         enemyManager.checkEnemyHit(attackBox);
     }
-
+    
+    public Player getPlayer(){
+        return player;
+    }
+ 
+    public void setLevelComplited(boolean levelCompleted){
+        this.levelCompleted = levelCompleted;
+    }
+   
     public EnemyManager getEnemyManager() {
         return enemyManager;
     }
 
-    public void setLevelComplited(boolean levelCompleted){
-        this.levelCompleted = levelCompleted;
+    public ObjectManager getObjectManager(){
+        return objectManager;
     }
 
 }
