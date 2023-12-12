@@ -19,27 +19,29 @@ public class LoadSave {
     //public static final String LEVEL_1_DATA = "level_one_data.png";
     
     //Assest
-    public static final String LEVEL_1_DATA = "level_one_data_long.png";
-    public static final String LEVEL_ATLAS = "Terrain.png";
-    public static final String PLAYING_BACKGROUND_IMAGE = "playing_bkgd_img.png";
-    public static final String SMALL_CLOUDS = "small_clouds.png";
-    public static final String BIG_CLOUDS = "big_clouds.png";
+    public static final String LEVEL_ATLAS = "enviroment/Terrain.png";
+    public static final String PLAYING_BACKGROUND_IMAGE = "enviroment/playing_bkgd_img.png";
+    public static final String SMALL_CLOUDS = "enviroment/small_clouds.png";
+    public static final String BIG_CLOUDS = "enviroment/big_clouds.png";
     
     //UI
-    public static final String MENU_BUTTONS = "button_atlas.png";
-    public static final String PAUSE_BACKGROUND = "pause_menu.png";
-    public static final String MENU_BACKGROUND = "menu_background.png";
-    public static final String SOUND_BUTTON = "sound_button.png";
-    public static final String VOLUME_BUTTON = "volume_buttons.png";
-    public static final String PRH_BUTTONS = "prh_buttons.png";
-    public static final String HOME_BACKGROUND_IMAGE = "background_menu.png";
-    public static final String HEALT_POWER_BAR = "health_power_bar.png";
-    public static final String LEVEL_COMPLITED = "level_completed_sprite.png";
+    public static final String MENU_BUTTONS = "UI/button_atlas.png";
+    public static final String PAUSE_BACKGROUND = "UI/pause_menu.png";
+    public static final String MENU_BACKGROUND = "UI/menu_background.png";
+    public static final String SOUND_BUTTON = "UI/sound_button.png";
+    public static final String VOLUME_BUTTON = "UI/volume_buttons.png";
+    public static final String PRH_BUTTONS = "UI/prh_buttons.png";
+    public static final String HOME_BACKGROUND_IMAGE = "UI/background_menu.png";
+    public static final String HEALT_POWER_BAR = "UI/health_power_bar.png";
+    public static final String LEVEL_COMPLITED = "UI/level_completed_sprite.png";
 
     //Entity
-    public static final String PLAYER_ATLAS = "Animations.png";
-    public static final String NIGHT_BORNE_ATLAS = "NightBorne.png";
+    public static final String PLAYER_ATLAS = "entity/Animations.png";
+    public static final String NIGHT_BORNE_ATLAS = "entity/NightBorne.png";
 
+    //Loot
+    public static final String BOXES_SPRITE = "loot/objects_sprite.png";
+    public static final String POTIONS = "loot/potions_sprite.png";
     
 
     public static BufferedImage[] getAllLevels(){
