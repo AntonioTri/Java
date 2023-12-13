@@ -152,8 +152,7 @@ public class HelpMetods {
 
                 if(value == SPIKE){
                     list.add(new Spike((int)(i * Game.TILES_SIZE), (int)(j * Game.TILES_SIZE), SPIKE));
-                    System.out.println("Added spike");
-                    System.out.println("x = " + (int)(i * Game.SCALE) + ", y = " + (int)(j * Game.SCALE));
+
                 } 
             }
         }
@@ -207,7 +206,6 @@ public class HelpMetods {
                     return false;
                 }
             }
-
         return true;
     }
 
@@ -265,6 +263,7 @@ public class HelpMetods {
 			// Falling - touching floor
 			int tileYPos = currentTile * Game.TILES_SIZE;
 			int yOffset = (int) (Game.TILES_SIZE - hitbox.height);
+            //!!!!!Il + Game size dovrebbe esser aggiunto a tutte le entita che hanno una altezza maggiore di n blocco, ovvero 32 pixle!!!!!
 			return tileYPos + yOffset - 1 + Game.TILES_SIZE;
 		} else
 			// Jumping

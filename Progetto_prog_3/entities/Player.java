@@ -89,6 +89,7 @@ public class Player extends Entity{
 
         updatePosition();
 
+        //Se il player si sta muovendo può interagire con gli oggetti della mappa
         if (moving) {
             checkPotionTouched();
             checkSpikesTouched();
@@ -219,7 +220,7 @@ public class Player extends Entity{
         }
     }
 
-    //Qui viene settata l'animazione in base all'evento di gioco
+    //Qui viene settata l'animazione in base agli imput del giocatore, per ogni azione viene settata una velocità di animazione unica
     private void setAnimation() {
 
         int startAnimation = state;
@@ -227,6 +228,7 @@ public class Player extends Entity{
         if (moving) {
             aniSpeed = 15;
             state = RUNNING;
+
         } else {
             aniSpeed = 20;
             state = IDLE;
@@ -267,8 +269,8 @@ public class Player extends Entity{
 		moving = false;
 
         //Salto
-		if (jump)
-			jump();
+		if (jump) jump();
+
         //Se non si sta facendo nessuna azione ritorna, non facendo calcoli
 		if (!left && !right && !inAir)
 			return;
@@ -282,6 +284,8 @@ public class Player extends Entity{
         //e vengono settate le variabili per girare l'immagine, per far voltare il player nella direzione della camminata
 		float xSpeed = 0;
 
+        //Questi due if servono a settare delle variabili oltre che al movimento anche al modo in cui vengono disegnati gli sprite
+        //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto 
 		if (left){
 			xSpeed -= walkSpeed;
             flipX = hitBoxWidth - 60;
@@ -321,6 +325,8 @@ public class Player extends Entity{
 		moving = true;
 	}
 
+
+
     private void jump() {
 
         if (inAir) return;
@@ -329,10 +335,14 @@ public class Player extends Entity{
         airSpeed = jumpSpeed;
     }
 
+
+
     private void resetInAir() {
         inAir = false;
         airSpeed = 0;
     }
+
+
 
     private void updateXPos(float xSpeed){
 
@@ -342,6 +352,8 @@ public class Player extends Entity{
             hitbox.x = getEntityXPosNextWall(hitbox, xSpeed);
         }
     }
+
+
 
     //Questo metodo ci serve a resettare tutte le caratteristiche del giocatore se ne si trova il bisogno
     public void resetAll() {
@@ -406,6 +418,7 @@ public class Player extends Entity{
     //Questa funzione fa morire il player
     public void die() {
         currentHealth = 0;
+        jump = false;
     }
 
     public boolean getLeft() {

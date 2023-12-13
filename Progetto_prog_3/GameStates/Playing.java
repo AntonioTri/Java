@@ -137,10 +137,10 @@ public class Playing extends State implements StateMethods{
         drowSmallClouds(g);
 
         //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
-        enemyManager.draw(g, xLevelOffset);
         levelManager.draw(g, xLevelOffset);
-        player.render(g, xLevelOffset);
         objectManager.draw(g, xLevelOffset);
+        enemyManager.draw(g, xLevelOffset);
+        player.render(g, xLevelOffset);
 
         //Vengono scritti gli FPS e gli UPS a schermo
         g.setColor(Color.white);

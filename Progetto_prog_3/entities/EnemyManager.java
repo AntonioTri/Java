@@ -62,7 +62,8 @@ public class EnemyManager {
                 g.drawImage(nightBorneArray[nb.getState()][nb.getAniIndex()], 
                             (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
                             ((int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y),
-                            NIGHT_BORNE_WIDHT * nb.flipW(), NIGHT_BORNE_HEIGHT, null);
+                            (NIGHT_BORNE_WIDHT + 25) * nb.flipW() ,
+                             NIGHT_BORNE_HEIGHT + 25, null);
 
                 nb.drawHitbox(g, xLevelOffset);
                 nb.drowAttackBox(g, xLevelOffset);
@@ -70,9 +71,8 @@ public class EnemyManager {
                 if (nb.getState() == NIGHT_BORNE_DIE) {
                     nb.setAniSpeed(20);
                     nb.setInvulnerability(true);
-                    System.out.println("Sta morendo male");
+                    
                 }
-
             }
         }
     }
@@ -80,6 +80,7 @@ public class EnemyManager {
     //Se il player attacca il nemico a questo viene applicato il danno del player
     public void checkEnemyHit(Rectangle2D.Float attackBox){
         for (NightBorne nb : nightBornes) {
+            System.out.println(nb.getInvulnerability());
             //Se il nemico è attivo allora viene fatto un controllo sulle intersezioni tra hitbox
             if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && !nb.getInvulnerability()) {
                 nb.hurt(playing.getPlayer().getDamage());

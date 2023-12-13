@@ -36,7 +36,6 @@ public abstract class AbstractEnemy extends Entity{
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
     protected void turnTowardsPlayer(Player player){
 
-        System.out.println("Turning towards player");
         if (player.hitbox.x > hitbox.x) {
             wlakDir = RIGHT;
         } else {
@@ -53,18 +52,22 @@ public abstract class AbstractEnemy extends Entity{
 
         //Controlliamo che siano nello stesso livello in y del player
         int playerYPos = (int) (player.getHitbox().y / Game.TILES_SIZE);
-        if (playerYPos + 1 == enemyTileY) {
-            if (isPlayerInRange(player) && isPathClear(levelData, hitbox, player.hitbox, enemyTileY)) {
-                return true;
+        if (playerYPos == enemyTileY) {
+            if (isPlayerInRange(player)) {
+                if (isPathClear(levelData, hitbox, player.hitbox, enemyTileY + 1)) {
+                    return true;
+                    
+                }
             }
         }
+
         return false;
     }
 
     //Questo metodo ci dice se il player si trova in range di visione per far muovere il nemico verso il player
     protected boolean isPlayerInRange(Player player) {
 
-        int absValue = (int)Math.abs(player.hitbox.x - hitbox.x);
+        int absValue = (int)Math.abs(player.getHitbox().x - hitbox.x);
         //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
         //per 5, la condizione è vera e ritora vero, altrimenti falso
         return absValue <= attackDistance * 5;
@@ -195,11 +198,12 @@ public abstract class AbstractEnemy extends Entity{
 
         hitbox.x = x;
         hitbox.y = y;
+        airSpeed = 0;
+        active = true;
         firstUpdate = true;
+        invulnerability = false;
         currentHealth = maxHealth;
         newState(NIGHT_BORNE_IDLE);
-        active = true;
-        airSpeed = 0;
     }
 
     //I successivi due metodi ci permettono di modificare la direzione del movimento o per 
@@ -207,7 +211,7 @@ public abstract class AbstractEnemy extends Entity{
     //facendo una zione oppure l'altra
     public int flipX(){
         if (wlakDir == LEFT) {
-            return hitBoxWidth - 8;
+            return hitBoxWidth + 10;
         } else{
             return 0;
         }

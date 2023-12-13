@@ -51,12 +51,15 @@ public class LootBox extends AbstractObject {
         }
     }
 
+    //Nella funzione update, solo se la flag di animazione viene impostata ad attiva viene eseguita l'animazione
+    //La logica applicata è che solo se colpita, una cassa dovrebbe fare l'animaizone di rottura per poi smettere
     public void update(){
         if (doAnimation) {
             updateAnimationTick();
         }
     }
 
+    //Getters e setters
     public void setAnimation(boolean doAnimation) {
         this.doAnimation = doAnimation;
     }

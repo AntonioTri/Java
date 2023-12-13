@@ -9,7 +9,6 @@ import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
 import Progetto_prog_3.objects.Spike;
 import Progetto_prog_3.utils.HelpMetods;
-
 import static Progetto_prog_3.utils.HelpMetods.getLevelData;
 import static Progetto_prog_3.utils.HelpMetods.getNightBornes;
 import static Progetto_prog_3.utils.HelpMetods.GetPlayerSpawnPoint;

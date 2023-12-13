@@ -23,6 +23,7 @@ public class Potion extends AbstractObject{
         updateHovering();
     }
 
+    //Questo metodo conferisce l'animazione di movimento su e giù della pozione, per far sembrare che voli
     private void updateHovering(){
         //Velocità di movimento verticale
         hoverOffset += (0.06f * Game.SCALE * hoverDir);

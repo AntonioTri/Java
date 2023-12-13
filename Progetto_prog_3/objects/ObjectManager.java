@@ -33,6 +33,7 @@ public class ObjectManager {
 
     }
 
+    //Semplice metdo per osservare se il player sta toccando le spike, in tal caso, morte istantanea, il gioco è molto punitivo :D
     public void checkSpikesTouched(Player p){
         for (Spike s : spikes) {
             if (s.getHitbox().intersects(p.getHitbox())) {
@@ -69,6 +70,15 @@ public class ObjectManager {
 
     }
 
+    /*
+     * Questo metodi esegue una scansione tra tutte le lootbox presenti nella mappa, se una certa scatola è attiva, che significa che non è mai stata colpita, 
+     * e sta intersecando la attackbox del player, allora viene settata la sua animazione a true, per mostrare che si rompe, e vengono instanziate delle 
+     * variabili per gestire il tipo di pozione che deve spawnare.
+     * 
+     * Viene fatto un successivo controllo su una flag della lotbox, quella che permette lo spawn di un oggetto, è vera di default pertanto alla prima iterazione 
+     * il codice vcerrà sempre eseguito, viene spawnata la pozione al posto della scatola appena rottae viene settata la flag di spawn pozione a falso
+     * 
+     */
     public void checkObjectHit(Rectangle2D.Float playerAttackBox){
 
         for (LootBox box : lootBoxes) {
@@ -99,7 +109,10 @@ public class ObjectManager {
         }
     }
 
-
+    /*
+     * In questo metodo troviamo tutta la logica di carica delle immagini di lootbox, pozioni e spine
+     * Viene creata una buffered image per ogni elemento, e con due cicli for innestati si prendono le subimage dagli sprite
+     */
     private void loadImages() {
         //Si caricanole immagini delle pozioni
         BufferedImage potionSprites = LoadSave.getSpriteAtlas(LoadSave.POTIONS);
@@ -125,6 +138,7 @@ public class ObjectManager {
         spikeImage = LoadSave.getSpriteAtlas(LoadSave.SPIKE_ATLAS);
     }
 
+    //La classica funzione update per eseguire l'incremento dell'animation tick dell'oggetto
     public void update(){
         for (Potion potion : potions) {
             if (potion.isActive()) {
@@ -139,7 +153,7 @@ public class ObjectManager {
         }
     }
 
-
+    //Classico metodo draw che richiama tutti i metodi draw per disegnare i singoli oggetti
     public void draw(Graphics g, int xLevelOffset){
         drawPotions(g, xLevelOffset);
         drawBoxes(g, xLevelOffset);
@@ -147,8 +161,7 @@ public class ObjectManager {
     }
 
 
-    
-
+    //Metodo per disegnare le scatole
     private void drawBoxes(Graphics g, int xLevelOffset) {
         
         for (LootBox box : lootBoxes) {
@@ -173,7 +186,7 @@ public class ObjectManager {
         }
     }
 
-
+    //Metodo per disegnare le pozioni
     private void drawPotions(Graphics g, int xLevelOffset) {
 
         for (Potion potion : potions) {
@@ -198,6 +211,7 @@ public class ObjectManager {
         }
     }
 
+    //Metodo per disegnare le spine
     private void drawTraps(Graphics g, int xLevelOffset) {
 
         for (Spike spike : spikes) {
@@ -206,6 +220,7 @@ public class ObjectManager {
 
     }
 
+    //Metodo reset per riportaare allo stato di partenza tutti gli oggetti interagibili, lootbox e pozioni
     public void resetAllObjects() {
 
         loadObjects(playing.getLevelManager().getCurrentLevel());
@@ -214,6 +229,7 @@ public class ObjectManager {
             potion.reset();
         for (LootBox box : lootBoxes)
             box.reset();
+
     }
 
 

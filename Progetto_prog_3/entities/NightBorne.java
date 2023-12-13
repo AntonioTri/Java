@@ -14,12 +14,12 @@ public class NightBorne extends AbstractEnemy{
     //Hitbox e tipo di nemico
     public NightBorne(float x, float y) {
         super(x, y, NIGHT_BORNE_WIDHT, NIGHT_BORNE_HEIGHT, NIGHT_BORNE);
-        initHitbox(x, y, (int)(35 * Game.SCALE), (int)(30 * Game.SCALE));
+        initHitbox(x, y, (int)(45 * Game.SCALE), (int)(40 * Game.SCALE));
         initAttackBox();
     }
 
     private void initAttackBox() {
-        attackBox = new Rectangle2D.Float(x, y, (int)(55 * Game.SCALE), (int)(55 * Game.SCALE));
+        attackBox = new Rectangle2D.Float(x, y, (int)(65 * Game.SCALE), (int)(65 * Game.SCALE));
         attackBoxOffsetX = (int)(Game.SCALE * 20);
     }
 
@@ -98,8 +98,4 @@ public class NightBorne extends AbstractEnemy{
         }
     }
 
-    
-
-
-    
 }
