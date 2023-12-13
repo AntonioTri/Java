@@ -14,6 +14,7 @@ import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.EnemyManager;
 import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.objects.ObjectManager;
 import Progetto_prog_3.utils.LoadSave;
@@ -87,6 +88,8 @@ public class Playing extends State implements StateMethods{
         objectManager.loadObjects(levelManager.getCurrentLevel());
     }
 
+    //I seguenti 4 metodi invece controllano se il player sta toccando determinati oggetti nela scena, se sta attaccando un nemico
+    //Una pozione, una spina, tante cose
     public void checkPotionTouched(Rectangle2D.Float hitbox) {
         objectManager.checkPlayerTouched(hitbox);
     }
@@ -99,6 +102,11 @@ public class Playing extends State implements StateMethods{
         objectManager.checkObjectHit(attackBox);
     }
 
+    public void checkSpikesTouched(Player p) {
+        objectManager.checkSpikesTouched(player);
+    }
+
+    //Override dei metodi dell'interfaccia implementata
     @Override
     public void update() {
         //Se il gioco è in pausa viene fatto l'update solo del pause ovelray
@@ -381,6 +389,12 @@ public class Playing extends State implements StateMethods{
     public ObjectManager getObjectManager(){
         return objectManager;
     }
+
+    public LevelManager getLevelManager() {
+        return levelManager;
+    }
+
+    
 
     
 

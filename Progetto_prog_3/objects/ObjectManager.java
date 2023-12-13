@@ -6,6 +6,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
 
@@ -13,8 +14,10 @@ public class ObjectManager {
     
     private Playing playing;
     private BufferedImage[][] potionImages, boxesImages;
+    private BufferedImage spikeImage;
     private ArrayList<Potion> potions;
     private ArrayList<LootBox> lootBoxes;
+    private ArrayList<Spike> spikes;
 
 
     public ObjectManager(Playing playing){
@@ -24,9 +27,18 @@ public class ObjectManager {
 
     public void loadObjects(Level level) {
     
-        potions = level.getPotions();
-        lootBoxes = level.getLootBoxes();
+        potions = new ArrayList<>(level.getPotions());
+        lootBoxes =  new ArrayList<>(level.getLootBoxes());
+        spikes = new ArrayList<>(level.getSpike());
 
+    }
+
+    public void checkSpikesTouched(Player p){
+        for (Spike s : spikes) {
+            if (s.getHitbox().intersects(p.getHitbox())) {
+                p.die();
+            }
+        }
     }
 
     //Questa funzione ci permette di controllare se il player hoverlaps, cammina sopra, una pozione, in tal caso, la pozione viene 
@@ -60,27 +72,29 @@ public class ObjectManager {
     public void checkObjectHit(Rectangle2D.Float playerAttackBox){
 
         for (LootBox box : lootBoxes) {
-            if (box.isActive()) {
-                if (box.getHitbox().intersects(playerAttackBox)) {
-                    box.setAnimation(true);
+            if (box.isActive() && box.getHitbox().intersects(playerAttackBox)) {
+        
+                box.setAnimation(true);
                     
-                    int type = 0;
+                int type = 0;
+                int offset = 9;
 
-                    if (box.getObjType() == BARREL) {
-                        type = 1;
-                    }
+                if (box.getObjType() == BARREL) {
+                    type = 1;
+                    offset = 0;
+                }
 
-                    //Momento di spawn di una pozione al posto di una loot box a momento della distruzione di questa
-                    if (box.getCanSpawnPotion()) {
-                    potions.add(new Potion( (int)(box.getHitbox().x + box.getHitbox().width / 2),
-                                            (int)(box.getHitbox().y + box.getHitbox().height / 4),
+                //Momento di spawn di una pozione al posto di una loot box a momento della distruzione di questa
+                if (box.getCanSpawnPotion()) {
+                    potions.add(new Potion( (int)(box.getHitbox().x - 5 + box.getHitbox().width / 2),
+                                            (int)(box.getHitbox().y - offset),
                                             type));
                     box.setCanSpawnPotion(false);
                     System.out.println("Spawned a Potion");
                     }
-                    return;
+
+                return;
                 
-                }
             }
         }
     }
@@ -106,6 +120,9 @@ public class ObjectManager {
                 boxesImages[j][i] = boxesSprites.getSubimage(40 * i, 30 * j, 40, 30);
             }
         }
+
+        //Si carica l'immagine delle spine
+        spikeImage = LoadSave.getSpriteAtlas(LoadSave.SPIKE_ATLAS);
     }
 
     public void update(){
@@ -126,8 +143,11 @@ public class ObjectManager {
     public void draw(Graphics g, int xLevelOffset){
         drawPotions(g, xLevelOffset);
         drawBoxes(g, xLevelOffset);
+        drawTraps(g,xLevelOffset);
     }
 
+
+    
 
     private void drawBoxes(Graphics g, int xLevelOffset) {
         
@@ -178,7 +198,18 @@ public class ObjectManager {
         }
     }
 
+    private void drawTraps(Graphics g, int xLevelOffset) {
+
+        for (Spike spike : spikes) {
+            g.drawImage(spikeImage, (int)(spike.getHitbox().x - xLevelOffset), (int) spike.getHitbox().y - spike.getyDrawOffset(), SPIKE_WIDTH, SPIKE_HEIGHT, null);
+        }
+
+    }
+
     public void resetAllObjects() {
+
+        loadObjects(playing.getLevelManager().getCurrentLevel());
+
         for (Potion potion : potions)
             potion.reset();
         for (LootBox box : lootBoxes)

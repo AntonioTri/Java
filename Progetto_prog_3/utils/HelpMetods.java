@@ -11,12 +11,10 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
+import Progetto_prog_3.objects.Spike;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE;
-import static Progetto_prog_3.utils.Constants.ObjectConstants.BARREL;
-import static Progetto_prog_3.utils.Constants.ObjectConstants.BLUE_POTION;
-import static Progetto_prog_3.utils.Constants.ObjectConstants.BOX;
-import static Progetto_prog_3.utils.Constants.ObjectConstants.RED_POTION;
+import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
 
 
 public class HelpMetods {
@@ -139,6 +137,28 @@ public class HelpMetods {
 
         return list;
 
+    }
+
+    //Il seguente metodo posiziona le spine dentro la mappa di gioco seguendo la stessa logica di tutti i metodi di questo tipo
+    public static ArrayList<Spike> getSpikes(BufferedImage img) {
+        
+        ArrayList<Spike> list = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+
+                if(value == SPIKE){
+                    list.add(new Spike((int)(i * Game.TILES_SIZE), (int)(j * Game.TILES_SIZE), SPIKE));
+                    System.out.println("Added spike");
+                    System.out.println("x = " + (int)(i * Game.SCALE) + ", y = " + (int)(j * Game.SCALE));
+                } 
+            }
+        }
+
+        return list;
     }
 
 
@@ -273,6 +293,8 @@ public class HelpMetods {
             return isSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
         }
     }
+
+    
 
 
 

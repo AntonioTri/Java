@@ -7,6 +7,7 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
+import Progetto_prog_3.objects.Spike;
 import Progetto_prog_3.utils.HelpMetods;
 
 import static Progetto_prog_3.utils.HelpMetods.getLevelData;
@@ -25,6 +26,8 @@ public class Level {
     //I seguenti 2 le pozioni e le loot box
     private ArrayList<Potion> potions;
     private ArrayList<LootBox> lootBoxes;
+    //Il seguente per le trappole
+    private ArrayList<Spike> spikes;
 
     //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
     private int levelTileWide;
@@ -43,11 +46,17 @@ public class Level {
         createEnemyes();
         createPotions();
         createLootBoxes();
+        createSpikes();
         calculateLevelOffsets();
         calcualtePlayerSpawnPoint();
 
     }
-    
+
+    //Funzione per calcolare la posizione delle Spine trappola
+    private void createSpikes() {
+        spikes = HelpMetods.getSpikes(image);
+    }
+
     //Funzione per calcolare la posizione delle loot box
     private void createLootBoxes() {
         lootBoxes = HelpMetods.getLootBoxes(image);
@@ -106,6 +115,10 @@ public class Level {
 
     public ArrayList<LootBox> getLootBoxes(){
         return lootBoxes;
+    }
+
+    public ArrayList<Spike> getSpike(){
+        return spikes;
     }
 
     public Point getPlayerSpawnPoint(){

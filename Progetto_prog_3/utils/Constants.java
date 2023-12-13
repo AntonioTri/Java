@@ -27,6 +27,7 @@ public class Constants {
 		public static final int BLUE_POTION = 1;
 		public static final int BARREL = 2;
 		public static final int BOX = 3;
+        public static final int SPIKE = 52;
 
 		public static final int RED_POTION_VALUE = 15;
 		public static final int BLUE_POTION_VALUE = 10;
@@ -40,6 +41,11 @@ public class Constants {
 		public static final int POTION_HEIGHT_DEFAULT = 16;
 		public static final int POTION_WIDTH = (int) (Game.SCALE * POTION_WIDTH_DEFAULT);
 		public static final int POTION_HEIGHT = (int) (Game.SCALE * POTION_HEIGHT_DEFAULT);
+
+        public static final int SPIKE_DEFAULT_WIDTH = 32;
+        public static final int SPIKE_DEFAULT_HEIGHT = 32;
+        public static final int SPIKE_WIDTH = (int)(Game.SCALE * SPIKE_DEFAULT_WIDTH);   
+        public static final int SPIKE_HEIGHT = (int)(Game.SCALE * SPIKE_DEFAULT_HEIGHT);      
 
         //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
 		public static int getSpriteAmount(int objectType) {
@@ -140,6 +146,8 @@ public class Constants {
 		public static final int BIG_CLOUD_HEIGHT = (int) (BIG_CLOUD_HEIGHT_DEFAULT * Game.SCALE);
 		public static final int SMALL_CLOUD_WIDTH = (int) (SMALL_CLOUD_WIDTH_DEFAULT * Game.SCALE);
 		public static final int SMALL_CLOUD_HEIGHT = (int) (SMALL_CLOUD_HEIGHT_DEFAULT * Game.SCALE);
+
+        
 	}
 
 
@@ -203,9 +211,9 @@ public class Constants {
         public static final int WALKING = 1;
         public static final int RUNNING = 2;
         public static final int JUMPING_UP = 3;
-        public static final int TROW_SWORD = 4;
-        public static final int ATTACK1 = 5;
-        public static final int ATTACK2 = 6;
+        public static final int HEAVY_ATTACK = 4;
+        public static final int LIGHT_ATTACK = 5;
+        public static final int TROW_ATTACK = 6;
         public static final int JUMPING_DOWN = 7;
         public static final int HURT = 8;
         public static final int DIE = 9;
@@ -218,25 +226,25 @@ public class Constants {
                     return 8;
 
                 case IDLE:
-                    return 8; 
-
-                case WALKING:
-                    return 8; 
-
-                case JUMPING_UP:
-                    return 4; 
-
-                case TROW_SWORD:
                     return 6; 
 
-                case ATTACK1:
-                    return 3; 
+                case WALKING:
+                    return 7; 
 
-                case ATTACK2:
+                case JUMPING_UP:
+                    return 6; 
+
+                case TROW_ATTACK:
+                    return 7; 
+
+                case LIGHT_ATTACK:
                     return 4; 
+
+                case HEAVY_ATTACK:
+                    return 10; 
 
                 case JUMPING_DOWN:
-                    return 4; 
+                    return 5; 
 
                 case HURT:
                     return 3; 

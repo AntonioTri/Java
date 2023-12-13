@@ -91,6 +91,7 @@ public class Player extends Entity{
 
         if (moving) {
             checkPotionTouched();
+            checkSpikesTouched();
         }
 
         if (attacking) {
@@ -102,6 +103,8 @@ public class Player extends Entity{
         updateAttackBox();
         
     }
+
+    
 
     //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso    
     private void updateAttackBox() {
@@ -127,9 +130,12 @@ public class Player extends Entity{
         //La terza è che  vengono aggiunte variabili di "flip", se il personagio cammina verso destra è tutto apposto
         //Se va verso sinistra, l'immagine viene mostrata riflessa al contrario rispetto al suo asse y, e per ovviare a questo problema
         //Le viene sommato un offset agiuntivo per spostarla di nuovo nella posizione corretta 
-        g.drawImage(animations[state][aniIndex], (int)(hitbox.x - XOffset) - xLevelOffset + flipX, (int)(hitbox.y - YOffset), hitBoxWidth * flipW, hitBoxHeight, null);
+        g.drawImage(animations[state][aniIndex], 
+                    (int)(hitbox.x - XOffset) - xLevelOffset + flipX + 14, 
+                    (int)(hitbox.y - YOffset), 
+                    hitBoxWidth * flipW, hitBoxHeight, null);
+
         drawHitbox(g, xLevelOffset);
-        
         drowAttackBox(g, xLevelOffset);
         drawUI(g);
     }
@@ -189,6 +195,11 @@ public class Player extends Entity{
     private void checkPotionTouched() {
         playing.checkPotionTouched(hitbox);
     }
+
+    //Funzione che controlla se il player sta toccando una Spina
+    private void checkSpikesTouched() {
+        playing.checkSpikesTouched(this);
+    }
     
     //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
     //Se l'indice diventa magiore del numero di frame viene ripristinato a 0 e si riparte da capo
@@ -214,8 +225,10 @@ public class Player extends Entity{
         int startAnimation = state;
 
         if (moving) {
+            aniSpeed = 15;
             state = RUNNING;
         } else {
+            aniSpeed = 20;
             state = IDLE;
         }
 
@@ -228,7 +241,7 @@ public class Player extends Entity{
         }
 
         if (attacking) {
-            state = ATTACK2;
+            state = LIGHT_ATTACK;
         }
 
         /*Se la animazione di arrivo e' diversa dalla animazione di fine funzione
@@ -266,11 +279,12 @@ public class Player extends Entity{
         }
 
         //Cambi del movimento destra e sinistra, si aggiunge una quantità alla velocità
+        //e vengono settate le variabili per girare l'immagine, per far voltare il player nella direzione della camminata
 		float xSpeed = 0;
 
 		if (left){
 			xSpeed -= walkSpeed;
-            flipX = hitBoxWidth - 33;
+            flipX = hitBoxWidth - 60;
             flipW = -1;
         }
         
@@ -356,7 +370,7 @@ public class Player extends Entity{
 
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
-            animations = new BufferedImage[10][8];
+            animations = new BufferedImage[10][10];
 
             for(int j=0; j< animations.length ; j++){
                 for(int i=0; i<animations[j].length; i++){
@@ -387,6 +401,11 @@ public class Player extends Entity{
         this.y = spawn.y;
         hitbox.x = x;
         hitbox.y = y;
+    }
+
+    //Questa funzione fa morire il player
+    public void die() {
+        currentHealth = 0;
     }
 
     public boolean getLeft() {
@@ -436,6 +455,8 @@ public class Player extends Entity{
     public void changePower(int bluePotionValue) {
         System.out.println("Added some Power by piking up the blue potion");
     }
+
+    
 
     
 

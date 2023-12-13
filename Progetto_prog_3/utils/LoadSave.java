@@ -13,12 +13,13 @@ public class LoadSave {
     //Stringe rapparesentative per ottenere una specifica immagine png da caricare
     //public static final String LEVEL_1_DATA = "level_one_data.png";
     
-    //Assest
+    //Enviroment
     public static final String LEVEL_ATLAS = "enviroment/Terrain.png";
     public static final String PLAYING_BACKGROUND_IMAGE = "enviroment/playing_bkgd_img.png";
     public static final String SMALL_CLOUDS = "enviroment/small_clouds.png";
     public static final String BIG_CLOUDS = "enviroment/big_clouds.png";
-    
+    public static final String SPIKE_ATLAS = "enviroment/trap_atlas.png";
+
     //UI
     public static final String MENU_BUTTONS = "ui/button_atlas.png";
     public static final String PAUSE_BACKGROUND = "ui/pause_menu.png";
@@ -31,7 +32,7 @@ public class LoadSave {
     public static final String LEVEL_COMPLITED = "ui/level_completed_sprite.png";
 
     //Entity
-    public static final String PLAYER_ATLAS = "entity/Animations.png";
+    public static final String PLAYER_ATLAS = "entity/MageAnimations.png";
     public static final String NIGHT_BORNE_ATLAS = "entity/NightBorne.png";
 
     //Loot
