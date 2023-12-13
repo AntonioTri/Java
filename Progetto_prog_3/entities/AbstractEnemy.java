@@ -17,7 +17,7 @@ public abstract class AbstractEnemy extends Entity{
     protected int wlakDir = LEFT;
     protected int enemyTileY;
     protected float attackDistance = Game.TILES_SIZE;
-    protected boolean attackChecked;
+    protected boolean attackChecked, invulnerability;
 
     //Variabile per osservare se è morto oppure no
     protected boolean active = true;
@@ -226,6 +226,22 @@ public abstract class AbstractEnemy extends Entity{
 
     public int getAniIndex(){
         return aniIndex;
+    }
+
+    public int getAniSpeed(){
+        return aniSpeed;
+    }
+
+    public void setAniSpeed(int value){
+        this.aniSpeed = value;
+    }
+
+    public void setInvulnerability(boolean invulnerability) {
+        this.invulnerability = invulnerability;
+    }
+
+    public boolean getInvulnerability(){
+        return invulnerability;
     }
 
     

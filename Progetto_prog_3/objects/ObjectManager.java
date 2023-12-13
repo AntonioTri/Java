@@ -2,9 +2,11 @@ package Progetto_prog_3.objects;
 
 import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
 
 public class ObjectManager {
@@ -18,15 +20,69 @@ public class ObjectManager {
     public ObjectManager(Playing playing){
         this.playing = playing;
         loadImages();
+    }
 
-        potions = new ArrayList<>();
-        lootBoxes = new ArrayList<>();
+    public void loadObjects(Level level) {
+    
+        potions = level.getPotions();
+        lootBoxes = level.getLootBoxes();
 
-        potions.add(new Potion(300, 300, RED_POTION));
-        potions.add(new Potion(400, 300, BLUE_POTION));
-        lootBoxes.add(new LootBox(500, 300, BARREL));
-        lootBoxes.add(new LootBox(600, 300, BOX));
+    }
 
+    //Questa funzione ci permette di controllare se il player hoverlaps, cammina sopra, una pozione, in tal caso, la pozione viene 
+    //settata in stato di falso e quindi non sarà più raccoglibile e scomparirà dalla scena, ed al Player viene associato l'effetto
+    //della pozione che ha appena raccolto
+    public void checkPlayerTouched(Rectangle2D.Float hitbox){
+        
+        for (Potion potion : potions) {
+            if (potion.isActive()) {
+                if (hitbox.intersects(potion.hitbox)) {
+                    applyEffectToPlayer(potion);
+                    potion.setActive(false);
+
+                }
+            }
+        }
+    }
+
+    //La funzione che applica al player l'effetto della pozione raccolta
+    //!!QUA CI STA UN DESIGN PATERN AL 100%
+    public void applyEffectToPlayer(Potion potion){
+
+        if (potion.getObjType() == RED_POTION) {
+            playing.getPlayer().changeHealth(RED_POTION_VALUE);
+        } else {
+            playing.getPlayer().changePower(BLUE_POTION_VALUE);
+        }
+
+    }
+
+    public void checkObjectHit(Rectangle2D.Float playerAttackBox){
+
+        for (LootBox box : lootBoxes) {
+            if (box.isActive()) {
+                if (box.getHitbox().intersects(playerAttackBox)) {
+                    box.setAnimation(true);
+                    
+                    int type = 0;
+
+                    if (box.getObjType() == BARREL) {
+                        type = 1;
+                    }
+
+                    //Momento di spawn di una pozione al posto di una loot box a momento della distruzione di questa
+                    if (box.getCanSpawnPotion()) {
+                    potions.add(new Potion( (int)(box.getHitbox().x + box.getHitbox().width / 2),
+                                            (int)(box.getHitbox().y + box.getHitbox().height / 4),
+                                            type));
+                    box.setCanSpawnPotion(false);
+                    System.out.println("Spawned a Potion");
+                    }
+                    return;
+                
+                }
+            }
+        }
     }
 
 
@@ -83,13 +139,17 @@ public class ObjectManager {
                 type = 1;
             } 
 
-            g.drawImage(boxesImages[type][box.getAniIndex()],
-                (int)(box.getHitbox().x - box.getxDrawOffset() - xLevelOffset),
-                (int)(box.getHitbox().y - box.getyDrawOffset()),
-                CONTAINER_WIDTH,
-                CONTAINER_HEIGHT, 
-                null);
+            if (box.isActive()) {
+                g.drawImage(boxesImages[type][box.getAniIndex()],
+                    (int)(box.getHitbox().x - box.getxDrawOffset() - xLevelOffset),
+                    (int)(box.getHitbox().y - box.getyDrawOffset()),
+                    CONTAINER_WIDTH,
+                    CONTAINER_HEIGHT, 
+                    null);
+    
+                box.drawHitbox(g, xLevelOffset);
 
+            }
         }
     }
 
@@ -104,15 +164,28 @@ public class ObjectManager {
                 type = 1;
             } 
 
-            g.drawImage(potionImages[type][potion.getAniIndex()],
-                (int)(potion.getHitbox().x - potion.getxDrawOffset() - xLevelOffset),
-                (int)(potion.getHitbox().y - potion.getyDrawOffset()),
-                POTION_WIDTH,
-                POTION_HEIGHT, 
-                null);
+            if (potion.isActive()) {
+                g.drawImage(potionImages[type][potion.getAniIndex()],
+                    (int)(potion.getHitbox().x - potion.getxDrawOffset() - xLevelOffset),
+                    (int)(potion.getHitbox().y - potion.getyDrawOffset()),
+                    POTION_WIDTH,
+                    POTION_HEIGHT, 
+                    null);
+                
+                potion.drawHitbox(g, xLevelOffset);
 
+            }
         }
-
     }
+
+    public void resetAllObjects() {
+        for (Potion potion : potions)
+            potion.reset();
+        for (LootBox box : lootBoxes)
+            box.reset();
+    }
+
+
+    
 
 }

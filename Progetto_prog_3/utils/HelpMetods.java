@@ -5,9 +5,18 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
+
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
+import Progetto_prog_3.objects.LootBox;
+import Progetto_prog_3.objects.Potion;
+
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE;
+import static Progetto_prog_3.utils.Constants.ObjectConstants.BARREL;
+import static Progetto_prog_3.utils.Constants.ObjectConstants.BLUE_POTION;
+import static Progetto_prog_3.utils.Constants.ObjectConstants.BOX;
+import static Progetto_prog_3.utils.Constants.ObjectConstants.RED_POTION;
 
 
 public class HelpMetods {
@@ -69,6 +78,62 @@ public class HelpMetods {
                 if(value == NIGHT_BORNE){
                     list.add(new NightBorne(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
                 }
+            }
+        }
+
+        return list;
+
+    }
+
+    //I Successivi due metodi sono quasi identici al precedente, viene di fatta l'aggiunta una variabile randomica per far spawnare
+    //Una pozione rossa od una pozione blu per il primo metodo, e per il secondo un barile oppure una cassa, tutte e due con una probabilità
+    //Al momento del 50%
+    public static ArrayList<Potion> getPotions(BufferedImage img){
+
+        ArrayList<Potion> list = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+                
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+
+                Random randValue = new Random();
+                int x = randValue.nextInt(10);
+
+                if(value == 124){
+                    if (x<5) {
+                        list.add(new Potion(i * Game.TILES_SIZE, j * Game.TILES_SIZE, RED_POTION));
+                    } else {
+                        list.add(new Potion(i * Game.TILES_SIZE, j * Game.TILES_SIZE, BLUE_POTION));
+                    }
+                } 
+            }
+        }
+
+        return list;
+
+    }
+
+    public static ArrayList<LootBox> getLootBoxes(BufferedImage img){
+
+        ArrayList<LootBox> list = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                Random randValue = new Random();
+                int x = randValue.nextInt(10);
+
+                if(value == 123){
+                    if (x<5) {
+                        list.add(new LootBox(i * Game.TILES_SIZE, j * Game.TILES_SIZE, BOX));
+                    } else {
+                        list.add(new LootBox(i * Game.TILES_SIZE, j * Game.TILES_SIZE, BARREL));
+                    }
+                } 
             }
         }
 

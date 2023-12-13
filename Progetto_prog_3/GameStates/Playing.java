@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Float;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import Progetto_prog_3.Game;
@@ -81,6 +82,22 @@ public class Playing extends State implements StateMethods{
 
     }
 
+    private void loadStartLevel() {
+        enemyManager.addEnemies(levelManager.getCurrentLevel());
+        objectManager.loadObjects(levelManager.getCurrentLevel());
+    }
+
+    public void checkPotionTouched(Rectangle2D.Float hitbox) {
+        objectManager.checkPlayerTouched(hitbox);
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        enemyManager.checkEnemyHit(attackBox);
+    }
+
+    public void checkObjectHit(Rectangle2D.Float attackBox) {
+        objectManager.checkObjectHit(attackBox);
+    }
 
     @Override
     public void update() {
@@ -116,6 +133,7 @@ public class Playing extends State implements StateMethods{
         levelManager.draw(g, xLevelOffset);
         player.render(g, xLevelOffset);
         objectManager.draw(g, xLevelOffset);
+
         //Vengono scritti gli FPS e gli UPS a schermo
         g.setColor(Color.white);
 		g.drawString(game.getFpsUps(), 30, Game.GAME_HEIGHT - 20);
@@ -127,9 +145,11 @@ public class Playing extends State implements StateMethods{
             g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             //Si disegna il menù di pausa sopra al rettangolo opaco precedente
             pauseOverlay.draw(g);
+
             //Se avviene un gameo over, si diegna il game over overlay
         } else if (gameOver) {
             gameOverOverlay.draw(g);
+            
             //Se il livello viene completato si diegna il level completed overlay
         } else if (levelCompleted) {
             levelCompletedOverlay.draw(g);
@@ -315,15 +335,14 @@ public class Playing extends State implements StateMethods{
         levelCompleted = false;
         player.resetAll();
         enemyManager.resetAllEnemyes();
+        objectManager.resetAllObjects();
     }
 
     private void calculateLevelOffset() {
         maxLevelOffsetX = levelManager.getCurrentLevel().getLevelOffset();
     }
 
-    private void loadStartLevel() {
-        enemyManager.addEnemies(levelManager.getCurrentLevel());
-    }
+    
 
     public void loadNextLevel(){
         resetAll();
@@ -347,10 +366,6 @@ public class Playing extends State implements StateMethods{
         this.gameOver = gameOver;
     }
     
-    public void checkEnemyHit(Rectangle2D.Float attackBox) {
-        enemyManager.checkEnemyHit(attackBox);
-    }
-    
     public Player getPlayer(){
         return player;
     }
@@ -366,5 +381,9 @@ public class Playing extends State implements StateMethods{
     public ObjectManager getObjectManager(){
         return objectManager;
     }
+
+    
+
+    
 
 }

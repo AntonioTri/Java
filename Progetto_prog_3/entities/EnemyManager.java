@@ -67,6 +67,12 @@ public class EnemyManager {
                 nb.drawHitbox(g, xLevelOffset);
                 nb.drowAttackBox(g, xLevelOffset);
 
+                if (nb.getState() == NIGHT_BORNE_DIE) {
+                    nb.setAniSpeed(20);
+                    nb.setInvulnerability(true);
+                    System.out.println("Sta morendo male");
+                }
+
             }
         }
     }
@@ -75,7 +81,7 @@ public class EnemyManager {
     public void checkEnemyHit(Rectangle2D.Float attackBox){
         for (NightBorne nb : nightBornes) {
             //Se il nemico è attivo allora viene fatto un controllo sulle intersezioni tra hitbox
-            if (nb.getActive() && attackBox.intersects(nb.getHitbox())) {
+            if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && !nb.getInvulnerability()) {
                 nb.hurt(playing.getPlayer().getDamage());
                 return;
             }
@@ -84,7 +90,7 @@ public class EnemyManager {
 
     public void resetAllEnemyes(){
 
-        for (NightBorne nb : nightBornes) {
+        for (AbstractEnemy nb : nightBornes) {
             nb.resetEnemy();
         }
 

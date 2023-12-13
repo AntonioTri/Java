@@ -5,6 +5,10 @@ import java.awt.image.BufferedImage;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
+import Progetto_prog_3.objects.LootBox;
+import Progetto_prog_3.objects.Potion;
+import Progetto_prog_3.utils.HelpMetods;
+
 import static Progetto_prog_3.utils.HelpMetods.getLevelData;
 import static Progetto_prog_3.utils.HelpMetods.getNightBornes;
 import static Progetto_prog_3.utils.HelpMetods.GetPlayerSpawnPoint;
@@ -16,8 +20,11 @@ public class Level {
 
     //Làimmagine conserva il level data
     private BufferedImage image;
-    //Il seguente array, i nemici di tipo nightborne
+    //Il seguente array, conserva i nemici di tipo nightborne
     private ArrayList<NightBorne> nightBornes;
+    //I seguenti 2 le pozioni e le loot box
+    private ArrayList<Potion> potions;
+    private ArrayList<LootBox> lootBoxes;
 
     //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
     private int levelTileWide;
@@ -34,11 +41,23 @@ public class Level {
         this.image = image;
         createLevelData();
         createEnemyes();
+        createPotions();
+        createLootBoxes();
         calculateLevelOffsets();
         calcualtePlayerSpawnPoint();
 
     }
     
+    //Funzione per calcolare la posizione delle loot box
+    private void createLootBoxes() {
+        lootBoxes = HelpMetods.getLootBoxes(image);
+    }
+
+    //Funzione per calcolare la posizione delle pozioni
+    private void createPotions() {
+        potions = HelpMetods.getPotions(image);
+    }
+
     //Funzione per calcolare il punto di spawn del player
     private void calcualtePlayerSpawnPoint() {
         playerSpawnPoint = GetPlayerSpawnPoint(image);
@@ -79,6 +98,14 @@ public class Level {
 
     public ArrayList<NightBorne> getnNightBornes(){
         return nightBornes;
+    }
+
+    public ArrayList<Potion> getPotions(){
+        return potions;
+    }
+
+    public ArrayList<LootBox> getLootBoxes(){
+        return lootBoxes;
     }
 
     public Point getPlayerSpawnPoint(){

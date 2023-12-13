@@ -69,8 +69,8 @@ public class Player extends Entity{
 
     private void initStates(){
         this.state = IDLE;
-        this.maxHealth = 10;
-        this.currentHealth = this.maxHealth;
+        this.maxHealth = 100;
+        this.currentHealth = 35;
     }
 
     private void initAttackBox(){
@@ -89,6 +89,10 @@ public class Player extends Entity{
 
         updatePosition();
 
+        if (moving) {
+            checkPotionTouched();
+        }
+
         if (attacking) {
             checkAttack();
         }
@@ -98,8 +102,6 @@ public class Player extends Entity{
         updateAttackBox();
         
     }
-    
-    
 
     //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso    
     private void updateAttackBox() {
@@ -164,14 +166,29 @@ public class Player extends Entity{
     //in tal caso deve applicare i danni a quel nemico
     private void checkAttack() {
 
-        if (attackChecked && aniIndex != 1) {
+        if (!attackChecked && aniIndex != 1) {
             return;
         }
 
+        //Viene settato l'attacco a true se il controllo precedente fallisce ( vuol dire che si sta attaccando perchè la flag è !vera ),
+        //il game loop lo resetterebbe a falso in tutti i casi con una velocità quasi istantanea, allora serve tenerlo a vero per
+        //evitare che la chiamata di questa funzione ritorni nel'update successivo
         attackChecked = true;
-        playing.checkEnemyHit(attackBox);
+
+        //Viene fatto il controllo sul danno solo quando l'animazione si trova in un certo indice
+        if (aniIndex == 2 || aniIndex == 3){
+
+            playing.checkEnemyHit(attackBox);
+            playing.checkObjectHit(attackBox);
+            attackChecked = false;
+            
+        }
     }
     
+    //Funzione che controlla se il player sta toccando una pozione
+    private void checkPotionTouched() {
+        playing.checkPotionTouched(hitbox);
+    }
     
     //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
     //Se l'indice diventa magiore del numero di frame viene ripristinato a 0 e si riparte da capo
@@ -414,6 +431,10 @@ public class Player extends Entity{
 
     public int getDamage(){
         return damage;
+    }
+
+    public void changePower(int bluePotionValue) {
+        System.out.println("Added some Power by piking up the blue potion");
     }
 
     

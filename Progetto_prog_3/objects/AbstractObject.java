@@ -30,14 +30,14 @@ public abstract class AbstractObject {
     }
 
     public void drawHitbox(Graphics g, int xLevelOffset){
-        g.setColor(Color.GREEN);
+        g.setColor(Color.PINK);
         g.drawRect((int)hitbox.x - xLevelOffset, (int)hitbox.y, (int) hitbox.width, (int) hitbox.height);
     }
 
     protected void updateAnimationTick(){
 
         aniTick++;
-        if (aniTick >= ANI_SPEED) {
+        if (aniTick >= ANI_SPEED - 6) {
 
             aniTick = 0;
             aniIndex++;

@@ -27,14 +27,14 @@ public class NightBorne extends AbstractEnemy{
             
         if(active){
             updateMove(levelData, player);
-            updateAttackBox();
+            updateAttackBoxDirection();
         }
         updateAnimationTick();
 
     }
 
     //In base al movimento se sia destro o sinistro l'attackbox viene posizionata a destra o a sinistra della hitbox
-    private void updateAttackBox() {
+    private void updateAttackBoxDirection() {
         if (wlakDir == LEFT) {
             attackBox.x = hitbox.x - attackBoxOffsetX - 5;
             attackBox.y = hitbox.y - 45;
@@ -63,6 +63,7 @@ public class NightBorne extends AbstractEnemy{
                     break;
                 //Se lo stato è quello del running vengono fatti dei controlli
                 case NIGHT_BORNE_RUN:
+                    aniSpeed = 20;
                     //Se il nightboren può vedere il player si gira verso di esso
                     if (canSeePlayer(levelData, player)) {
                         turnTowardsPlayer(player);
@@ -80,10 +81,14 @@ public class NightBorne extends AbstractEnemy{
                     break;
                     
                 case NIGHT_BORNE_ATTACK:
+
+                    aniSpeed = 12;
+
                     if (aniIndex == 0) {
                         attackChecked = false;
                     }
                     if (aniIndex == 10 /*oppure 9, bisogna vedere */ && !attackChecked) {
+
                         checkEnemyHit(attackBox, player);
                     }
                 case NIGHT_BORNE_HITTED:
@@ -92,6 +97,8 @@ public class NightBorne extends AbstractEnemy{
             }
         }
     }
+
+    
 
 
     
