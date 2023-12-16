@@ -2,7 +2,6 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
-import static Progetto_prog_3.utils.Constants.ANI_SPEED;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -135,8 +134,6 @@ public class Player extends Entity{
         
     }
 
-    
-
     //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso    
     private void updateAttackBox() {
 
@@ -165,7 +162,6 @@ public class Player extends Entity{
                     (int)(hitbox.x - XOffset) - xLevelOffset + flipX + 14, 
                     (int)(hitbox.y - YOffset), 
                     hitBoxWidth * flipW, hitBoxHeight, null);
-        System.out.println(aniIndex + " + " + state );
 
         drawHitbox(g, xLevelOffset);
         drowAttackBox(g, xLevelOffset);

@@ -7,10 +7,7 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
-import static Progetto_prog_3.utils.Constants.UI.PauseButtons.*;
 import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
-import static Progetto_prog_3.utils.Constants.UI.VolumeButton.SLIDER_WIDTH;
-import static Progetto_prog_3.utils.Constants.UI.VolumeButton.VOLUME_HEIGHT;
 
 //Classe che definisce la schermata di ausa, nella quale coesistono diversi bottoni per diverse
 //Funzionalità legate al gameplay, come il volume, reset del livello, ritorno alla schermata iniziale
@@ -20,10 +17,8 @@ public class PauseOverlay implements MenusOverlayInterface{
     private int bgX, bgY, bgWidth, bgHeight;
 
     //Bottoni presenti nell schermata
-    private SoundButton musicButon, sfxButton;
     private PRHButtons homeB, replayB, unpauseB;
-    private VolumeButton volumeButton;
-
+    private AudioOptions audioOptions;
     //Variabile per accedere al game state di "Playing"
     Playing playing;
 
@@ -31,22 +26,13 @@ public class PauseOverlay implements MenusOverlayInterface{
     public PauseOverlay(Playing playing){
 
         this.playing = playing;
+        audioOptions = playing.getGame().geAudioOptions();
         loadBackground();
-        createSoundButtons();
         createPRHButtons();
-        createVolumeButton();
-
+        
     }
 
-    //Questa variabile costruisce il bottone del volume
-    private void createVolumeButton() {
-
-        int volumeX = (int)(309 * Game.SCALE);
-        int volumeY = (int)(278 * Game.SCALE);
-
-        volumeButton = new VolumeButton(volumeX, volumeY, SLIDER_WIDTH, VOLUME_HEIGHT);
-
-    }
+    
 
     //Questo metodo invece chrea i tre bottoni di pausa, reset e ritorno a schermata home
     private void createPRHButtons() {
@@ -65,16 +51,7 @@ public class PauseOverlay implements MenusOverlayInterface{
 
     }
 
-    //Questo crea i bottoni Per mettere il muto a effetti sonori e musica in generale 
-    private void createSoundButtons() {
-        int buttonX = (int) (450 * Game.SCALE);
-        int musicX = (int) ( 140 * Game.SCALE);
-        int sfxY = (int) ( 186* Game.SCALE);
-        
-        musicButon = new SoundButton(buttonX, musicX, SUOND_SIZE, SUOND_SIZE);
-        sfxButton = new SoundButton(buttonX, sfxY, SUOND_SIZE, SUOND_SIZE);
-
-    }
+    
 
     //Questo metodo come gli altri gia incontrati durante il progetto, carica un png per l'immagine del nostro Pause Menu
     private void loadBackground() {
@@ -90,13 +67,10 @@ public class PauseOverlay implements MenusOverlayInterface{
 
     @Override
     public void update(){
-
-        musicButon.update();
-        sfxButton.update();
         homeB.update();
         replayB.update();
         unpauseB.update();
-        volumeButton.update();
+        audioOptions.update();
     }
 
     @Override
@@ -104,24 +78,18 @@ public class PauseOverlay implements MenusOverlayInterface{
         //Background
         g.drawImage(backgroundImg, bgX, bgY, bgWidth, bgHeight, null);
         
-        //Sound buttons
-        sfxButton.draw(g);
-        musicButon.draw(g);
-
         //Home Resume unpause button
         homeB.draw(g);
         replayB.draw(g);
         unpauseB.draw(g);
-        volumeButton.draw(g);
+        audioOptions.draw(g);
 
     }
 
     //Questa funzione serve ad aggiornare la posiizone del bottone del mouse
     @Override
     public void mouseDragged(MouseEvent e){
-        if (volumeButton.getMousePressed()) {
-            volumeButton.changeX(e.getX());
-        }
+        audioOptions.mouseDragged(e);
     }
 
     //Questo metodo si attiva quando il tasto del mouse viene premuto, 
@@ -129,19 +97,13 @@ public class PauseOverlay implements MenusOverlayInterface{
     @Override
     public void mousePressed(MouseEvent e){
 
-        if (mouseHovering(musicButon, e) ) {
-            musicButon.setMousePressed(true);  
-        } else if(mouseHovering(sfxButton, e)) {
-            sfxButton.setMousePressed(true);
-        } else if (mouseHovering(homeB, e)) {
+        if (mouseHovering(homeB, e)) {
             homeB.setMousePressed(true);
         } else if (mouseHovering(replayB, e)) {
             replayB.setMousePressed(true);
         } else if (mouseHovering(unpauseB, e)) {
             unpauseB.setMousePressed(true);
-        } else if (mouseHovering(volumeButton, e)) {
-            volumeButton.setMousePressed(true);
-        }
+        } else audioOptions.mousePressed(e);
         
     }
 
@@ -152,19 +114,9 @@ public class PauseOverlay implements MenusOverlayInterface{
         //Questa serie di if else statements, serve a definire un evento specifico nella 
         //Schermata di pausa, se iol mouse si trova sopra ad un bottone e se questo viene premuto
         //Avvia il suo stato e modifica le componenti di gioco come il suono o il Game state
-
-        //Music button
-        if (mouseHovering(musicButon, e) ) {
-            if (musicButon.getMousePressed()) {
-                musicButon.setMuted(!musicButon.getMuted());
-            }
-        //Sound Effects button
-        } else if(mouseHovering(sfxButton, e) ){
-            if (sfxButton.getMousePressed()) {
-                sfxButton.setMuted(!sfxButton.getMuted());
-            }
+        
         //Home Button
-        } else if(mouseHovering(homeB, e) ){
+        if(mouseHovering(homeB, e) ){
             if (homeB.getMousePressed()) {
                 GameState.state = GameState.MENU;
                 playing.unpauseGame();
@@ -180,14 +132,13 @@ public class PauseOverlay implements MenusOverlayInterface{
             if (unpauseB.getMousePressed()) {
                 playing.unpauseGame();
             }
-        }
+
+        } else audioOptions.mouseReleased(e);
+        
         //Si resetano i valori booleani per resettare gli sprite
-        musicButon.resetBools();
-        sfxButton.resetBools();
         homeB.resetBools();
         replayB.resetBools();
         unpauseB.resetBools();
-        volumeButton.resetBools();
     }
 
     //Questa funzione osserva se il mouse sta passando sopra ad un bottone, in tal caso
@@ -195,35 +146,23 @@ public class PauseOverlay implements MenusOverlayInterface{
     @Override
     public void mouseMoved(MouseEvent e){
 
-        musicButon.setMouseOver(false);
-        sfxButton.setMouseOver(false);
         homeB.setMouseOver(false);
         replayB.setMouseOver(false);
         unpauseB.setMouseOver(false);
-        volumeButton.setMouseOver(false);
 
-        if (mouseHovering(musicButon, e)) {
-            musicButon.setMouseOver(true);
-        } else if(mouseHovering(sfxButton, e)){
-            sfxButton.setMouseOver(true);
-        } else if(mouseHovering(homeB, e)){
+        if(mouseHovering(homeB, e)){
             homeB.setMouseOver(true);
         } else if(mouseHovering(replayB, e)){
             replayB.setMouseOver(true);
         } else if(mouseHovering(unpauseB, e)){
             unpauseB.setMouseOver(true);
-        } else if(mouseHovering(volumeButton, e)){
-            volumeButton.setMouseOver(true);
-        }
+        } else audioOptions.mouseMoved(e);
     }
 
     //Si usa il polimorfismo per la classe PauseButton
     @Override
     public boolean mouseHovering(AbstractButtons pb, MouseEvent e ){
-
         return pb.getHitbox().contains(e.getX(), e.getY());
-        
-
     }
 
 
