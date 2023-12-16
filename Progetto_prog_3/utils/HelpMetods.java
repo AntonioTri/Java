@@ -9,6 +9,8 @@ import java.util.Random;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
+import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.objects.AbstractProjectile;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
@@ -230,6 +232,33 @@ public class HelpMetods {
             return areAllTilesClear(firstXTile, secondXTile, cannonTyleY, levelData);
 
         }
+    }
+
+    public static boolean isPlayereInFrontOfCannon(Cannon c, Player player) {
+        if (c.getObjType() == CANNON_LEFT) {
+            if (c.getHitbox().x > player.getHitbox().x) {
+                return true;
+            }
+        } else if (c.getHitbox().x < player.getHitbox().x) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    
+    public static boolean projectileHittingWall(AbstractProjectile projectile, int[][] levelData) {
+        
+        return isSolid(projectile.getHitbox().x + projectile.getHitbox().width / 2, projectile.getHitbox().y + projectile.getHitbox().height / 2, levelData);
+        
+    }
+
+    public static boolean isPlayereInRange(Cannon c, Player player) {
+        int absValue = (int)Math.abs(player.getHitbox().x - c.getHitbox().x);
+        //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
+        //per 5, la condizione è vera e ritora vero, altrimenti falso
+        return absValue <= Game.TILES_SIZE * 8;
     }
 
     public static boolean areAllTilesClear(int xStart, int xEnd, int y, int[][] levelData){

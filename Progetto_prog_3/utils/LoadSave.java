@@ -35,6 +35,7 @@ public class LoadSave {
     public static final String PLAYER_ATLAS = "entity/MageAnimations.png";
     public static final String NIGHT_BORNE_ATLAS = "entity/NightBorne.png";
     public static final String CANNON_ATLAS = "entity/cannon_atlas.png";
+    public static final String CANNON_BALL = "entity/ball.png";
 
     //Loot
     public static final String BOXES_SPRITE = "loot/objects_sprites.png";

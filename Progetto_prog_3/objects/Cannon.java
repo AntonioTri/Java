@@ -30,5 +30,10 @@ public class Cannon extends AbstractObject{
     }
 
 
+    public int getAniTick() {
+        return aniTick;
+    }
+
+
 
 }

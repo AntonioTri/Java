@@ -1,4 +1,8 @@
 package Progetto_prog_3.utils;
+import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_HEIGHT;
+import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_SPEED;
+import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_WIDTH;
+
 import Progetto_prog_3.Game;
 
 public class Constants {
@@ -57,7 +61,7 @@ public class Constants {
 
         //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
 		public static int getSpriteAmount(int objectType) {
-            
+
 			switch (objectType) {
 			case RED_POTION, BLUE_POTION:
 				return 7;
@@ -71,7 +75,7 @@ public class Constants {
 	}
 
 
-    //Variabili statidche per definire I nemici, per ora soltanto i nightbornes
+    //Variabili statiche per definire I nemici, per ora soltanto i nightbornes
     public static class EnemtConstants{
 
 
@@ -146,7 +150,54 @@ public class Constants {
 
     }
 
-    //Variabili statidche per definire la grandezza dell'ambiente
+    //Variabili statiche per definire la grandezza dei proiettili
+    public static class Projectiles{
+
+        public static final int CANNON_BALL = 0;
+
+
+        public static class CannonBall{
+            public static final int CANNON_BALL_DEFAULT_WIDTH = 15;
+            public static final int CANNON_BALL_DEFAULT_HEIGHT = 15;
+    
+            public static final int CANNON_BALL_WIDTH = (int)(CANNON_BALL_DEFAULT_WIDTH * Game.SCALE);
+            public static final int CANNON_BALL_HEIGHT = (int)(CANNON_BALL_DEFAULT_HEIGHT * Game.SCALE);
+    
+            public static final float CANNON_BALL_SPEED = 0.9f * Game.SCALE;
+        }
+
+        public static int getProjectileWidth(int objType){
+            switch (objType) {
+                case CANNON_BALL:
+                    return CANNON_BALL_WIDTH;
+            
+                default:
+                    return 10;
+            }
+        }
+
+        public static int getProjectileHeight(int objType){
+            switch (objType) {
+                case CANNON_BALL:
+                    return CANNON_BALL_HEIGHT;
+            
+                default:
+                    return 10;
+            }
+        }
+
+        public static float getProjectileSpeed(int objType){
+            switch (objType) {
+                case CANNON_BALL:
+                    return CANNON_BALL_SPEED;
+            
+                default:
+                    return 10;
+            }
+        }
+    }
+
+    //Variabili statiche per definire la grandezza dell'ambiente
     public static class Environment {
 		public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;
 		public static final int BIG_CLOUD_HEIGHT_DEFAULT = 101;
@@ -164,7 +215,7 @@ public class Constants {
 
 
     public static class UI{
-        //Variabili statidche per definire la grandezza dei bottoni
+        //Variabili statiche per definire la grandezza dei bottoni
         public static class Buttons{
             public static final int BUTTON_DEFAULT_WIDTH = 140;
             public static final int BUTTON_DEFAULT_HEIGHT = 56;
@@ -172,7 +223,7 @@ public class Constants {
             public static final int BUTTON_HEIGHT = (int)(BUTTON_DEFAULT_HEIGHT * Game.SCALE);
         }
 
-        //Variabili statidche per definire la grandezza dei bottoni di pausa
+        //Variabili statiche per definire la grandezza dei bottoni di pausa
         public static class PauseButtons{
 
             public static final int SUOND_SIZE_DEFAULT = 42;
@@ -181,7 +232,7 @@ public class Constants {
 
         }
 
-        //Variabili statidche per definire la grandezza dei bottoni di reset, home e resume
+        //Variabili statiche per definire la grandezza dei bottoni di reset, home e resume
         public static class PhrButtons{
 
             public static final int PRH_BUTTONS_DEFAULT_SIZE = 56;
@@ -189,7 +240,7 @@ public class Constants {
 
         } 
 
-        //Variabili statidche per definire la grandezza della barra del volume
+        //Variabili statiche per definire la grandezza della barra del volume
         public static class VolumeButton{
 
             public static final int VOLUME_DEFAUT_HEIGHT = 44;
@@ -205,7 +256,7 @@ public class Constants {
 
     }
 
-    //Variabili statidche per definire i movimenti standard globali
+    //Variabili statiche per definire i movimenti standard globali
     public static class Directions{
 
         public static final int LEFT = 0;
@@ -215,7 +266,7 @@ public class Constants {
 
     }
 
-    //Variabili statidche per definire gli stati del player
+    //Variabili statiche per definire gli stati del player
     public static class PlayerConstants{
 
         public static final int IDLE = 0;

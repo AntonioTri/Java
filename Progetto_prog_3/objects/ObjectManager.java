@@ -1,27 +1,32 @@
 package Progetto_prog_3.objects;
 
-import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
-import static Progetto_prog_3.utils.HelpMetods.canCannonSeePlayer;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
+import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
+import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_HEIGHT;
+import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_WIDTH;
+import static Progetto_prog_3.utils.HelpMetods.canCannonSeePlayer;
+import static Progetto_prog_3.utils.HelpMetods.isPlayereInFrontOfCannon;
+import static Progetto_prog_3.utils.HelpMetods.isPlayereInRange;
+import static Progetto_prog_3.utils.HelpMetods.projectileHittingWall;
 
 public class ObjectManager {
     
     private Playing playing;
     private BufferedImage[][] potionImages, boxesImages;
     private BufferedImage[] cannonImages;
-    private BufferedImage spikeImage;
+    private BufferedImage spikeImage, cannonBallImage;
     private ArrayList<Potion> potions;
     private ArrayList<LootBox> lootBoxes;
     private ArrayList<Spike> spikes;
     private ArrayList<Cannon> cannons;
+    private ArrayList<CannonBall> cannonBalls = new ArrayList<>();;
 
 
     public ObjectManager(Playing playing){
@@ -35,6 +40,7 @@ public class ObjectManager {
         lootBoxes =  new ArrayList<>(level.getLootBoxes());
         spikes = new ArrayList<>(level.getSpike());
         cannons = new ArrayList<>(level.getCannons());
+        cannonBalls.clear();
 
     }
 
@@ -119,6 +125,12 @@ public class ObjectManager {
      * Viene creata una buffered image per ogni elemento, e con due cicli for innestati si prendono le subimage dagli sprite
      */
     private void loadImages() {
+
+        //Si carica l'immagine delle spine
+        spikeImage = LoadSave.getSpriteAtlas(LoadSave.SPIKE_ATLAS);
+        //Viene caricata l'immagine della palla di cannone
+        cannonBallImage = LoadSave.getSpriteAtlas(LoadSave.CANNON_BALL);
+
         //Si caricanole immagini delle pozioni
         BufferedImage potionSprites = LoadSave.getSpriteAtlas(LoadSave.POTIONS);
         potionImages = new BufferedImage[2][7];
@@ -138,9 +150,6 @@ public class ObjectManager {
                 boxesImages[j][i] = boxesSprites.getSubimage(40 * i, 30 * j, 40, 30);
             }
         }
-
-        //Si carica l'immagine delle spine
-        spikeImage = LoadSave.getSpriteAtlas(LoadSave.SPIKE_ATLAS);
 
         //Si caricanole immagini dei cannoni
         cannonImages = new BufferedImage[7];
@@ -165,7 +174,12 @@ public class ObjectManager {
         }
 
         updateCanons(levelData, player);
+        updateProjectiles(levelData, player);
     }
+
+    
+
+    
 
     /*
      * Se il cannone non sta faceendo l'animazione
@@ -178,41 +192,61 @@ public class ObjectManager {
         for (Cannon c : cannons) {
             if (!c.doAnimation 
                 && ( c.getCannonTyleY() == player.getPlayerTileY() + 1) //Qua viene agiunto un + 1 peerchè la y del player si trova su un blocco più in alto
-                && isPlayereInRange(c, player) && isPlayereInFrontOfCannon(c, player)
+                && isPlayereInRange(c, player) 
+                && isPlayereInFrontOfCannon(c, player)
                 && canCannonSeePlayer(levelData, player.getHitbox(), c.getHitbox(), c.getCannonTyleY())) {
                 
-                    shootCannon(c);
+                    c.setAnimation(true);
             
             }
             
             c.update();
+            //Il cannone spara soltanto quando il suo frame di animazione è a 4
+            if (c.getAniIndex() == 4 && c.getAniTick() == 0) {
+                shootCannon(c);
+            }
         }
 
     }
 
     private void shootCannon(Cannon c) {
         c.setAnimation(true);
-    }
+        
+        int direction = 1;
 
-    private boolean isPlayereInFrontOfCannon(Cannon c, Player player) {
         if (c.getObjType() == CANNON_LEFT) {
-            if (c.getHitbox().x > player.getHitbox().x) {
-                return true;
-            }
-        } else if (c.getHitbox().x < player.getHitbox().x) {
-            return true;
+            direction = -1;
         }
 
-        return false;
+        cannonBalls.add(new CannonBall((int)c.getHitbox().x, (int)c.getHitbox().y, direction));
+
 
     }
 
-    private boolean isPlayereInRange(Cannon c, Player player) {
-        int absValue = (int)Math.abs(player.getHitbox().x - c.getHitbox().x);
-        //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
-        //per 5, la condizione è vera e ritora vero, altrimenti falso
-        return absValue <= Game.TILES_SIZE * 8;
+
+    //Questo metodo esegue i controlli sulla palla di cannone, se questa è attiva si esegue l'update dlla sua posizione
+    //Si controlla successivamente se sta colpeendo il player, in tal caso gli si applica il danno
+    //Altrimeenti si controlla se stia colpendo un muro
+    private void updateProjectiles(int[][] levelData, Player player) {
+        for (CannonBall cb : cannonBalls) {
+            //Update della posizione
+            if (cb.getActive()) {
+                cb.updatePosition();
+            }
+            //Controllo della collisione con il player
+            if (player.getHitbox().intersects(cb.getHitbox()) && cb.getCanDoDamage()) {
+                player.changeHealth(-25);
+                cb.setActive(false);
+                cb.setCanDoDamage(false);
+            //Controllo della collisione con un muro
+            } else if (projectileHittingWall(cb, levelData)) {
+                cb.setActive(false);
+            }
+        }
     }
+
+    
+
 
     //Classico metodo draw che richiama tutti i metodi draw per disegnare i singoli oggetti
     public void draw(Graphics g, int xLevelOffset){
@@ -220,9 +254,12 @@ public class ObjectManager {
         drawBoxes(g, xLevelOffset);
         drawTraps(g,xLevelOffset);
         drawCannons(g, xLevelOffset);
+        drawCannonBall(g, xLevelOffset);
     }
 
 
+   
+    //Metodo per disegnare i cannoni
     private void drawCannons(Graphics g, int xLevelOffset) {
         for (Cannon c : cannons) {
 
@@ -236,6 +273,15 @@ public class ObjectManager {
 
             g.drawImage(cannonImages[c.getAniIndex()], X, (int)(c.getHitbox().y), width, CANNON_HEIGHT, null);
         
+        }
+    }
+
+    //Metodo per disegnare le palle di cannone
+    private void drawCannonBall(Graphics g, int xLevelOffset) {
+        for (CannonBall p : cannonBalls) {
+            if (p.getActive()) {
+                g.drawImage(cannonBallImage, (int)(p.getHitbox().x - xLevelOffset), (int)(p.getHitbox().y ), CANNON_BALL_WIDTH, CANNON_BALL_HEIGHT, null);
+            }
         }
     }
 
