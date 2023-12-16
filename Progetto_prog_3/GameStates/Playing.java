@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import Progetto_prog_3.Game;
@@ -14,7 +13,6 @@ import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.EnemyManager;
 import Progetto_prog_3.entities.Player;
-import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.objects.ObjectManager;
 import Progetto_prog_3.utils.LoadSave;
@@ -31,29 +29,31 @@ public class Playing extends State implements StateMethods{
 
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
-
+    
     //Queste variabili mi servono a gestire il movimento della telecamera nel mondo,
     //CAPTAZIONE WORK IN PROGRESS, ANCORA NON HO ANCORA CAPITO BENE
     private int xLevelOffset;
-
+    
     //Queste due variabili definiscono il bordo dopo il quale la visuale viene regolata e spostata di conseguenza
     private int leftBorder = (int)(0.5 * Game.GAME_WIDTH);
     private int rightBorder = (int)(0.5 * Game.GAME_WIDTH);
-
+    
     //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
     //private int levelTileWide = LoadSave.getLevelData()[0].length;
     //Queste servono a definire entro quale limite non bisonga più spostare la telecamera
     //private int maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
     private int maxLevelOffsetX;
-
+    
     //Immagini di baground
     private BufferedImage backgroundImage, bigClouds, smallClouds;
     private int[] smallCloudPos;
     private Random random = new Random();
-
+    
+    //La seguente variabile definisce se il player sta morendo, così da fermare tutti gli update
+    private boolean playerDying = false;
     //Variabile pre identificare il Game Over
     private boolean gameOver = false;
-
+    
     //level complited
     private boolean levelCompleted;
 
@@ -113,11 +113,17 @@ public class Playing extends State implements StateMethods{
         if (paused) {
             pauseOverlay.update();
         
-        //Se il livello è stato completato l'update del level completed overlay
+        //Se il livello è stato completato si esegue l'update del level completed overlay
         } else if (levelCompleted) {
             levelCompletedOverlay.update();
 
-        //Altrimenti viene fatto l'update del player e del livello
+        } else if (gameOver) {
+            gameOverOverlay.update();
+
+        } else if (playerDying) {
+            player.update();
+
+        //Altrimenti viene fatto l'update del player e del livello, e di tutti gli oggetti all'interrno di esso
         } else if (!gameOver){
             enemyManager.update(levelManager.getCurrentLevel().getLD(), player);
             levelManager.update();
@@ -245,6 +251,8 @@ public class Playing extends State implements StateMethods{
             } else if(levelCompleted) {
                 levelCompletedOverlay.mousePressed(e);
             }
+        } else{
+            gameOverOverlay.mousePressed(e);
         }
     }
 
@@ -258,7 +266,9 @@ public class Playing extends State implements StateMethods{
             } else if(levelCompleted) {
                 levelCompletedOverlay.mouseReleased(e);
             }
-        } 
+        } else{
+            gameOverOverlay.mouseReleased(e);
+        }
     }
 
     @Override
@@ -269,6 +279,8 @@ public class Playing extends State implements StateMethods{
             } else if(levelCompleted) {
                 levelCompletedOverlay.mouseMoved(e);
             }
+        } else{
+            gameOverOverlay.mouseMoved(e);
         }
     }
 
@@ -341,6 +353,7 @@ public class Playing extends State implements StateMethods{
         gameOver = false;
         paused = false;
         levelCompleted = false;
+        playerDying = false;
         player.resetAll();
         enemyManager.resetAllEnemyes();
         objectManager.resetAllObjects();
@@ -350,7 +363,6 @@ public class Playing extends State implements StateMethods{
         maxLevelOffsetX = levelManager.getCurrentLevel().getLevelOffset();
     }
 
-    
 
     public void loadNextLevel(){
         resetAll();
@@ -392,6 +404,14 @@ public class Playing extends State implements StateMethods{
 
     public LevelManager getLevelManager() {
         return levelManager;
+    }
+
+    public void setPlayerDying(boolean playerDying) {
+        this.playerDying = playerDying;
+    }
+
+    public boolean getPlayerDying() {
+        return playerDying;
     }
 
     

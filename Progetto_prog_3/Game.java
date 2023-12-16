@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Menu;
 import Progetto_prog_3.GameStates.Playing;
-import Progetto_prog_3.utils.LoadSave;
 
 public class Game implements Runnable{
 

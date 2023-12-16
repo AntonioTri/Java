@@ -2,6 +2,7 @@ package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.*;
 import static Progetto_prog_3.utils.HelpMetods.*;
+import static Progetto_prog_3.utils.Constants.ANI_SPEED;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -85,12 +86,36 @@ public class Player extends Entity{
 
         updateHealthBar();
 
-        if (currentHealth <= 0 ) {
-            playing.setGameOver(true);
-            return;
-        }
+        //Se il player è appena stato ucciso avveengono alcune cose
+        if (currentHealth <= 0) {
+            
+            //Viene impostato il suo stato in quello di morte e vengono impostati i valori di animazione corretti
+            if (state != DIE) {
+                state = DIE;
+                aniSpeed = 50;
+                aniTick = 0;
+                aniIndex = 0;                
+                playing.setPlayerDying(true);
+            
+            //A momento in cui l'animazione finisce, si mette in sleep il gioco peer dare un effetto pathos e si invia un seegnale 
+            //Alla classe playing peer impostar ilGameState a Deathscreen
+            } else if((aniIndex == getSpriteAmount(DIE) - 1) && (aniTick >= aniSpeed - 1)){
+                //Questo trry catch con uno sleep mi serve a rirtardare la comparsa del menù di deathScreen
+                try {
+                    Thread.sleep(700);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-        updatePosition();
+                //Si imposta il gioco neello stato di GameOver
+                playing.setGameOver(true);
+        
+            //in tutti gli altri casi si manda avanti l'animazione e si ritorna
+            } else updateAnimationTick();    
+        
+                return;
+        
+        }
 
         //Se il player si sta muovendo può interagire con gli oggetti della mappa
         if (moving) {
@@ -102,7 +127,8 @@ public class Player extends Entity{
         if (attacking) {
             checkAttack();
         }
-
+        
+        updatePosition();
         updateAnimationTick();
         setAnimation();
         updateAttackBox();
@@ -139,6 +165,7 @@ public class Player extends Entity{
                     (int)(hitbox.x - XOffset) - xLevelOffset + flipX + 14, 
                     (int)(hitbox.y - YOffset), 
                     hitBoxWidth * flipW, hitBoxHeight, null);
+        System.out.println(aniIndex + " + " + state );
 
         drawHitbox(g, xLevelOffset);
         drowAttackBox(g, xLevelOffset);

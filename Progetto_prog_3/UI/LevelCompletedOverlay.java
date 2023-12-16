@@ -8,7 +8,6 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
-
 import static Progetto_prog_3.utils.Constants.UI.PhrButtons.*;
 
 public class LevelCompletedOverlay implements MenusOverlayInterface {

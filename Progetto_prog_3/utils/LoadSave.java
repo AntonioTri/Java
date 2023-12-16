@@ -30,6 +30,7 @@ public class LoadSave {
     public static final String HOME_BACKGROUND_IMAGE = "ui/background_menu.png";
     public static final String HEALT_POWER_BAR = "ui/health_power_bar.png";
     public static final String LEVEL_COMPLITED = "ui/level_completed_sprite.png";
+    public static final String DEATH_SCREEN = "ui/death_screen.png";
 
     //Entity
     public static final String PLAYER_ATLAS = "entity/MageAnimations.png";

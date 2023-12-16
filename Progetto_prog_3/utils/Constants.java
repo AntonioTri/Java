@@ -312,7 +312,7 @@ public class Constants {
                     return 3; 
 
                 case DIE:
-                    return 3;
+                    return 4;
             
                 default:
                     return 1;
