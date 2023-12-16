@@ -52,6 +52,9 @@ public class Player extends Entity{
 	private int flipX = 0;
 	private int flipW = 1;
 
+    //Posizione verticale
+    private int tyleY = 0;
+
 	private boolean attackChecked;
     private int damage = 5;
     private Playing playing;
@@ -93,6 +96,7 @@ public class Player extends Entity{
         if (moving) {
             checkPotionTouched();
             checkSpikesTouched();
+            tyleY = (int)(hitbox.y / Game.TILES_SIZE);
         }
 
         if (attacking) {
@@ -463,6 +467,10 @@ public class Player extends Entity{
 
     public int getDamage(){
         return damage;
+    }
+
+    public int getPlayerTileY(){
+        return tyleY;
     }
 
     public void changePower(int bluePotionValue) {

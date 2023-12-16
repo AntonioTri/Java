@@ -29,6 +29,9 @@ public class Constants {
 		public static final int BOX = 3;
         public static final int SPIKE = 52;
 
+        public static final int CANNON_LEFT = 4;
+        public static final int CANNON_RIGHT = 5;
+
 		public static final int RED_POTION_VALUE = 15;
 		public static final int BLUE_POTION_VALUE = 10;
 
@@ -45,15 +48,23 @@ public class Constants {
         public static final int SPIKE_DEFAULT_WIDTH = 32;
         public static final int SPIKE_DEFAULT_HEIGHT = 32;
         public static final int SPIKE_WIDTH = (int)(Game.SCALE * SPIKE_DEFAULT_WIDTH);   
-        public static final int SPIKE_HEIGHT = (int)(Game.SCALE * SPIKE_DEFAULT_HEIGHT);      
+        public static final int SPIKE_HEIGHT = (int)(Game.SCALE * SPIKE_DEFAULT_HEIGHT);     
+        
+        public static final int CANNON_WIDTH_DEFAULT = 40;
+		public static final int CANNON_HEIGHT_DEFAULT = 26;
+		public static final int CANNON_WIDTH = (int) (CANNON_WIDTH_DEFAULT * Game.SCALE);
+		public static final int CANNON_HEIGHT = (int) (CANNON_HEIGHT_DEFAULT * Game.SCALE);
 
         //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
 		public static int getSpriteAmount(int objectType) {
+            
 			switch (objectType) {
 			case RED_POTION, BLUE_POTION:
 				return 7;
 			case BARREL, BOX:
 				return 8;
+            case CANNON_LEFT, CANNON_RIGHT:
+                return 7;
 			}
 			return 1;
 		}

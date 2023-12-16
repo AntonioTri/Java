@@ -53,8 +53,9 @@ public abstract class AbstractObject {
                 if (objType == BARREL || objType == BOX) {
                     doAnimation = false;
                     active = false;
+                } else if (objType == CANNON_RIGHT || objType == CANNON_LEFT) {
+                    doAnimation = false;
                 }
-
             }
         }
     }
@@ -66,7 +67,7 @@ public abstract class AbstractObject {
         aniTick = 0;
         active = true;
 
-        if (objType == BARREL || objType == BOX) {
+        if (objType == BARREL || objType == BOX || objType == CANNON_LEFT || objType == CANNON_RIGHT) {
             doAnimation = false;
         } else {
             doAnimation = true;
@@ -100,6 +101,10 @@ public abstract class AbstractObject {
     
     public int getAniIndex(){
         return aniIndex;
+    }
+
+    public void setAnimation(boolean doAnimation){
+        this.doAnimation = doAnimation;
     }
 
 

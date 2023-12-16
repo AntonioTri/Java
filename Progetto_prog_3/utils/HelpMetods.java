@@ -9,6 +9,7 @@ import java.util.Random;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
+import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
 import Progetto_prog_3.objects.Spike;
@@ -160,6 +161,25 @@ public class HelpMetods {
         return list;
     }
 
+    //Il seguente metodo posiziona i cannoni dentro la mappa di gioco seguendo la stessa logica di tutti i metodi di questo tipo
+    public static ArrayList<Cannon> getCannons(BufferedImage img) {
+        
+        ArrayList<Cannon> list = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+
+                if(value == CANNON_LEFT || value == CANNON_RIGHT){
+                    list.add(new Cannon((int)(i * Game.TILES_SIZE), (int)(j * Game.TILES_SIZE), value));
+                }
+            }
+        }
+
+        return list;
+    }
 
     //Questa funzione ci indica de gli spazi attorno alla nostra entità sono solidi oppure no
     //Nel caso siano disponibili spazi in cui muoversi, viene ritornato vero, altrimenti se viene
@@ -195,17 +215,41 @@ public class HelpMetods {
 
     }
 
-    //Viene controllato in questo metodo hce il percorso tra un blocco ed un altro blocco sia libero e che non ci siano ostacoli
-    public static boolean areAllTileWalkable(int xStart, int xEnd, int y, int[][] levelData){
+    //Simile alla precedente ma viene soltanto controllato che il percorso sia libero e non che sia camminabile
+    //Il cannone sta fermo sul posto, non si muove, peretantoha solo bisogno di controllaree che il player sia visibile
+    public static boolean canCannonSeePlayer(int[][] levelData, Rectangle2D.Float hitbox, Rectangle2D.Float hitbox2, int cannonTyleY) {
+        int firstXTile = (int)(hitbox.x / Game.TILES_SIZE);
+        int secondXTile = (int)(hitbox2.x / Game.TILES_SIZE);
 
+        if (firstXTile > secondXTile) {
+
+            return areAllTilesClear(secondXTile, firstXTile, cannonTyleY, levelData);
+
+        } else {
+
+            return areAllTilesClear(firstXTile, secondXTile, cannonTyleY, levelData);
+
+        }
+    }
+
+    public static boolean areAllTilesClear(int xStart, int xEnd, int y, int[][] levelData){
         for (int i = 0; i < xEnd - xStart; i++) {
-                if (isTileSolid(xStart + i, y , levelData)) {
-                    return false;
-                }
+            if (isTileSolid(xStart + i, y , levelData)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //Viene controllato in questo metodo che il percorso tra un blocco ed un altro blocco sia libero e che non ci siano ostacoli
+    public static boolean areAllTileWalkable(int xStart, int xEnd, int y, int[][] levelData){
+        if (areAllTilesClear(xStart, xEnd, y, levelData)) {
+            for (int i = 0; i < xEnd - xStart; i++) {    
                 if (!isTileSolid(xStart + i, y + 1, levelData)) {
                     return false;
                 }
             }
+        }
         return true;
     }
 
