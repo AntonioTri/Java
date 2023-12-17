@@ -1,13 +1,8 @@
 package Progetto_prog_3.Audio;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE_ATTACK;
-import static Progetto_prog_3.utils.Constants.PlayerConstants.JUMPING_UP;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.BooleanControl;
@@ -15,6 +10,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import static Progetto_prog_3.utils.Constants.PlayerConstants.JUMPING_UP;
 
 public class AudioPlayer {
     
@@ -151,7 +147,7 @@ public class AudioPlayer {
         this.effectMute = !effectMute;
         for (Clip sfx : effects) {
             BooleanControl booleanControl = (BooleanControl)(sfx.getControl(BooleanControl.Type.MUTE));
-            booleanControl.setValue(songMute);
+            booleanControl.setValue(effectMute);
         }
 
         if (!effectMute) {
@@ -192,18 +188,30 @@ public class AudioPlayer {
 
     }
 
+    public void playWalkingSound(boolean moving, boolean inAir, int currentHealth){
+
+        if (inAir || !moving || currentHealth <= 0) {
+            effects[WALKING_ON_GRASS].stop();
+            return;
+
+        } else if (!inAir && moving) {
+            effects[WALKING_ON_GRASS].start();
+        }
+
+        if (effects[WALKING_ON_GRASS].isRunning()) {
+            return;
+        }
+        
+        effects[WALKING_ON_GRASS].setMicrosecondPosition(0);
+        effects[WALKING_ON_GRASS].start();            
+        
+    }
+
 
     public void playEffect(int EFFECT) {
         
-        if (EFFECT == WALKING_ON_GRASS) {
-            effects[EFFECT].start();
-            return;
-        }
-
-            effects[EFFECT].setMicrosecondPosition(0);
-            effects[EFFECT].start();
-
-
+        effects[EFFECT].setMicrosecondPosition(0);
+        effects[EFFECT].start();
 
     }
 

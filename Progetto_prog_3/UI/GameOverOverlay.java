@@ -94,10 +94,11 @@ public class GameOverOverlay implements MenusOverlayInterface{
     @Override
     public void mouseReleased(MouseEvent e){
         if (mouseHovering(menu, e) && menu.getMousePressed()) {
-            playing.resetAll();
-            GameState.state = GameState.MENU;
+			playing.resetAll();
+            playing.setGameState(GameState.MENU);
         } else if (mouseHovering(play, e) && play.getMousePressed()) {
             playing.resetAll();
+			playing.getGame().getAudioPlayer().setLevelSong(playing.getLevelManager().getLevelIndex());
         }
 
         menu.resetBools();

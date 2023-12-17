@@ -91,9 +91,10 @@ public class LevelCompletedOverlay implements MenusOverlayInterface {
     public void mouseReleased(MouseEvent e){
         if (mouseHovering(menuButton, e) && menuButton.getMousePressed()) {
             playing.resetAll();
-            GameState.state = GameState.MENU;
+            playing.setGameState(GameState.MENU);
         } else if (mouseHovering(nextButton, e) && nextButton.getMousePressed()) {
             playing.loadNextLevel();
+            playing.getGame().getAudioPlayer().setLevelSong(playing.getLevelManager().getLevelIndex());
         }
 
         menuButton.resetBools();

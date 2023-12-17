@@ -28,7 +28,7 @@ public class Player extends Entity{
 
     //Variabili per le hitbox
     private float XOffset = 11 * Game.SCALE;
-    private float YOffset = 25 * Game.SCALE;
+    private float YOffset = 30 * Game.SCALE;
 
     //Variabili per il salto
     private float jumpSpeed = -2.25f * Game.SCALE;
@@ -68,7 +68,7 @@ public class Player extends Entity{
         this.walkSpeed = 1.7f;
         initStates();
         loadAnimations();
-        initHitbox(x, y, 25 * Game.SCALE, 37 * Game.SCALE);
+        initHitbox(x, y, 25 * Game.SCALE, 32 * Game.SCALE);
         initAttackBox();
     }
 
@@ -79,7 +79,7 @@ public class Player extends Entity{
     }
 
     private void initAttackBox(){
-        attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(30 * Game.SCALE));
+        attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(25 * Game.SCALE));
     }
 
     //funzione per fare l'update delle caratterisctiche del personaggio
@@ -101,7 +101,8 @@ public class Player extends Entity{
                 //A momento in cui l'animazione finisce, si mette in sleep il gioco peer dare un effetto pathos e si invia un seegnale 
                 //Alla classe playing peer impostar ilGameState a Deathscreen
             } else if((aniIndex == getSpriteAmount(DIE) - 1) && (aniTick >= aniSpeed - 1)){
-                //Questo trry catch con uno sleep mi serve a rirtardare la comparsa del menù di deathScreen
+
+                //Questo trry catch con uno sleep serve a rirtardare la comparsa del menù di deathScreen
                 try {
                     Thread.sleep(700);
                 } catch (InterruptedException e) {
@@ -110,6 +111,7 @@ public class Player extends Entity{
                 
                 //Si imposta il gioco neello stato di GameOver
                 playing.setGameOver(true);
+                //SFX
                 playing.getGame().getAudioPlayer().stopSong();
                 playing.getGame().getAudioPlayer().playEffect(AudioPlayer.GAME_OVER);
         
@@ -190,6 +192,11 @@ public class Player extends Entity{
 
         currentHealth += value;
 
+        if (value < 0) {
+            //Effetto del danno
+            playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_HURT);
+        }
+
         if (currentHealth <= 0) {
             currentHealth = 0;
             //GAME OVER HAPPENS
@@ -255,13 +262,14 @@ public class Player extends Entity{
 
     //Qui viene settata l'animazione in base agli imput del giocatore, per ogni azione viene settata una velocità di animazione unica
     private void setAnimation() {
-
+        
         int startAnimation = state;
-
+        
+        playing.getGame().getAudioPlayer().playWalkingSound(moving, inAir, currentHealth);
+        
         if (moving) {
             aniSpeed = 15;
             state = RUNNING;
-            playing.getGame().getAudioPlayer().playEffect(AudioPlayer.WALKING_ON_GRASS);
 
         } else {
             aniSpeed = 20;

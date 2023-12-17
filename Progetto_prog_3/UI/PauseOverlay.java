@@ -118,7 +118,7 @@ public class PauseOverlay implements MenusOverlayInterface{
         //Home Button
         if(mouseHovering(homeB, e) ){
             if (homeB.getMousePressed()) {
-                GameState.state = GameState.MENU;
+                playing.setGameState(GameState.MENU);
                 playing.unpauseGame();
             }
         //Replay Button
