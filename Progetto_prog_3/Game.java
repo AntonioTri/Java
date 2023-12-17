@@ -6,7 +6,6 @@ import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Menu;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.UI.AudioOptions;
-import Progetto_prog_3.UI.GameOverOverlay;
 
 public class Game implements Runnable{
 
@@ -29,7 +28,7 @@ public class Game implements Runnable{
     public final static int GAME_WIDTH = (TILES_SIZE * TILES_IN_WIDTH);
     public final static int GAME_HEIGHT = (TILES_SIZE * TILES_IN_HEIGHT);
 
-    //
+    //Game States
     private Playing playing;
     private Menu menu;
     private AudioOptions audioOptions;

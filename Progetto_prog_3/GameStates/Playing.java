@@ -45,7 +45,7 @@ public class Playing extends State implements StateMethods{
     private int maxLevelOffsetX;
     
     //Immagini di baground
-    private BufferedImage backgroundImage, bigClouds, smallClouds;
+    private BufferedImage backgroundImage, layer1, layer2;
     private int[] smallCloudPos;
     private Random random = new Random();
     
@@ -138,7 +138,7 @@ public class Playing extends State implements StateMethods{
     public void draw(Graphics g) {
         //Viene disegnato il background
         g.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
-        //Vengono agiunte le nuvole
+        //Vengono agiunti i livelli in movimento
         drowBigClouds(g);
         drowSmallClouds(g);
 
@@ -173,15 +173,17 @@ public class Playing extends State implements StateMethods{
     }
 
     private void drowSmallClouds(Graphics g) {
-        for (int i = 0; i < smallCloudPos.length; i++) {
-            g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i -(int) ( xLevelOffset * 0.7), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
+        for (int i = 0; i < 3; i++) {
+            //g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i -(int) ( xLevelOffset * 0.7), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
+             g.drawImage(layer2, Game.GAME_WIDTH * i -(int) ( xLevelOffset * 0.6), 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         }
 
     }
 
     private void drowBigClouds(Graphics g) {
         for (int i = 0; i < 3; i++) {
-            g.drawImage(bigClouds, i*BIG_CLOUD_WIDTH -(int) ( xLevelOffset * 0.3) , (int)(204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
+            //g.drawImage(bigClouds, i*BIG_CLOUD_WIDTH -(int) ( xLevelOffset * 0.3) , (int)(204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
+            g.drawImage(layer1, (Game.GAME_WIDTH - 100) * i -(int) ( xLevelOffset * 0.25), 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         }
 
     }
@@ -189,14 +191,14 @@ public class Playing extends State implements StateMethods{
     private void loadBackground(){
 
         //Vengono caricate le immagini dlle nuvole
-        backgroundImage = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BACKGROUND_IMAGE);
-        bigClouds = LoadSave.getSpriteAtlas(LoadSave.BIG_CLOUDS);
-        smallClouds = LoadSave.getSpriteAtlas(LoadSave.SMALL_CLOUDS);
+        backgroundImage = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_1);
+        layer1 = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_2);
+        layer2 = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_3);
 
-        smallCloudPos = new int[8];
-        for (int i = 0; i < smallCloudPos.length; i++) {
-            smallCloudPos[i] = (int)(random.nextInt((int)( 100 * Game.SCALE)) + (90 * Game.SCALE));
-        }
+        // smallCloudPos = new int[8];
+        // for (int i = 0; i < smallCloudPos.length; i++) {
+        //     smallCloudPos[i] = (int)(random.nextInt((int)( 100 * Game.SCALE)) + (90 * Game.SCALE));
+        // }
 
     }
 

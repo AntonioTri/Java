@@ -64,6 +64,7 @@ public class Player extends Entity{
     public Player(float x, float y, int width, int height, Playing playing){
         super(x, y, width, height);
         this.playing = playing;
+        this.walkSpeed = 1.7f;
         initStates();
         loadAnimations();
         initHitbox(x, y, 25 * Game.SCALE, 37 * Game.SCALE);

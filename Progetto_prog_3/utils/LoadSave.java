@@ -19,6 +19,9 @@ public class LoadSave {
     public static final String SMALL_CLOUDS = "enviroment/small_clouds.png";
     public static final String BIG_CLOUDS = "enviroment/big_clouds.png";
     public static final String SPIKE_ATLAS = "enviroment/trap_atlas.png";
+    public static final String FOREST_LAYER_1 = "enviroment/background_layer_1.png";
+    public static final String FOREST_LAYER_2 = "enviroment/background_layer_2.png";
+    public static final String FOREST_LAYER_3 = "enviroment/background_layer_3.png";
 
     //UI
     public static final String MENU_BUTTONS = "ui/button_atlas.png";
