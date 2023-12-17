@@ -66,4 +66,8 @@ public class MenuButton extends AbstractButtons {
         return this.buttonHitbox;
     }
 
+    public GameState getState(){
+        return state;
+    }
+
 }

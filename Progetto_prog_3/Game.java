@@ -1,6 +1,7 @@
 package Progetto_prog_3;
 import java.awt.Graphics;
 
+import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.GameOptions;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Menu;
@@ -33,6 +34,7 @@ public class Game implements Runnable{
     private Menu menu;
     private AudioOptions audioOptions;
     private GameOptions gameOptions;
+    private AudioPlayer audioPlayer;
 
     public Game(){
 
@@ -54,7 +56,8 @@ public class Game implements Runnable{
 
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
-        audioOptions = new AudioOptions();
+        audioOptions = new AudioOptions(this);
+        audioPlayer = new AudioPlayer();
         gameOptions = new GameOptions(this);
         menu = new Menu(this);
         playing = new Playing(this);
@@ -183,4 +186,9 @@ public class Game implements Runnable{
     public AudioOptions geAudioOptions(){
         return audioOptions;
     }
+
+    public AudioPlayer getAudioPlayer(){
+        return audioPlayer;
+    }
+
 }

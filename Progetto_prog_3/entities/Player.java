@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
 
@@ -96,9 +97,9 @@ public class Player extends Entity{
                 aniTick = 0;
                 aniIndex = 0;                
                 playing.setPlayerDying(true);
-            
-            //A momento in cui l'animazione finisce, si mette in sleep il gioco peer dare un effetto pathos e si invia un seegnale 
-            //Alla classe playing peer impostar ilGameState a Deathscreen
+                
+                //A momento in cui l'animazione finisce, si mette in sleep il gioco peer dare un effetto pathos e si invia un seegnale 
+                //Alla classe playing peer impostar ilGameState a Deathscreen
             } else if((aniIndex == getSpriteAmount(DIE) - 1) && (aniTick >= aniSpeed - 1)){
                 //Questo trry catch con uno sleep mi serve a rirtardare la comparsa del menù di deathScreen
                 try {
@@ -106,9 +107,11 @@ public class Player extends Entity{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
+                
                 //Si imposta il gioco neello stato di GameOver
                 playing.setGameOver(true);
+                playing.getGame().getAudioPlayer().stopSong();
+                playing.getGame().getAudioPlayer().playEffect(AudioPlayer.GAME_OVER);
         
             //in tutti gli altri casi si manda avanti l'animazione e si ritorna
             } else updateAnimationTick();    
@@ -218,6 +221,8 @@ public class Player extends Entity{
             attackChecked = false;
             
         }
+
+        playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_ATTACK);
     }
     
     //Funzione che controlla se il player sta toccando una pozione
@@ -256,6 +261,7 @@ public class Player extends Entity{
         if (moving) {
             aniSpeed = 15;
             state = RUNNING;
+            playing.getGame().getAudioPlayer().playEffect(AudioPlayer.WALKING_ON_GRASS);
 
         } else {
             aniSpeed = 20;
@@ -338,14 +344,16 @@ public class Player extends Entity{
 				hitbox.y += airSpeed;
 				airSpeed += GRAVITY;
 				updateXPos(xSpeed);
-			} else {
+			
+            } else {
                 
+                playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_LANDING);
+
 				hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
-				if (airSpeed > 0)
-					resetInAir();
-				else
-					airSpeed = fallSpeedAfterCollision;
-				updateXPos(xSpeed);
+                if (airSpeed > 0) resetInAir();
+				else airSpeed = fallSpeedAfterCollision;
+				
+                updateXPos(xSpeed);
 			}
 
 		} else updateXPos(xSpeed);
@@ -358,9 +366,10 @@ public class Player extends Entity{
     private void jump() {
 
         if (inAir) return;
-        
+        playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_JUMPING);
         inAir = true;
         airSpeed = jumpSpeed;
+        
     }
 
 

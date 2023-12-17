@@ -75,11 +75,6 @@ public class LoadSave {
             }
         }
 
-        //Check per controllare se sono stati effettivamente presi i file oppure no
-        // for (File f : sortedFiles) {
-        //     System.out.println("File: " + f.getName());
-        // }
-
         //Memorizziamo i file come immagini in un aray di immagini
         BufferedImage[] imgs = new BufferedImage[sortedFiles.length];
         
@@ -111,7 +106,7 @@ public class LoadSave {
             img = ImageIO.read(is);
 
         } catch (IOException e) {
-            System.out.println("Mammt annur!!!");
+            System.out.println("Immagine non caricata");
             e.printStackTrace();
         } finally {
             try {

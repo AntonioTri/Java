@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.UI.GameOverOverlay;
 import Progetto_prog_3.UI.LevelCompletedOverlay;
@@ -16,7 +15,6 @@ import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.objects.ObjectManager;
 import Progetto_prog_3.utils.LoadSave;
-import static Progetto_prog_3.utils.Constants.Environment.*;
 
 public class Playing extends State implements StateMethods{
     
@@ -44,10 +42,8 @@ public class Playing extends State implements StateMethods{
     //private int maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
     private int maxLevelOffsetX;
     
-    //Immagini di baground
+    //Immagini di background
     private BufferedImage backgroundImage, layer1, layer2;
-    private int[] smallCloudPos;
-    private Random random = new Random();
     
     //La seguente variabile definisce se il player sta morendo, così da fermare tutti gli update
     private boolean playerDying = false;
@@ -139,8 +135,8 @@ public class Playing extends State implements StateMethods{
         //Viene disegnato il background
         g.drawImage(backgroundImage, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         //Vengono agiunti i livelli in movimento
-        drowBigClouds(g);
-        drowSmallClouds(g);
+        drowLayer1(g);
+        drowLayer2(g);
 
         //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
         levelManager.draw(g, xLevelOffset);
@@ -172,18 +168,18 @@ public class Playing extends State implements StateMethods{
 
     }
 
-    private void drowSmallClouds(Graphics g) {
+    private void drowLayer1(Graphics g) {
         for (int i = 0; i < 3; i++) {
             //g.drawImage(smallClouds, SMALL_CLOUD_WIDTH * 4 * i -(int) ( xLevelOffset * 0.7), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
-             g.drawImage(layer2, Game.GAME_WIDTH * i -(int) ( xLevelOffset * 0.6), 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+            g.drawImage(layer1, Game.GAME_WIDTH * i -(int) ( xLevelOffset * 0.25), 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         }
 
     }
 
-    private void drowBigClouds(Graphics g) {
+    private void drowLayer2(Graphics g) {
         for (int i = 0; i < 3; i++) {
             //g.drawImage(bigClouds, i*BIG_CLOUD_WIDTH -(int) ( xLevelOffset * 0.3) , (int)(204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
-            g.drawImage(layer1, (Game.GAME_WIDTH - 100) * i -(int) ( xLevelOffset * 0.25), 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+            g.drawImage(layer2, (Game.GAME_WIDTH - 100) * i -(int) ( xLevelOffset * 0.6), 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         }
 
     }
@@ -416,7 +412,6 @@ public class Playing extends State implements StateMethods{
         return playerDying;
     }
 
-    
 
     
 

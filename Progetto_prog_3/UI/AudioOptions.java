@@ -12,7 +12,10 @@ public class AudioOptions implements MenusOverlayInterface {
     private SoundButton musicButon, sfxButton;
     private VolumeButton volumeButton;
 
-    public AudioOptions(){
+    private Game game;
+
+    public AudioOptions(Game game){
+        this.game = game;
         createSoundButtons();
         createVolumeButton();
     }
@@ -84,11 +87,13 @@ public class AudioOptions implements MenusOverlayInterface {
         if (mouseHovering(musicButon, e) ) {
             if (musicButon.getMousePressed()) {
                 musicButon.setMuted(!musicButon.getMuted());
+                game.getAudioPlayer().togleSongMute();
             }
         //Sound Effects button
         } else if(mouseHovering(sfxButton, e) ){
             if (sfxButton.getMousePressed()) {
                 sfxButton.setMuted(!sfxButton.getMuted());
+                game.getAudioPlayer().togleEffectsMute();
             }
         }
         //Si resetano i valori booleani per resettare gli sprite
@@ -119,7 +124,14 @@ public class AudioOptions implements MenusOverlayInterface {
     @Override
     public void mouseDragged(MouseEvent e){
         if (volumeButton.getMousePressed()) {
+
+            float valueBefore = volumeButton.getFloatValue();
             volumeButton.changeX(e.getX());
+            float valueAfter = volumeButton.getFloatValue();
+
+            if (valueBefore != valueAfter) {
+                game.getAudioPlayer().setVolume(valueAfter);
+            }
         }
     }
    

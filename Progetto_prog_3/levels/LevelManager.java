@@ -100,4 +100,8 @@ public class LevelManager {
         return levelIndex;
     }
 
+    public int getLevelIndex(){
+        return levelIndex;
+    }
+
 }

@@ -2,6 +2,7 @@ package Progetto_prog_3.GameStates;
 
 import java.awt.event.MouseEvent;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.UI.MenuButton;
 
 public abstract class State {
@@ -18,6 +19,15 @@ public abstract class State {
 
     public Game getGame(){
         return this.game;
+    }
+
+    public void setGameState(GameState state){
+        switch (state) {
+            case MENU -> game.getAudioPlayer().playSong(AudioPlayer.MENU_MUSIC);
+            case PLAYING -> game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLevelIndex());
+            
+        }
+        GameState.state = state;
     }
 
 }

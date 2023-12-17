@@ -7,6 +7,7 @@ import static Progetto_prog_3.utils.Constants.Directions.*;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.Audio.AudioPlayer;
 
 public abstract class AbstractEnemy extends Entity{
 
@@ -116,12 +117,13 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //Questo metodo ci poermette di causare danno ad un nemico se questo viene colpito dal player
-    public void hurt(int amount){
+    public void hurt(int amount, AudioPlayer ap){
 
         currentHealth -= amount;
 
         if (currentHealth <= 0) {
             newState(NIGHT_BORNE_DIE);
+            ap.playEffect(AudioPlayer.NIGHTBORRNE_DIE);
         } else {
             newState(NIGHT_BORNE_HITTED);
         }

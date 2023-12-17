@@ -13,6 +13,9 @@ public class VolumeButton extends AbstractButtons {
     private int index = 0;
     private int buttonX, minX, maxX;
 
+    //Il valore effettivo del volume
+    private float floatValue = 0;
+
     public VolumeButton(int x, int y, int width, int height) {
         //Modificare cosìil richiamo al costruttore della superclasse serve a posizionare il tasto del volume 
         //esattamente in mezzo alla barra del volume quando il gioco parte
@@ -68,7 +71,21 @@ public class VolumeButton extends AbstractButtons {
             buttonX = x;
         }
 
+        updateFloatValue();
 
     }
+
+    private void updateFloatValue() {
+        float range = maxX - minX;
+        float value = buttonX - minX;
+    
+        floatValue = value / range;
+    
+    
+    }
+
+    public float getFloatValue(){
+        return floatValue;
+    };
 
 }

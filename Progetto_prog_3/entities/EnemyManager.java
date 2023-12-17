@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
@@ -23,7 +24,6 @@ public class EnemyManager {
 
     public void addEnemies(Level level) {
         nightBornes = level.getnNightBornes();
-        System.out.println("Enemy Number = " + nightBornes.size());
     }
 
     public void update(int[][] levelData, Player player){
@@ -80,10 +80,10 @@ public class EnemyManager {
     //Se il player attacca il nemico a questo viene applicato il danno del player
     public void checkEnemyHit(Rectangle2D.Float attackBox){
         for (NightBorne nb : nightBornes) {
-            System.out.println(nb.getInvulnerability());
             //Se il nemico è attivo allora viene fatto un controllo sulle intersezioni tra hitbox
             if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && !nb.getInvulnerability()) {
-                nb.hurt(playing.getPlayer().getDamage());
+                nb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
+                playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.NIGHTBORNE_HURT);
                 return;
             }
         }
