@@ -31,19 +31,21 @@ public class Playing extends State implements StateMethods{
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
     
-    //Queste variabili mi servono a gestire il movimento della telecamera nel mondo,
-    //CAPTAZIONE WORK IN PROGRESS, ANCORA NON HO ANCORA CAPITO BENE
-    private int xLevelOffset;
+    //Queste variabili mi servono a gestire il movimento della telecamera nel mondo
+    private int xLevelOffset, yLevelOffset; 
     
     //Queste due variabili definiscono il bordo dopo il quale la visuale viene regolata e spostata di conseguenza
     private int leftBorder = (int)(0.5 * Game.GAME_WIDTH);
     private int rightBorder = (int)(0.5 * Game.GAME_WIDTH);
+    private int bottomBorder = (int)(0.7 * Game.GAME_HEIGHT);
+    private int upperBorder = (int)(0.3 * Game.GAME_HEIGHT);
     
     //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
     //private int levelTileWide = LoadSave.getLevelData()[0].length;
     //Queste servono a definire entro quale limite non bisonga più spostare la telecamera
     //private int maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
     private int maxLevelOffsetX;
+    private int maxLevelOffsetY;
     
     //Immagini di background
     private BufferedImage backgroundImage, layer1, layer2;
@@ -142,10 +144,10 @@ public class Playing extends State implements StateMethods{
         drowLayer2(g);
 
         //Durante il draw, vengono aggiunti gli offset per disegnare la parte di mappa corretta
-        levelManager.draw(g, xLevelOffset);
-        objectManager.draw(g, xLevelOffset);
-        enemyManager.draw(g, xLevelOffset);
-        player.render(g, xLevelOffset);
+        levelManager.draw(g, xLevelOffset, yLevelOffset);
+        objectManager.draw(g, xLevelOffset, yLevelOffset);
+        enemyManager.draw(g, xLevelOffset, yLevelOffset);
+        player.render(g, xLevelOffset, yLevelOffset);
 
         //Vengono scritti gli FPS e gli UPS a schermo
         g.setColor(Color.white);
@@ -227,6 +229,25 @@ public class Playing extends State implements StateMethods{
         } else if (xLevelOffset < 0) {
             xLevelOffset  = 0;
         }
+
+        //Lo stesso si fa per la y
+        int playerY = (int)player.getHitbox().y;
+        int differenceY = playerY - yLevelOffset;
+
+        if (differenceY > bottomBorder) {
+            yLevelOffset += differenceY - bottomBorder;
+        } else if(differenceY < upperBorder){
+            yLevelOffset += differenceY - upperBorder;
+        }
+
+
+        if (yLevelOffset > maxLevelOffsetY) {
+            yLevelOffset = maxLevelOffsetY;
+        } else if (yLevelOffset < 0) {
+            yLevelOffset = 0;
+        }
+
+
 
     }
 
@@ -367,7 +388,9 @@ public class Playing extends State implements StateMethods{
 
     private void calculateLevelOffset() {
         maxLevelOffsetX = levelManager.getCurrentLevel().getLevelOffset();
+        maxLevelOffsetY = levelManager.getCurrentLevel().getLevelOffsetY();
         System.out.println(maxLevelOffsetX);
+        System.out.println(maxLevelOffsetY);
     }
 
 
@@ -377,8 +400,12 @@ public class Playing extends State implements StateMethods{
         player.setSpawnPoint(levelManager.getCurrentLevel().getPlayerSpawnPoint());
     }
 
-    public void setMaxLevelOffset(int levelOffset){
+    public void setMaxLevelOffsetX(int levelOffset){
         this.maxLevelOffsetX = levelOffset;
+    }
+
+    public void setMaxLevelOffsetY(int yLevelOffset){
+        this.yLevelOffset = yLevelOffset;
     }
 
     public void unpauseGame(){

@@ -35,9 +35,9 @@ public abstract class AbstractObject {
         hitbox = new Rectangle2D.Float(x, y, (int)(width * Game.SCALE), (int)(height * Game.SCALE));
     }
 
-    public void drawHitbox(Graphics g, int xLevelOffset){
+    public void drawHitbox(Graphics g, int xLevelOffset, int yLevelOffset){
         g.setColor(Color.PINK);
-        g.drawRect((int)hitbox.x - xLevelOffset, (int)hitbox.y, (int) hitbox.width, (int) hitbox.height);
+        g.drawRect((int)hitbox.x - xLevelOffset, (int)hitbox.y - yLevelOffset, (int) hitbox.width, (int) hitbox.height);
     }
 
     protected void updateAnimationTick(){

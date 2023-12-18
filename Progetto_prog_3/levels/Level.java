@@ -32,10 +32,13 @@ public class Level {
     private ArrayList<Cannon> cannons;
 
     //Questa variabile tramite il level data, ci permete di accedere alla lunghezza del livello
-    private int levelTileWide;
+    private int levelTileWide, levelTileHeight;
     //Queste servono a definire entro quale limite non bisonga più spostare la telecamera
     private int maxTileOffset;
     private int maxLevelOffsetX;
+    private int maxTileOffsetY;
+    private int maxLevelOffsetY;
+
 
     //Punto di spawn del player
     Point playerSpawnPoint;
@@ -95,7 +98,11 @@ public class Level {
     private void calculateLevelOffsets() {
         levelTileWide = image.getWidth();
         maxTileOffset = levelTileWide - Game.TILES_IN_WIDTH;
-        maxLevelOffsetX = Game.TILES_SIZE * maxTileOffset;                                                                                                                                                                                                                                                                                                           
+        maxLevelOffsetX = Game.TILES_SIZE * maxTileOffset;
+        
+        levelTileHeight = image.getHeight();
+        maxTileOffsetY = levelTileHeight - Game.TILES_IN_HEIGHT;
+        maxLevelOffsetY = Game.TILES_SIZE * maxTileOffsetY;
     }
 
     //Funzione che ritorna il valore RGB riconosciuto durante l'estrazione delle informazioni dalle immagini levelData
@@ -111,6 +118,10 @@ public class Level {
 
     public int getLevelOffset(){
         return maxLevelOffsetX;
+    }
+
+    public int getLevelOffsetY() {
+        return maxLevelOffsetY;
     }
 
     public ArrayList<NightBorne> getnNightBornes(){
@@ -136,6 +147,8 @@ public class Level {
     public Point getPlayerSpawnPoint(){
         return playerSpawnPoint;
     }
+
+    
 
 
 }

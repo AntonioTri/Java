@@ -79,7 +79,6 @@ public class LoadSave {
         BufferedImage[] imgs = new BufferedImage[sortedFiles.length];
         
         for (int i = 0; i < imgs.length; i++) {
-
             try {
                 imgs[i] = ImageIO.read(sortedFiles[i]);
             } catch (IOException e) {

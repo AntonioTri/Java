@@ -46,14 +46,14 @@ public class LevelManager {
     }
 
     //Qui disegnamo la mapa di gioco
-    public void draw(Graphics g, int xLevelOffset){
+    public void draw(Graphics g, int xLevelOffset, int yLevelOffset){
 
-        for(int j = 0; j<Game.TILES_IN_HEIGHT; j++){
+        for(int j = 0; j< levels.get(levelIndex).getLD().length; j++){
             //Questo è un array list, possiamo accedere ad un elemento della lista tramite indice e con il metodo get()
             for (int i = 0; i < levels.get(levelIndex).getLD()[0].length; i++){
                 int index = levels.get(levelIndex).getSpriteIndex(i, j);
                 //Quì viene aggiunto l'offset in x per spostare il rendering dlla mappa a dare l'illusione del movimento
-                g.drawImage(levelSprite[index], TILES_SIZE*i - xLevelOffset, TILES_SIZE*j, TILES_SIZE, TILES_SIZE, null);
+                g.drawImage(levelSprite[index], TILES_SIZE*i - xLevelOffset, TILES_SIZE*j - yLevelOffset, TILES_SIZE, TILES_SIZE, null);
                 
             }
         }
@@ -82,7 +82,8 @@ public class LevelManager {
         Level newLevel = levels.get(levelIndex);
         game.getPlaying().getEnemyManager().addEnemies(newLevel);
         game.getPlaying().getPlayer().loadLevelData(newLevel.getLD());
-        game.getPlaying().setMaxLevelOffset(newLevel.getLevelOffset());
+        game.getPlaying().setMaxLevelOffsetX(newLevel.getLevelOffset());
+        game.getPlaying().setMaxLevelOffsetY(newLevel.getLevelOffsetY());
         game.getPlaying().getObjectManager().loadObjects(newLevel);
     }
 

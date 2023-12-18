@@ -49,14 +49,14 @@ public abstract class Entity {
         hitbox = new Rectangle2D.Float(x, y, width, height);
     }
 
-    protected void drawHitbox(Graphics g, int xLevelOffset){
+    protected void drawHitbox(Graphics g, int xLevelOffset, int yLevelOffset){
         g.setColor(Color.BLUE);
-        g.drawRect((int)hitbox.x - xLevelOffset, (int)hitbox.y, (int) hitbox.width, (int) hitbox.height);
+        g.drawRect((int)hitbox.x - xLevelOffset, (int)hitbox.y - yLevelOffset, (int) hitbox.width, (int) hitbox.height);
     }
 
-    public void drowAttackBox(Graphics g, int levelOffsetX) {
+    public void drowAttackBox(Graphics g, int levelOffsetX, int yLevelOffset) {
         g.setColor(Color.RED);
-        g.drawRect((int)attackBox.x - levelOffsetX, (int)attackBox.y, (int)attackBox.width, (int)attackBox.height);
+        g.drawRect((int)attackBox.x - levelOffsetX, (int)attackBox.y - yLevelOffset, (int)attackBox.width, (int)attackBox.height);
     }
 
     public Rectangle2D.Float getHitbox(){

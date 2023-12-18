@@ -44,16 +44,16 @@ public class EnemyManager {
 
     }
 
-    public void draw(Graphics g, int xLevelOffset){
+    public void draw(Graphics g, int xLevelOffset, int yLevelOffset){
 
-        drawNightBornes(g, xLevelOffset);
+        drawNightBornes(g, xLevelOffset, yLevelOffset);
 
     };
 
     //  ATTENZIONE !!!!!!!!!
     //LA HITBOX STA SEMPRE NELLO STESSO MODO E NON C'E' MODO DI SPOSTARLA, SE SI VUOLE CENTRARE IL TIZIO DENTRO LA HITBOX, BISOGNA
     //SPOSTARE IL DISEGNO QUANDO VIENE DISEGNATO LO SPRITE, ALTRIMENTI A VOGLIA DI IMPAZZIRE
-    private void drawNightBornes(Graphics g, int xLevelOffset) {
+    private void drawNightBornes(Graphics g, int xLevelOffset, int yLevelOffset) {
 
         for(NightBorne nb : nightBornes){
             //Se il nemico è attivo allora viene fatto un repaint
@@ -61,12 +61,12 @@ public class EnemyManager {
                 //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
                 g.drawImage(nightBorneArray[nb.getState()][nb.getAniIndex()], 
                             (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
-                            ((int)nb.getHitbox().y - NIGHT_BORNE_DROW_OFFSET_Y),
+                            ((int)nb.getHitbox().y - yLevelOffset - NIGHT_BORNE_DROW_OFFSET_Y),
                             (NIGHT_BORNE_WIDHT + 25) * nb.flipW() ,
                              NIGHT_BORNE_HEIGHT + 25, null);
 
-                nb.drawHitbox(g, xLevelOffset);
-                nb.drowAttackBox(g, xLevelOffset);
+                nb.drawHitbox(g, xLevelOffset, yLevelOffset);
+                nb.drowAttackBox(g, xLevelOffset, yLevelOffset);
 
                 if (nb.getState() == NIGHT_BORNE_DIE) {
                     nb.setAniSpeed(20);

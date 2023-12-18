@@ -179,7 +179,7 @@ public class Player extends Entity{
 
     //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
     //mano mano che avanzano i tick di gioco e verra' quindi mostrata una immagine differente ogni 40 tick
-    public void render(Graphics g, int xLevelOffset){
+    public void render(Graphics g, int xLevelOffset, int yLevelOffset){
 
         //In questa draw vi scorrono diverse logiche, la prima è la scelta dello sprite da utilizzare
         //La seconda è che l'immagine viene disegnata con uno spostamento
@@ -188,11 +188,11 @@ public class Player extends Entity{
         //Le viene sommato un offset agiuntivo per spostarla di nuovo nella posizione corretta 
         g.drawImage(animations[state][aniIndex], 
                     (int)(hitbox.x - XOffset) - xLevelOffset + flipX + 14, 
-                    (int)(hitbox.y - YOffset), 
+                    (int)(hitbox.y - YOffset) - yLevelOffset, 
                     hitBoxWidth * flipW, hitBoxHeight, null);
 
-        drawHitbox(g, xLevelOffset);
-        drowAttackBox(g, xLevelOffset);
+        drawHitbox(g, xLevelOffset, yLevelOffset);
+        drowAttackBox(g, xLevelOffset, yLevelOffset);
         drawUI(g);
     }
 

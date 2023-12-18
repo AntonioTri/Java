@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.Level;
@@ -250,44 +252,48 @@ public class ObjectManager {
 
 
     //Classico metodo draw che richiama tutti i metodi draw per disegnare i singoli oggetti
-    public void draw(Graphics g, int xLevelOffset){
-        drawPotions(g, xLevelOffset);
-        drawBoxes(g, xLevelOffset);
-        drawTraps(g,xLevelOffset);
-        drawCannons(g, xLevelOffset);
-        drawCannonBall(g, xLevelOffset);
+    public void draw(Graphics g, int xLevelOffset, int yLevelOffset){
+        drawPotions(g, xLevelOffset, yLevelOffset);
+        drawBoxes(g, xLevelOffset, yLevelOffset);
+        drawTraps(g,xLevelOffset, yLevelOffset);
+        drawCannons(g, xLevelOffset, yLevelOffset);
+        drawCannonBall(g, xLevelOffset, yLevelOffset);
     }
 
 
    
     //Metodo per disegnare i cannoni
-    private void drawCannons(Graphics g, int xLevelOffset) {
+    private void drawCannons(Graphics g, int xLevelOffset, int yLevelOffset) {
         for (Cannon c : cannons) {
 
             int X = (int)(c.getHitbox().x - xLevelOffset);
+            int Y = (int)(c.getHitbox().y - yLevelOffset);
             int width = CANNON_WIDTH;
+            int height = CANNON_HEIGHT;
 
             if (c.getObjType() == CANNON_RIGHT) {
                 X += width;
+                Y += height - Game.TILES_SIZE;
                 width *= -1;
+                
             }
 
-            g.drawImage(cannonImages[c.getAniIndex()], X, (int)(c.getHitbox().y), width, CANNON_HEIGHT, null);
+            g.drawImage(cannonImages[c.getAniIndex()], X, Y, width, CANNON_HEIGHT, null);
         
         }
     }
 
     //Metodo per disegnare le palle di cannone
-    private void drawCannonBall(Graphics g, int xLevelOffset) {
+    private void drawCannonBall(Graphics g, int xLevelOffset, int yLevelOffset) {
         for (CannonBall p : cannonBalls) {
             if (p.getActive()) {
-                g.drawImage(cannonBallImage, (int)(p.getHitbox().x - xLevelOffset), (int)(p.getHitbox().y ), CANNON_BALL_WIDTH, CANNON_BALL_HEIGHT, null);
+                g.drawImage(cannonBallImage, (int)(p.getHitbox().x - xLevelOffset), (int)(p.getHitbox().y - yLevelOffset ), CANNON_BALL_WIDTH, CANNON_BALL_HEIGHT, null);
             }
         }
     }
 
     //Metodo per disegnare le scatole
-    private void drawBoxes(Graphics g, int xLevelOffset) {
+    private void drawBoxes(Graphics g, int xLevelOffset, int yLevelOffset) {
         
         for (LootBox box : lootBoxes) {
             
@@ -300,19 +306,19 @@ public class ObjectManager {
             if (box.isActive()) {
                 g.drawImage(boxesImages[type][box.getAniIndex()],
                     (int)(box.getHitbox().x - box.getxDrawOffset() - xLevelOffset),
-                    (int)(box.getHitbox().y - box.getyDrawOffset()),
+                    (int)(box.getHitbox().y - box.getyDrawOffset() - yLevelOffset),
                     CONTAINER_WIDTH,
                     CONTAINER_HEIGHT, 
                     null);
     
-                box.drawHitbox(g, xLevelOffset);
+                box.drawHitbox(g, xLevelOffset, yLevelOffset);
 
             }
         }
     }
 
     //Metodo per disegnare le pozioni
-    private void drawPotions(Graphics g, int xLevelOffset) {
+    private void drawPotions(Graphics g, int xLevelOffset, int yLevelOffset) {
 
         for (Potion potion : potions) {
 
@@ -325,22 +331,22 @@ public class ObjectManager {
             if (potion.isActive()) {
                 g.drawImage(potionImages[type][potion.getAniIndex()],
                     (int)(potion.getHitbox().x - potion.getxDrawOffset() - xLevelOffset),
-                    (int)(potion.getHitbox().y - potion.getyDrawOffset()),
+                    (int)(potion.getHitbox().y - potion.getyDrawOffset() - yLevelOffset),
                     POTION_WIDTH,
                     POTION_HEIGHT, 
                     null);
                 
-                potion.drawHitbox(g, xLevelOffset);
+                potion.drawHitbox(g, xLevelOffset, yLevelOffset);
 
             }
         }
     }
 
     //Metodo per disegnare le spine
-    private void drawTraps(Graphics g, int xLevelOffset) {
+    private void drawTraps(Graphics g, int xLevelOffset, int yLevelOffset) {
 
         for (Spike spike : spikes) {
-            g.drawImage(spikeImage, (int)(spike.getHitbox().x - xLevelOffset), (int) spike.getHitbox().y - spike.getyDrawOffset(), SPIKE_WIDTH, SPIKE_HEIGHT, null);
+            g.drawImage(spikeImage, (int)(spike.getHitbox().x - xLevelOffset), (int) (spike.getHitbox().y - yLevelOffset) - spike.getyDrawOffset(), SPIKE_WIDTH, SPIKE_HEIGHT, null);
         }
 
     }
