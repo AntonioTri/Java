@@ -241,6 +241,7 @@ public class ObjectManager {
             //Controllo della collisione con un muro
             } else if (projectileHittingWall(cb, levelData)) {
                 cb.setActive(false);
+                cb.setCanDoDamage(false);
             }
         }
     }

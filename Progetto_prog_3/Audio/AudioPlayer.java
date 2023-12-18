@@ -50,6 +50,11 @@ public class AudioPlayer {
     public static int LEVEL_COMPLITED = 15;
     public static int GAME_OVER = 16;
 
+    public static final int PLAYER_DASHING = 17;
+    public static final int PLAYER_DASHING_1 = 17;
+    public static final int PLAYER_DASHING_2 = 18;
+    public static final int PLAYER_DASHING_3 = 19;
+
     //La clip è il modo di java di eseguirre suoni in un programma, è un contenitore capace di storare file .WAV
     private Clip[] songs, effects;
 
@@ -80,7 +85,13 @@ public class AudioPlayer {
 
     private void loadSoundEffects(){
 
-        String[] effectsName = {"hurt1", "hurt2", "hurt3", "jumping1", "jumping2", "landing", "landing2", "walking_on_grass", "nightBorneDie", "nightBorneHurt1","nightBorneHurt2","nightBorneHurt3", "attack1", "attack2", "attack3", "lvlcompleted", "gameover"};
+        String[] effectsName = {"hurt1", "hurt2", "hurt3", "jumping1", "jumping2",
+                                "landing", "landing2", "walking_on_grass",
+                                "nightBorneDie", "nightBorneHurt1","nightBorneHurt2","nightBorneHurt3",
+                                "attack1", "attack2", "attack3",
+                                "lvlcompleted", "gameover",
+                                "dash1", "dash2", "dash3"};
+
         effects = new Clip[effectsName.length];
 
         for (int i = 0; i < effects.length; i++) {
@@ -234,7 +245,8 @@ public class AudioPlayer {
             case PLAYER_JUMPING: return 2;
             case PLAYER_LANDING: return 2;
             case PLAYER_HURT: return 3;
-            case NIGHTBORNE_HURT: return 3; 
+            case NIGHTBORNE_HURT: return 3;
+            case PLAYER_DASHING: return 3; 
             default: return SOUND;
         }
     }

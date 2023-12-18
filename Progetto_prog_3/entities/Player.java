@@ -42,13 +42,22 @@ public class Player extends Entity{
 	private int statusBarX = (int) (10 * Game.SCALE);
 	private int statusBarY = (int) (10 * Game.SCALE);
 
+    //Variabili per definire la health bar
 	private int healthBarWidth = (int) (150 * Game.SCALE);
 	private int healthBarHeight = (int) (4 * Game.SCALE);
 	private int healthBarXStart = (int) (34 * Game.SCALE);
 	private int healthBarYStart = (int) (14 * Game.SCALE);
-
     //Variabili per definire la barra della vita del giocatore
 	private int healthWidth = healthBarWidth;
+
+    //Variabili per definire la power bar
+    private int powerBarWidth = (int) (104 * Game.SCALE);
+	private int powerBarHeight = (int) (2 * Game.SCALE);
+	private int powerBarXStart = (int) (44 * Game.SCALE);
+	private int powerBarYStart = (int) (34 * Game.SCALE);
+	private int powerWidth = powerBarWidth;
+	private int powerMaxValue = 200;
+	private int powerValue = powerMaxValue;
 
 	private int flipX = 0;
 	private int flipW = 1;
@@ -56,7 +65,11 @@ public class Player extends Entity{
     //Posizione verticale
     private int tyleY = 0;
 
+    //Variabili per l'abilità speciale e per gli attacchi normali
+    private boolean powerAttackActive;
+    private int powerAttackTick, powerGrowSpeed = 15, powerGrowTick;
 	private boolean attackChecked;
+    
     private int damage = 5;
     private Playing playing;
     
@@ -85,7 +98,9 @@ public class Player extends Entity{
     //funzione per fare l'update delle caratterisctiche del personaggio
     public void update(){
 
+        //Vengono aggiornate la vita e la barra delle abilità
         updateHealthBar();
+        updatePowerBar();
 
         //Se il player è appena stato ucciso avveengono alcune cose
         if (currentHealth <= 0) {
@@ -122,31 +137,41 @@ public class Player extends Entity{
         
         }
 
+        updateAttackBox();
+        updatePosition();
         //Se il player si sta muovendo può interagire con gli oggetti della mappa
         if (moving) {
             checkPotionTouched();
             checkSpikesTouched();
             tyleY = (int)(hitbox.y / Game.TILES_SIZE);
+
+            if (powerAttackActive) {
+                powerAttackTick++;
+                if (powerAttackTick >= 35) {
+                    powerAttackTick = 0;
+                    powerAttackActive = false;
+                }
+            }
+
+
         }
 
-        if (attacking) {
+        if (attacking || powerAttackActive) {
             checkAttack();
         }
         
-        updatePosition();
         updateAnimationTick();
         setAnimation();
-        updateAttackBox();
         
     }
 
     //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso    
     private void updateAttackBox() {
 
-        if (right) {
+        if (right || (powerAttackActive && flipW == 1)) {
             attackBox.x = hitbox.x + hitbox.width;
 
-        } else if (left) {
+        } else if (left || (powerAttackActive && flipW == -1)) {
             attackBox.x = hitbox.x - hitbox.width + (int)(Game.SCALE * 9);
 
         }
@@ -177,17 +202,31 @@ public class Player extends Entity{
     //Disegna la UI di gioco, per ora soltanto la health bar e la power bar
     private void drawUI(Graphics g) {
 
+        //Si disegna la gui per lo stato della vita e dei punti abilità 
         g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
+        //Si disegna la barra della vita
         g.setColor(Color.RED);
         g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
-
+        //Si disegna la barra dei punti abilità
+        g.setColor(Color.YELLOW);
+        g.fillRect(powerBarXStart + statusBarX, powerBarYStart + statusBarY, powerWidth, powerBarHeight);
     }
 
     private void updateHealthBar() {
         healthWidth = (int) ((currentHealth / (float)maxHealth) * healthBarWidth);
     }
 
-    //Metodo che ci permette di modifdicare il valore degli HP
+    private void updatePowerBar(){
+        powerWidth = (int)((powerValue / (float)powerMaxValue) * powerBarWidth);
+
+        powerGrowTick++;
+        if (powerGrowTick >= powerGrowSpeed) {
+            powerGrowTick = 0;
+            changePower(1);
+        }
+    }
+
+    //Metodo che ci permette di modifdicare il valore degli HP e sotto quello che ci permette di cambiare valore agli AP( Ability Points )
     public void changeHealth(int value){
 
         currentHealth += value;
@@ -207,6 +246,17 @@ public class Player extends Entity{
 
     } 
 
+    public void changePower(int value) {
+        powerValue += value;
+        
+        if (powerValue >= powerMaxValue) {
+            powerValue = powerMaxValue;
+        } else if (powerValue <= 0) {
+            powerValue = 0;
+        }
+
+    }
+
     //Viene fatto un controllo ogni volta che il player attacca per vdere se sta colpendo un nemico
     //in tal caso deve applicare i danni a quel nemico
     private void checkAttack() {
@@ -219,17 +269,28 @@ public class Player extends Entity{
         //il game loop lo resetterebbe a falso in tutti i casi con una velocità quasi istantanea, allora serve tenerlo a vero per
         //evitare che la chiamata di questa funzione ritorni nel'update successivo
         attackChecked = true;
-
+        
         //Viene fatto il controllo sul danno solo quando l'animazione si trova in un certo indice
-        if (aniIndex == 2 || aniIndex == 3){
-
+        if (aniIndex == 2){
             playing.checkEnemyHit(attackBox);
             playing.checkObjectHit(attackBox);
             attackChecked = false;
             
         }
+        // playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_ATTACK);
 
-        playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_ATTACK);
+    }
+
+    //Metodo che esegue il dash, ne viene fatto uno solo se si ha abbastanza energia
+    public void doPowerAttack() {
+        if (powerAttackActive) {
+            return;
+        }
+        if (powerValue > 60) {
+            powerAttackActive = true;
+            changePower(-60);
+            playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_DASHING);
+        }
     }
     
     //Funzione che controlla se il player sta toccando una pozione
@@ -284,6 +345,13 @@ public class Player extends Entity{
             }
         }
 
+        if (powerAttackActive) {
+            state = LIGHT_ATTACK;
+            aniIndex = 1;
+            aniTick = 0;
+            return;
+        }
+        
         if (attacking) {
             state = LIGHT_ATTACK;
         }
@@ -312,13 +380,9 @@ public class Player extends Entity{
 
         //Salto
 		if (jump) jump();
-
-        //Se non si sta facendo nessuna azione ritorna, non facendo calcoli
-		if (!left && !right && !inAir)
-			return;
     
         //Impedimento di movimenti concorrenti
-        if (!inAir && ((!left && !right) || (right && left))) {
+        if (!inAir && !powerAttackActive &&((!left && !right) || (right && left))) {
             return;
         }
 
@@ -328,16 +392,28 @@ public class Player extends Entity{
 
         //Questi due if servono a settare delle variabili oltre che al movimento anche al modo in cui vengono disegnati gli sprite
         //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto 
-		if (left){
+		if (left && !right){
 			xSpeed -= walkSpeed;
             flipX = hitBoxWidth - 60;
             flipW = -1;
         }
         
-        if (right){
+        if (right && !left){
 			xSpeed += walkSpeed;
             flipX = 0;
             flipW = 1;
+        }
+
+        if (powerAttackActive) {
+            if (!left && ! right) {
+                if (flipW == -1) {
+                    xSpeed = -walkSpeed;
+                } else {
+                    xSpeed = walkSpeed;
+                }
+            }
+
+            xSpeed *=3;
         }
 
 		if (!inAir){
@@ -347,7 +423,7 @@ public class Player extends Entity{
         }
 
 
-		if (inAir) {
+		if (inAir && !powerAttackActive) {
 			if (canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
 				hitbox.y += airSpeed;
 				airSpeed += GRAVITY;
@@ -369,32 +445,16 @@ public class Player extends Entity{
 		moving = true;
 	}
 
-
-
-    private void jump() {
-
-        if (inAir) return;
-        playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_JUMPING);
-        inAir = true;
-        airSpeed = jumpSpeed;
-        
-    }
-
-
-
-    private void resetInAir() {
-        inAir = false;
-        airSpeed = 0;
-    }
-
-
-
     private void updateXPos(float xSpeed){
 
         if (canMoveHere(hitbox.x+xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
             hitbox.x += xSpeed;
         } else {
             hitbox.x = getEntityXPosNextWall(hitbox, xSpeed);
+            if (powerAttackActive) {
+                powerAttackActive = false;
+                powerAttackTick = 0;
+            }
         }
     }
 
@@ -414,7 +474,7 @@ public class Player extends Entity{
         hitbox.x = x;
         hitbox.y = y;
 
-        if (isEntityOnFloor(hitbox, levelData)) {
+        if (!isEntityOnFloor(hitbox, levelData)) {
             inAir = true;
         }
 
@@ -458,6 +518,22 @@ public class Player extends Entity{
         this.y = spawn.y;
         hitbox.x = x;
         hitbox.y = y;
+    }
+
+    //Metodo per saltare
+    private void jump() {
+
+        if (inAir) return;
+        playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_JUMPING);
+        inAir = true;
+        airSpeed = jumpSpeed;
+        
+    }
+
+    //Metodo che resetta la flag di salto e velocità di caduta a 0 quando il player atterra
+    private void resetInAir() {
+        inAir = false;
+        airSpeed = 0;
     }
 
     //Questa funzione fa morire il player
@@ -505,6 +581,7 @@ public class Player extends Entity{
     public void setAttck(boolean attacking){
         this.attacking = attacking;
     }
+    
 
     public int getDamage(){
         return damage;
@@ -514,9 +591,9 @@ public class Player extends Entity{
         return tyleY;
     }
 
-    public void changePower(int bluePotionValue) {
-        System.out.println("Added some Power by piking up the blue potion");
-    }
+    
+
+    
 
     
 

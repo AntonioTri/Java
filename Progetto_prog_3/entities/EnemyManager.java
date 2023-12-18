@@ -81,7 +81,7 @@ public class EnemyManager {
     public void checkEnemyHit(Rectangle2D.Float attackBox){
         for (NightBorne nb : nightBornes) {
             //Se il nemico è attivo allora viene fatto un controllo sulle intersezioni tra hitbox
-            if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && !nb.getInvulnerability()) {
+            if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0) {
                 nb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
                 playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.NIGHTBORNE_HURT);
                 return;

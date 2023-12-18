@@ -200,19 +200,15 @@ public class HelpMetods {
 
     //Questo metodo serve alle entità perpermettere loro di capire se non vi sono ostacoli tra esse ed un'altra entità
     //Così da permettere una determinata azione
-    public static boolean isPathClear(int[][] levelData, Rectangle2D.Float hitbox, Rectangle2D.Float hitbox2, int YTile) {
+    public static boolean isPathClear(int[][] levelData, Rectangle2D.Float enemyHitbox, Rectangle2D.Float playerHitbox, int YTile) {
         
-        int firstXTile = (int)(hitbox.x / Game.TILES_SIZE);
-        int secondXTile = (int)(hitbox2.x / Game.TILES_SIZE);
+        int firstXTile = (int)(enemyHitbox.x / Game.TILES_SIZE);
+        int secondXTile = (int)(playerHitbox.x / Game.TILES_SIZE);;
 
         if (firstXTile > secondXTile) {
-
             return areAllTileWalkable(secondXTile, firstXTile, YTile, levelData);
-
         } else {
-
             return areAllTileWalkable(firstXTile, secondXTile, YTile, levelData);
-
         }
 
     }

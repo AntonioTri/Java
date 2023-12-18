@@ -32,8 +32,6 @@ public class PauseOverlay implements MenusOverlayInterface{
         
     }
 
-    
-
     //Questo metodo invece chrea i tre bottoni di pausa, reset e ritorno a schermata home
     private void createPRHButtons() {
 
@@ -50,8 +48,6 @@ public class PauseOverlay implements MenusOverlayInterface{
 
 
     }
-
-    
 
     //Questo metodo come gli altri gia incontrati durante il progetto, carica un png per l'immagine del nostro Pause Menu
     private void loadBackground() {
@@ -118,6 +114,7 @@ public class PauseOverlay implements MenusOverlayInterface{
         //Home Button
         if(mouseHovering(homeB, e) ){
             if (homeB.getMousePressed()) {
+                playing.resetAll();
                 playing.setGameState(GameState.MENU);
                 playing.unpauseGame();
             }
