@@ -6,6 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ConcurrentHashMap.KeySetView;
+
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.UI.GameOverOverlay;
@@ -236,8 +238,6 @@ public class Playing extends State implements StateMethods{
         if (!gameOver) {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 player.setAttck(true);
-            } else if (e.getButton() == MouseEvent.BUTTON3) {
-                player.doPowerAttack();
             }
         }
     }
@@ -314,6 +314,9 @@ public class Playing extends State implements StateMethods{
                 case KeyEvent.VK_SPACE:
                     player.setJump(true);
                     break;
+                case KeyEvent.VK_SHIFT:
+                    player.dash();
+                    break;
                 case KeyEvent.VK_ESCAPE:
                     paused = !paused;
                     break;
@@ -364,6 +367,7 @@ public class Playing extends State implements StateMethods{
 
     private void calculateLevelOffset() {
         maxLevelOffsetX = levelManager.getCurrentLevel().getLevelOffset();
+        System.out.println(maxLevelOffsetX);
     }
 
 

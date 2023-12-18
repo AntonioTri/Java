@@ -47,7 +47,6 @@ public class Player extends Entity{
 	private int healthBarHeight = (int) (4 * Game.SCALE);
 	private int healthBarXStart = (int) (34 * Game.SCALE);
 	private int healthBarYStart = (int) (14 * Game.SCALE);
-    //Variabili per definire la barra della vita del giocatore
 	private int healthWidth = healthBarWidth;
 
     //Variabili per definire la power bar
@@ -279,7 +278,7 @@ public class Player extends Entity{
     }
 
     //Metodo che esegue il dash, ne viene fatto uno solo se si ha abbastanza energia
-    public void doPowerAttack() {
+    public void dash() {
         if (powerAttackActive) {
             return;
         }
