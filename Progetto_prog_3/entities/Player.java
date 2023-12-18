@@ -68,7 +68,7 @@ public class Player extends Entity{
     //Variabili per l'abilità speciale e per gli attacchi normali
     private boolean powerAttackActive;
     private int powerAttackTick, powerGrowSpeed = 15, powerGrowTick;
-	private boolean attackChecked, canDealOneHit = true;
+	private boolean attackChecked;
     
     private int damage = 5;
     private Playing playing;
@@ -275,9 +275,6 @@ public class Player extends Entity{
             attackChecked = false;
             
         }
-        
-        playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_ATTACK);
-        
 
     }
 
@@ -354,6 +351,7 @@ public class Player extends Entity{
         
         if (attacking) {
             state = LIGHT_ATTACK;
+            playing.getGame().getAudioPlayer().playattack();
         }
 
         /*Se la animazione di arrivo e' diversa dalla animazione di fine funzione

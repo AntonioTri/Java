@@ -57,7 +57,7 @@ public class Game implements Runnable{
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
         audioOptions = new AudioOptions(this);
-        audioPlayer = new AudioPlayer();
+        audioPlayer = new AudioPlayer(this);
         gameOptions = new GameOptions(this);
         menu = new Menu(this);
         playing = new Playing(this);

@@ -10,14 +10,17 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.text.PlainDocument;
+
+import Progetto_prog_3.Game;
+
 import static Progetto_prog_3.utils.Constants.PlayerConstants.JUMPING_UP;
 
 public class AudioPlayer {
     
     //Lista delle soundtrack numerate
     public static int MENU_MUSIC = 0;
-    public static int LEVEL_1 = 1;
-    public static int LEVEL_2 = 2;
+    public static int LEVEL_MUSIC = 1;
 
     //Lista di suoni numerati
     public static final int PLAYER_HURT = 0;
@@ -55,17 +58,20 @@ public class AudioPlayer {
     public static final int PLAYER_DASHING_2 = 18;
     public static final int PLAYER_DASHING_3 = 19;
 
+    public static final int PLAYER_EXPLOSION = 20;
+
     //La clip è il modo di java di eseguirre suoni in un programma, è un contenitore capace di storare file .WAV
     private Clip[] songs, effects;
 
     //Variabili di ambiente
+    private Game game;
     private int currentSongId;
     private float volume = 1f;
     private boolean songMute, effectMute;
     private Random rand = new Random();
 
-    public AudioPlayer(){
-
+    public AudioPlayer(Game game){
+        this.game = game;
         loadSong();
         loadSoundEffects();
         playSong(MENU_MUSIC);
@@ -74,7 +80,7 @@ public class AudioPlayer {
 
     private void loadSong(){
 
-        String[] names = {"menuMusic", "level1", "level2"};
+        String[] names = {"menuMusic", "backgroundAudio"};
         songs = new Clip[names.length];
 
         for (int i = 0; i < songs.length; i++) {
@@ -90,7 +96,7 @@ public class AudioPlayer {
                                 "nightBorneDie", "nightBorneHurt1","nightBorneHurt2","nightBorneHurt3",
                                 "attack1", "attack2", "attack3",
                                 "lvlcompleted", "gameover",
-                                "dash1", "dash2", "dash3"};
+                                "dash1", "dash2", "dash3", "playerFireExplosion"};
 
         effects = new Clip[effectsName.length];
 
@@ -180,21 +186,28 @@ public class AudioPlayer {
     }
 
     public void setLevelSong(int lvlIndex){
-        if (lvlIndex % 2 == 0) {
-            playSong(LEVEL_1);
-        } else {
-            playSong(LEVEL_2);
-        }
+        playSong(lvlIndex);
     }
 
     public void levelComplited(){
         stopSong();
         playEffect(LEVEL_COMPLITED);
     }
-
+    
     public void playSetOfEffect(int EFFECT){
 
         int choosen = EFFECT + rand.nextInt(getNumberOfSounds(EFFECT));
+        playEffect(choosen);
+
+    }
+
+    public void playattack(){
+
+        if (effects[PLAYER_ATTACK].isActive() || effects[PLAYER_ATTACK + 1].isActive() || effects[PLAYER_ATTACK + 2].isActive()) {
+            return;
+        }
+
+        int choosen = PLAYER_ATTACK + rand.nextInt(getNumberOfSounds(PLAYER_ATTACK));
         playEffect(choosen);
 
     }
@@ -231,6 +244,7 @@ public class AudioPlayer {
         stopSong();
 
         currentSongId = SONG;
+        System.out.println(currentSongId);
         updateSongVolume();
         songs[currentSongId].setMicrosecondPosition(0);
         songs[currentSongId].loop(Clip.LOOP_CONTINUOUSLY);
