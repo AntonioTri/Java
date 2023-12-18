@@ -80,11 +80,13 @@ public class EnemyManager {
     //Se il player attacca il nemico a questo viene applicato il danno del player
     public void checkEnemyHit(Rectangle2D.Float attackBox){
         for (NightBorne nb : nightBornes) {
-            //Se il nemico è attivo allora viene fatto un controllo sulle intersezioni tra hitbox
-            if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0) {
+            //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, VIENE APPLICATO IL DANNO DEL PLAYER
+            if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0 && !nb.getInvulnerability()) {
+
                 nb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
                 playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.NIGHTBORNE_HURT);
                 return;
+                
             }
         }
     }

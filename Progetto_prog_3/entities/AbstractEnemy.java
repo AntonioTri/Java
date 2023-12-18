@@ -18,7 +18,7 @@ public abstract class AbstractEnemy extends Entity{
     protected int wlakDir = LEFT;
     protected int enemyTileY;
     protected float attackDistance = Game.TILES_SIZE;
-    protected boolean attackChecked, invulnerability;
+    protected boolean attackChecked, invulnerability = false;
 
     //Variabile per osservare se è morto oppure no
     protected boolean active = true;
@@ -33,6 +33,8 @@ public abstract class AbstractEnemy extends Entity{
         currentHealth = maxHealth;
     
     }
+
+    public abstract void update(int[][] levelData, Player player);
 
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
     protected void turnTowardsPlayer(Player player){

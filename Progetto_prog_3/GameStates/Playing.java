@@ -1,6 +1,5 @@
 package Progetto_prog_3.GameStates;
 
-import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -8,7 +7,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.UI.GameOverOverlay;
 import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
@@ -409,6 +407,10 @@ public class Playing extends State implements StateMethods{
 
     public LevelManager getLevelManager() {
         return levelManager;
+    }
+
+    public LevelCompletedOverlay getLevelCompletedOverlay(){
+        return levelCompletedOverlay;
     }
 
     public void setPlayerDying(boolean playerDying) {

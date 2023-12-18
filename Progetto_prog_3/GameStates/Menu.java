@@ -11,7 +11,6 @@ import Progetto_prog_3.utils.LoadSave;
 
 /*  Questa classe rappresenta il menù di gioco con i suoi bottoni, gestisce dei gamestate, per cambare da
     stato all'altro, renderizza i bottoni
-
 */
 public class Menu extends State implements StateMethods {
 

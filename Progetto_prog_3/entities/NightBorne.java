@@ -23,6 +23,7 @@ public class NightBorne extends AbstractEnemy{
         attackBoxOffsetX = (int)(Game.SCALE * 20);
     }
 
+    @Override
     public void update(int[][] levelData, Player player){
             
         if(active){
@@ -30,6 +31,12 @@ public class NightBorne extends AbstractEnemy{
             updateAttackBoxDirection();
         }
         updateAnimationTick();
+
+        if (state == NIGHT_BORNE_HITTED) {
+            this.invulnerability = true;
+        } else {
+            this.invulnerability = false;
+        }
 
     }
 

@@ -163,7 +163,7 @@ public class Constants {
             public static final int CANNON_BALL_WIDTH = (int)(CANNON_BALL_DEFAULT_WIDTH * Game.SCALE);
             public static final int CANNON_BALL_HEIGHT = (int)(CANNON_BALL_DEFAULT_HEIGHT * Game.SCALE);
     
-            public static final float CANNON_BALL_SPEED = 0.9f * Game.SCALE;
+            public static final float CANNON_BALL_SPEED = 1f * Game.SCALE;
         }
 
         public static int getProjectileWidth(int objType){

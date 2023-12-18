@@ -68,7 +68,7 @@ public class Player extends Entity{
     //Variabili per l'abilità speciale e per gli attacchi normali
     private boolean powerAttackActive;
     private int powerAttackTick, powerGrowSpeed = 15, powerGrowTick;
-	private boolean attackChecked;
+	private boolean attackChecked, canDealOneHit = true;
     
     private int damage = 5;
     private Playing playing;
@@ -88,7 +88,7 @@ public class Player extends Entity{
     private void initStates(){
         this.state = IDLE;
         this.maxHealth = 100;
-        this.currentHealth = 35;
+        this.currentHealth = maxHealth;
     }
 
     private void initAttackBox(){
@@ -156,9 +156,7 @@ public class Player extends Entity{
 
         }
 
-        if (attacking || powerAttackActive) {
-            checkAttack();
-        }
+        if (attacking) checkAttack();
         
         updateAnimationTick();
         setAnimation();
@@ -271,13 +269,15 @@ public class Player extends Entity{
         attackChecked = true;
         
         //Viene fatto il controllo sul danno solo quando l'animazione si trova in un certo indice
-        if (aniIndex == 2){
+        if (aniIndex == 1 ){
             playing.checkEnemyHit(attackBox);
             playing.checkObjectHit(attackBox);
             attackChecked = false;
             
         }
-        // playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_ATTACK);
+        
+        playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_ATTACK);
+        
 
     }
 
@@ -591,7 +591,13 @@ public class Player extends Entity{
         return tyleY;
     }
 
-    
+    public void setCurrentHealth(int currentPlayerHealth) {
+        this.currentHealth = currentPlayerHealth;
+    }
+
+    public int getMaxHealth(){
+        return maxHealth;
+    }
 
     
 

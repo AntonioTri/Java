@@ -122,6 +122,8 @@ public class PauseOverlay implements MenusOverlayInterface{
         } else if(mouseHovering(replayB, e) ){
             if (replayB.getMousePressed()) {
                 playing.resetAll();
+                //Nella seguente riga vienen settata la vita di backup del player
+                setPlayerStartingHealth();
                 playing.unpauseGame();
             }
         //Unpause Button
@@ -162,6 +164,11 @@ public class PauseOverlay implements MenusOverlayInterface{
         return pb.getHitbox().contains(e.getX(), e.getY());
     }
 
+    private void setPlayerStartingHealth(){
+        if (playing.getLevelManager().getLevelIndex() > 0) {
+            playing.getGame().getPlaying().getPlayer().setCurrentHealth(playing.getLevelCompletedOverlay().getPlayerHealth());
+        } else return;
 
+    }
 
 }

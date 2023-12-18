@@ -9,8 +9,8 @@ public class CannonBall extends AbstractProjectile {
 
     public CannonBall(int x, int y, int direction) {
         super(x, y, direction, CANNON_BALL);
-        int xOffset = (int)(-3 * Game.SCALE);
         int yOffset = (int)( 5 * Game.SCALE);
+        int xOffset = (int)(-3 * Game.SCALE);
 
         if (direction == 1) {
             xOffset = (int)(29 * Game.SCALE);
