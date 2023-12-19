@@ -80,7 +80,7 @@ public class AudioPlayer {
 
     private void loadSong(){
 
-        String[] names = {"menuMusic", "backgroundAudio"};
+        String[] names = {"game_sounds/menuMusic", "game_sounds/backgroundAudio"};
         songs = new Clip[names.length];
 
         for (int i = 0; i < songs.length; i++) {
@@ -91,12 +91,12 @@ public class AudioPlayer {
 
     private void loadSoundEffects(){
 
-        String[] effectsName = {"hurt1", "hurt2", "hurt3", "jumping1", "jumping2",
-                                "landing", "landing2", "walking_on_grass",
-                                "nightBorneDie", "nightBorneHurt1","nightBorneHurt2","nightBorneHurt3",
-                                "attack1", "attack2", "attack3",
-                                "lvlcompleted", "gameover",
-                                "dash1", "dash2", "dash3", "playerFireExplosion"};
+        String[] effectsName = {"player_sounds/hurt1", "player_sounds/hurt2", "player_sounds/hurt3", "player_sounds/jumping1", "player_sounds/jumping2",
+                                "player_sounds/landing", "player_sounds/landing2", "player_sounds/walking_on_grass",
+                                "nightborne_sounds/nightBorneDie", "nightborne_sounds/nightBorneHurt1","nightborne_sounds/nightBorneHurt2","nightborne_sounds/nightBorneHurt3",
+                                "player_sounds/attack1", "player_sounds/attack2", "player_sounds/attack3",
+                                "game_sounds/lvlcompleted", "game_sounds/gameover",
+                                "player_sounds/dash1", "player_sounds/dash2", "player_sounds/dash3", "player_sounds/playerFireExplosion"};
 
         effects = new Clip[effectsName.length];
 
