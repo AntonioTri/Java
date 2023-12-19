@@ -279,6 +279,14 @@ public class Constants {
         public static final int JUMPING_DOWN = 7;
         public static final int HURT = 8;
         public static final int DIE = 9;
+        public static final int USING_ULTIMATE = 10;
+
+        public static final int PLAYER_EXPLOSION_DEFAULT_WIDTH = 262;
+        public static final int PLAYER_EXPLOSION_DEFAULT_HEIGHT = 252;
+        public static final int PLAYER_EXPLOSION_HEIGHT = (int)(PLAYER_EXPLOSION_DEFAULT_HEIGHT * Game.SCALE);
+        public static final int PLAYER_EXPLOSION_WIDTH = (int)(PLAYER_EXPLOSION_DEFAULT_WIDTH * Game.SCALE);
+        public static final int PLAYER_EXPLOSION_DRAW_HEIGHT = (int)((PLAYER_EXPLOSION_DEFAULT_HEIGHT + 100) * Game.SCALE);
+        public static final int PLAYER_EXPLOSION_DRAW_WIDTH = (int)((PLAYER_EXPLOSION_DEFAULT_WIDTH + 100) * Game.SCALE);
 
         //Metodo per ottenere il numero di sprite corrispetivo in base all'azione del player
         public static int getSpriteAmount(int PLAYER_ACTION){
@@ -313,6 +321,9 @@ public class Constants {
 
                 case DIE:
                     return 4;
+                
+                case USING_ULTIMATE:
+                    return 15;
             
                 default:
                     return 1;

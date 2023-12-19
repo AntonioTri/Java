@@ -78,15 +78,18 @@ public class EnemyManager {
     }
 
     //Se il player attacca il nemico a questo viene applicato il danno del player
-    public void checkEnemyHit(Rectangle2D.Float attackBox){
+    public void checkEnemyHit(Rectangle2D.Float attackBox, int areaAttack){
         for (NightBorne nb : nightBornes) {
             //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, VIENE APPLICATO IL DANNO DEL PLAYER
             if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0 && !nb.getInvulnerability()) {
 
                 nb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
                 playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.NIGHTBORNE_HURT);
-                return;
                 
+                //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti i nemici
+                //invece che fermarsi al primo nemico colpito
+                if (areaAttack == 0) return;
+            
             }
         }
     }

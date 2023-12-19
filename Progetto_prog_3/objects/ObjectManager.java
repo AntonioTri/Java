@@ -92,7 +92,7 @@ public class ObjectManager {
      * il codice vcerrà sempre eseguito, viene spawnata la pozione al posto della scatola appena rottae viene settata la flag di spawn pozione a falso
      * 
      */
-    public void checkObjectHit(Rectangle2D.Float playerAttackBox){
+    public void checkObjectHit(Rectangle2D.Float playerAttackBox, int areaAttack){
 
         for (LootBox box : lootBoxes) {
             if (box.isActive() && box.getHitbox().intersects(playerAttackBox)) {
@@ -114,9 +114,11 @@ public class ObjectManager {
                                             type));
                     box.setCanSpawnPotion(false);
                     System.out.println("Spawned a Potion");
-                    }
+                }
 
-                return;
+                //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti gli oggetti
+                //invece che fermarsi al primo oggetto colpito
+                if(areaAttack == 0) return;
                 
             }
         }
@@ -273,7 +275,7 @@ public class ObjectManager {
 
             if (c.getObjType() == CANNON_RIGHT) {
                 X += width;
-                Y += height - Game.TILES_SIZE;
+                Y += height - (25 * Game.SCALE);
                 width *= -1;
                 
             }

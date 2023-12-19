@@ -46,6 +46,8 @@ public class LoadSave {
     public static final String BOXES_SPRITE = "loot/objects_sprites.png";
     public static final String POTIONS = "loot/potions_sprites.png";
     
+    //Special abilities
+    public static final String PLAYER_EXPLOSION = "entity/circle_explosion.png";
 
     public static BufferedImage[] getAllLevels(){
 
