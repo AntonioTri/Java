@@ -239,7 +239,7 @@ public class ObjectManager {
             }
             //Controllo della collisione con il player
             if (player.getHitbox().intersects(cb.getHitbox()) && cb.getCanDoDamage()) {
-                player.changeHealth(-25);
+                player.changeHealth(0);
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
             //Controllo della collisione con un muro

@@ -1,6 +1,6 @@
 package Progetto_prog_3.entities;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
@@ -37,6 +37,8 @@ public class NightBorne extends AbstractEnemy{
         } else {
             this.invulnerability = false;
         }
+
+     
 
     }
 

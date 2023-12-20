@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
+import Progetto_prog_3.entities.enemies.HellBound;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
@@ -13,6 +14,7 @@ import Progetto_prog_3.utils.HelpMetods;
 import static Progetto_prog_3.utils.HelpMetods.getLevelData;
 import static Progetto_prog_3.utils.HelpMetods.getNightBornes;
 import static Progetto_prog_3.utils.HelpMetods.GetPlayerSpawnPoint;
+import static Progetto_prog_3.utils.HelpMetods.gettHellBounds;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,7 @@ public class Level {
     private BufferedImage image;
     //Il seguente array, conserva i nemici di tipo nightborne
     private ArrayList<NightBorne> nightBornes;
+    private ArrayList<HellBound> hellBounds;
     //I seguenti 2 le pozioni e le loot box
     private ArrayList<Potion> potions;
     private ArrayList<LootBox> lootBoxes;
@@ -92,6 +95,7 @@ public class Level {
     //!!!!! QUA PUò ESSERE IMPLEMENTATA UNA FACTORY AL 100%
     private void createEnemyes() {
         nightBornes = getNightBornes(image);
+        hellBounds = gettHellBounds(image);
     }
 
     //Metodo che sposta la camera dipendentemente dalla posiizone del player
@@ -146,6 +150,10 @@ public class Level {
 
     public Point getPlayerSpawnPoint(){
         return playerSpawnPoint;
+    }
+
+    public ArrayList<HellBound> getHellBounds() {
+        return hellBounds;
     }
 
     

@@ -1,6 +1,8 @@
 package Progetto_prog_3.entities;
 
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
@@ -30,6 +32,7 @@ public abstract class AbstractEnemy extends Entity{
         this.walkSpeed *= 0.8f;
         initHitbox(x, y, width, height);
         maxHealth = getMaxHealth(enemyType);
+        attackDistance = getAttackDistance(enemyType);
         currentHealth = maxHealth;
     
     }
@@ -54,13 +57,13 @@ public abstract class AbstractEnemy extends Entity{
     protected boolean canSeePlayer(int[][] levelData, Player player){
 
         //Controlliamo che siano nello stesso livello in y del player
-        int playerYPos = (int) (player.getHitbox().y / Game.TILES_SIZE);
+        int playerYPos = (int) ((player.getHitbox().y + player.getHitbox().height - 1)/ Game.TILES_SIZE);
+
         if (playerYPos == enemyTileY) {
-            if (isPlayerInRange(player)) {
-                if (isPathClear(levelData, hitbox, player.hitbox, enemyTileY + 1)) {
-                    return true;
-                    
-                }
+            //Se è così controlliamo che il player sia in range di visione e che il percorso verso il player sia percorribile
+            if (isPlayerInRange(player) && isPathClear(levelData, hitbox, player.hitbox, enemyTileY)) {
+                //Se tutte le condizioni sono vere ritorniamo vero ed il nemico può vedere il player e raggiungerlo
+                return true; 
             }
         }
 
@@ -83,7 +86,7 @@ public abstract class AbstractEnemy extends Entity{
         
         int absValue = (int)Math.abs(player.hitbox.x - hitbox.x);
         //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
-        return absValue <= attackDistance * 1.7;
+        return absValue <= attackDistance;
     }
 
     //Metodo che cambia lo stato del nemico in questione
@@ -151,12 +154,19 @@ public abstract class AbstractEnemy extends Entity{
 
             if (aniIndex >= getSpriteAmount(enemyType, state)) {
                 aniIndex = 0;
-
                 //Se avviene un cambiamento di stato, andremo a fare solo una animazione di quello stato
-                switch (state) {
-                    case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> state = IDLE;
-                    case NIGHT_BORNE_DIE -> active = false;
-
+                if (enemyType == NIGHT_BORNE) {
+                    switch (state) {
+                        case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> state = IDLE;
+                        case NIGHT_BORNE_DIE -> active = false;
+    
+                    }
+                } else if (enemyType == HELL_BOUND) {
+                    switch (state) {
+                        case HELL_BOUND_JUMP, HELL_BOUND_HIT -> state = IDLE;
+                        case HELL_BOUND_DIE -> active = false;
+    
+                    }
                 }
             }
         }
@@ -171,9 +181,12 @@ public abstract class AbstractEnemy extends Entity{
         } else {
             inAir = false;
             hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
+            if (enemyType == HELL_BOUND) {
+                hitbox.y -= Game.TILES_SIZE;
+            }
             //Otteniamo in questo modo la posiizone in y, che rimane costante, il nemico nono salta, si muove solo a destra e a sinistra
             //La calcoliamo solo una volta
-            enemyTileY = (int)(hitbox.y / Game.TILES_SIZE);
+            enemyTileY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
         }
 
     }

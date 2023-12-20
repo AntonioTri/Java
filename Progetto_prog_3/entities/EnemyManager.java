@@ -7,15 +7,19 @@ import java.util.ArrayList;
 
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.entities.enemies.HellBound;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+
+import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 
 public class EnemyManager {
     
     private Playing playing;
-    private BufferedImage[][] nightBorneArray;
+    private BufferedImage[][] nightBorneImages, hellBoundsImage;
     private ArrayList<NightBorne> nightBornes = new ArrayList<>();
+    private ArrayList<HellBound> hellBounds = new ArrayList<>();
 
     public EnemyManager(Playing playing){
         this.playing = playing;
@@ -24,6 +28,7 @@ public class EnemyManager {
 
     public void addEnemies(Level level) {
         nightBornes = level.getnNightBornes();
+        hellBounds = level.getHellBounds();
     }
 
     public void update(int[][] levelData, Player player){
@@ -38,6 +43,13 @@ public class EnemyManager {
             }
         }
 
+        for (HellBound hb : hellBounds) {
+            if (hb.getActive()) {
+                hb.update(levelData, player);
+                isAnyActive = true;
+            }
+        }
+
         if (!isAnyActive) {
             playing.setLevelComplited(true);
         }
@@ -46,20 +58,21 @@ public class EnemyManager {
 
     public void draw(Graphics g, int xLevelOffset, int yLevelOffset){
 
-        drawNightBornes(g, xLevelOffset, yLevelOffset);
+        drawEnemies(g, xLevelOffset, yLevelOffset);
+        
 
     };
 
     //  ATTENZIONE !!!!!!!!!
     //LA HITBOX STA SEMPRE NELLO STESSO MODO E NON C'E' MODO DI SPOSTARLA, SE SI VUOLE CENTRARE IL TIZIO DENTRO LA HITBOX, BISOGNA
     //SPOSTARE IL DISEGNO QUANDO VIENE DISEGNATO LO SPRITE, ALTRIMENTI A VOGLIA DI IMPAZZIRE
-    private void drawNightBornes(Graphics g, int xLevelOffset, int yLevelOffset) {
+    private void drawEnemies(Graphics g, int xLevelOffset, int yLevelOffset) {
 
         for(NightBorne nb : nightBornes){
             //Se il nemico è attivo allora viene fatto un repaint
             if (nb.getActive()){
                 //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
-                g.drawImage(nightBorneArray[nb.getState()][nb.getAniIndex()], 
+                g.drawImage(nightBorneImages[nb.getState()][nb.getAniIndex()], 
                             (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
                             ((int)nb.getHitbox().y - yLevelOffset - NIGHT_BORNE_DROW_OFFSET_Y),
                             (NIGHT_BORNE_WIDHT + 25) * nb.flipW() ,
@@ -75,6 +88,32 @@ public class EnemyManager {
                 }
             }
         }
+
+        for (HellBound hb : hellBounds) {
+            
+            if (hb.getActive()) {
+                
+                g.drawImage(hellBoundsImage[hb.getState()][hb.getAniIndex()],
+                            (int)hb.getHitbox().x - xLevelOffset - HELL_BOUND_DROW_OFFSET_X + hb.flipX(),
+                            ((int) hb.getHitbox().y - yLevelOffset - HELL_BOUND_DROW_OFFSET_Y),
+                            HELL_BOUND_WIDTH * hb.flipW(),
+                            HELL_BOUND_HEIGHT, null);
+
+                hb.drawHitbox(g, xLevelOffset, yLevelOffset);
+                hb.drowAttackBox(g, xLevelOffset, yLevelOffset);
+
+                if (hb.getState() == HELL_BOUND_DIE) {
+                    hb.setAniSpeed(20);
+                    hb.setInvulnerability(true);
+                }
+
+            
+            }
+        }
+
+
+
+
     }
 
     //Se il player attacca il nemico a questo viene applicato il danno del player
@@ -92,6 +131,16 @@ public class EnemyManager {
             
             }
         }
+
+        for (HellBound hb : hellBounds) {
+            if (hb.getActive() && attackBox.intersects(hb.getHitbox()) && hb.getCurrentHealth() > 0 && !hb.getInvulnerability()) {
+                
+                hb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
+
+                if (areaAttack == 0) return;
+            }
+        }
+
     }
 
     public void resetAllEnemyes(){
@@ -100,18 +149,32 @@ public class EnemyManager {
             nb.resetEnemy();
         }
 
+        for (AbstractEnemy hb : hellBounds) {
+            hb.resetEnemy();
+        }
+
     }
 
 
 
     private void loadEnemyImages() {
         
-        nightBorneArray = new BufferedImage[5][23];
+        nightBorneImages = new BufferedImage[5][23];
         BufferedImage temp = LoadSave.getSpriteAtlas(LoadSave.NIGHT_BORNE_ATLAS);
-        for(int j = 0; j < nightBorneArray.length; j++){
-            for (int i = 0; i < nightBorneArray[j].length; i++) {
-                nightBorneArray[j][i] = temp.getSubimage(i * NIGHT_BORNE_DEFAULT_WIDHT, j * NIGHT_BORNE_DEFAULT_HEIGHT, NIGHT_BORNE_DEFAULT_HEIGHT, NIGHT_BORNE_DEFAULT_HEIGHT );
+        for(int j = 0; j < nightBorneImages.length; j++){
+            for (int i = 0; i < nightBorneImages[j].length; i++) {
+                nightBorneImages[j][i] = temp.getSubimage(i * NIGHT_BORNE_DEFAULT_WIDHT, j * NIGHT_BORNE_DEFAULT_HEIGHT, NIGHT_BORNE_DEFAULT_HEIGHT, NIGHT_BORNE_DEFAULT_HEIGHT );
             }
         }
+
+        hellBoundsImage = new BufferedImage[5][12];
+        temp = LoadSave.getSpriteAtlas(LoadSave.HELL_BOUND_ATLAS);
+        for (int j = 0; j < hellBoundsImage.length; j++) {
+            for (int i = 0; i < hellBoundsImage[j].length; i++) {
+                hellBoundsImage[j][i] = temp.getSubimage( i * HELL_BOUND_DEAFULT_WIDTH, j* HELL_BOUND_DEAFULT_HEIGHT, HELL_BOUND_DEAFULT_WIDTH, HELL_BOUND_DEAFULT_HEIGHT);
+            }
+        }
+
+
     }
 }
