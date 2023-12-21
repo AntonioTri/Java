@@ -167,7 +167,7 @@ public class EnemyManager {
             }
         }
 
-        hellBoundsImage = new BufferedImage[5][12];
+        hellBoundsImage = new BufferedImage[6][12];
         temp = LoadSave.getSpriteAtlas(LoadSave.HELL_BOUND_ATLAS);
         for (int j = 0; j < hellBoundsImage.length; j++) {
             for (int i = 0; i < hellBoundsImage[j].length; i++) {

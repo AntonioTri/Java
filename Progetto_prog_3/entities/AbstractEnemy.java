@@ -167,6 +167,7 @@ public abstract class AbstractEnemy extends Entity{
                 } else if (enemyType == HELL_BOUND) {
                     switch (state) {
                         case HELL_BOUND_JUMP, HELL_BOUND_HIT, HELL_BOUND_RUN -> state = HELL_BOUND_WALK;
+                        case HELL_BOUND_IDLE -> state = HELL_BOUND_WALK;
                         case HELL_BOUND_DIE -> active = false;
     
                     }
@@ -187,8 +188,7 @@ public abstract class AbstractEnemy extends Entity{
             if (hitbox.height < Game.TILES_SIZE) {
                 hitbox.y -= Game.TILES_SIZE;
             }
-            //Otteniamo in questo modo la posiizone in y, che rimane costante, il nemico nono salta, si muove solo a destra e a sinistra
-            //La calcoliamo solo una volta
+            //Otteniamo in questo modo la posiizone in y
             enemyTileY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
         }
 

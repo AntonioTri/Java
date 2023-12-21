@@ -417,7 +417,6 @@ public class HelpMetods {
         if (!isSolid(hitbox.x, hitbox.y + hitbox.height + 1, levelData) && !isSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, levelData)) {
             return false;
         }
-        
         return true;
     }
 

@@ -155,7 +155,7 @@ public class Constants {
                         case HELL_BOUND_RUN: return 5;
                         case HELL_BOUND_JUMP: return 6;
                         case HELL_BOUND_HIT: return 5;
-                        case HELL_BOUND_IDLE: return 0;
+                        case HELL_BOUND_IDLE: return 4;
                         case HELL_BOUND_DIE: return 5;
                         default: return 12;
                     }
