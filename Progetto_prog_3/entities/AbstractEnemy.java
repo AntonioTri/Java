@@ -62,7 +62,7 @@ public abstract class AbstractEnemy extends Entity{
 
         if (playerYPos == enemyTileY) {
             //Se è così controlliamo che il player sia in range di visione e che il percorso verso il player sia percorribile
-            if (isPlayerInRange(player) && isPathClear(levelData, hitbox, player.hitbox, enemyTileY)) {
+            if (isPlayerInRangeOfVision(player) && isPathClear(levelData, hitbox, player.hitbox, enemyTileY)) {
                 //Se tutte le condizioni sono vere ritorniamo vero ed il nemico può vedere il player e raggiungerlo
                 return true; 
             }
@@ -72,7 +72,7 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //Questo metodo ci dice se il player si trova in range di visione per far muovere il nemico verso il player
-    protected boolean isPlayerInRange(Player player) {
+    protected boolean isPlayerInRangeOfVision(Player player) {
 
         //La distanza viene calcolata in base al centro della hitbox delle entità
         int absValue = (int)Math.abs((player.getHitbox().x + player.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
@@ -166,7 +166,7 @@ public abstract class AbstractEnemy extends Entity{
                     }
                 } else if (enemyType == HELL_BOUND) {
                     switch (state) {
-                        case HELL_BOUND_JUMP, HELL_BOUND_HIT -> state = IDLE;
+                        case HELL_BOUND_JUMP, HELL_BOUND_HIT -> state = HELL_BOUND_WALK;
                         case HELL_BOUND_DIE -> active = false;
     
                     }
@@ -184,7 +184,7 @@ public abstract class AbstractEnemy extends Entity{
         } else {
             inAir = false;
             hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
-            if (enemyType == HELL_BOUND) {
+            if (hitbox.height < Game.TILES_SIZE) {
                 hitbox.y -= Game.TILES_SIZE;
             }
             //Otteniamo in questo modo la posiizone in y, che rimane costante, il nemico nono salta, si muove solo a destra e a sinistra
