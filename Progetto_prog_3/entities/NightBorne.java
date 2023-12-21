@@ -100,7 +100,7 @@ public class NightBorne extends AbstractEnemy{
 
                         checkEnemyHit(attackBox, player);
                     }
-                case NIGHT_BORNE_HITTED:
+                    break;
                     
             
             }

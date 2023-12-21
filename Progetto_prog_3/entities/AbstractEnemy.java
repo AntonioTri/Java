@@ -166,7 +166,7 @@ public abstract class AbstractEnemy extends Entity{
                     }
                 } else if (enemyType == HELL_BOUND) {
                     switch (state) {
-                        case HELL_BOUND_JUMP, HELL_BOUND_HIT -> state = HELL_BOUND_WALK;
+                        case HELL_BOUND_JUMP, HELL_BOUND_HIT, HELL_BOUND_RUN -> state = HELL_BOUND_WALK;
                         case HELL_BOUND_DIE -> active = false;
     
                     }

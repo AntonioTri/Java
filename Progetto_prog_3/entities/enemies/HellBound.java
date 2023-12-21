@@ -16,8 +16,8 @@ import java.awt.geom.Rectangle2D;
 public class HellBound extends AbstractEnemy{
 
 
-    private boolean jumping;
-    private float jumpSpeed = -1.5f * Game.SCALE;;
+    private boolean attacking;
+    private float jumpForce = -1.5f * Game.SCALE;;
 
 
     public HellBound(float x, float y) {
@@ -35,12 +35,13 @@ public class HellBound extends AbstractEnemy{
     
 	@Override
     public void update(int[][] levelData, Player player) {
+        
         if (active) {
             updateMove(levelData, player);
             updateAttackBoxDirection();
+            updateAnimationTick();
         }
 
-        updateAnimationTick();
 
         if (state == HELL_BOUND_HIT) {
             //gainKnokBack();
@@ -67,6 +68,7 @@ public class HellBound extends AbstractEnemy{
             firstUpdateCheck(levelData);
         }
 
+
         if (inAir) {
             updateInAir(levelData);
         } else {
@@ -78,12 +80,33 @@ public class HellBound extends AbstractEnemy{
                     aniSpeed = 17;
 
                     if (canSeePlayer(levelData, player)) {
-                        System.out.println("Can see player");
-
+                        turnTowardsPlayer(player);
+                        newState(HELL_BOUND_RUN);
                     }
                     
                     move(levelData);
                     break;
+
+
+                case HELL_BOUND_RUN:
+                    this.walkSpeed = 1.5f;
+                    aniSpeed = 17;
+                    
+                    if (isPlayerCloseForAttack(player)) {
+                        System.out.println("Player in range di attaco");
+                        newState(HELL_BOUND_JUMP);
+                    }
+                    
+                    move(levelData);
+                    break;
+
+                case HELL_BOUND_JUMP:
+                    aniSpeed = 22;
+                    jumpAttack(levelData);
+                    attacking = true;    
+
+                    break;
+
 
                 default:
                     break;
@@ -91,6 +114,32 @@ public class HellBound extends AbstractEnemy{
 
 
         }
+    }
+
+    private void jumpAttack(int[][] levelData) {
+
+        float orizzontalSpeed = 2f * Game.SCALE;
+
+        if (canMoveHere(hitbox.x + orizzontalSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
+            hitbox.x -= orizzontalSpeed * flipW();
+            
+        }
+        
+        if (jumpForce <= 0 ) {
+            hitbox.y +=jumpForce;
+            jumpForce += GRAVITY;
+        } else if (jumpForce > 0 && canMoveHere(hitbox.x, hitbox.y + jumpForce, hitbox.width, hitbox.height, levelData)) {
+            hitbox.y +=jumpForce;
+            jumpForce += GRAVITY;
+        } else {
+            jumpForce = -1.5f * Game.SCALE;
+            getEntityXPosNextWall(hitbox, orizzontalSpeed);
+            getEntityYPosFloorRoofRelative(hitbox, jumpForce);
+            inAir = true;
+            newState(HELL_BOUND_WALK);
+        }
+
+        System.out.println("jump Attack!");
     }
 
     @Override

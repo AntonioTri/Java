@@ -204,7 +204,8 @@ public class Constants {
                     distance = 1.68f; 
                     break;
                 case HELL_BOUND:
-                    distance = 10f;
+                    distance = 3f;
+                    break;
                 default:
                     distance = 1f;
                     break;
@@ -223,6 +224,7 @@ public class Constants {
                     break;
                 case HELL_BOUND:
                     distance = 10f;
+                    break;
                 default:
                     distance = 1f;
                     break;

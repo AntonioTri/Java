@@ -384,7 +384,7 @@ public class HelpMetods {
     //player e muri, e vengono risommati al movimento se questo sta facendo overlapping con del terreno
     public static float getEntityXPosNextWall(Rectangle2D.Float hitbox, float xSpeed) {
 		int currentTile = (int) (hitbox.x / Game.TILES_SIZE);
-
+       
 		if (xSpeed > 0) {
 			// Right
 			int tileXPos = currentTile * Game.TILES_SIZE;
