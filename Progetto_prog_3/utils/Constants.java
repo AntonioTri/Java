@@ -114,14 +114,14 @@ public class Constants {
             public static final int HELL_BOUND_IDLE = 4;
             public static final int HELL_BOUND_DIE = 5;
 
-            public static final int HELL_BOUND_DEAFULT_WIDTH = 67;
+            public static final int HELL_BOUND_DEAFULT_WIDTH = 64;
             public static final int HELL_BOUND_DEAFULT_HEIGHT = 48;
 
             public static final int HELL_BOUND_WIDTH = (int)(HELL_BOUND_DEAFULT_WIDTH * Game.SCALE);
             public static final int HELL_BOUND_HEIGHT = (int)(HELL_BOUND_DEAFULT_HEIGHT * Game.SCALE);
             
             public static final int HELL_BOUND_DROW_OFFSET_X = (int)(9 * Game.SCALE);
-            public static final int HELL_BOUND_DROW_OFFSET_Y = (int)(22 * Game.SCALE);
+            public static final int HELL_BOUND_DROW_OFFSET_Y = (int)(20 * Game.SCALE);
             
         }
         
@@ -180,7 +180,7 @@ public class Constants {
             }
         }
 
-         //Metodo che ci permette di ritornare il valore di DANNO dato uno specifico nemico
+        //Metodo che ci permette di ritornare il valore di DANNO dato uno specifico nemico
         public static int getEnemyDamage(int enemyType){
 
             switch (enemyType) {
@@ -192,16 +192,16 @@ public class Constants {
                     return 0;
             }
 
-         }
+        }
 
          //Metodo per ottenre la distanza di attacco
-         public static int getAttackDistance(int enemyType){
+        public static int getAttackDistance(int enemyType){
 
             float distance;
 
             switch (enemyType) {
                 case NIGHT_BORNE:
-                    distance = 1.60f; 
+                    distance = 1.68f; 
                     break;
                 case HELL_BOUND:
                     distance = 10f;
@@ -212,7 +212,25 @@ public class Constants {
 
             return (int)(distance * Game.TILES_SIZE);
 
-         }
+        }
+
+        public static int getVisionDistance(int enemyType) {
+            float distance;
+
+            switch (enemyType) {
+                case NIGHT_BORNE:
+                    distance = 6f; 
+                    break;
+                case HELL_BOUND:
+                    distance = 10f;
+                default:
+                    distance = 1f;
+                    break;
+            }
+
+            return (int)(distance * Game.TILES_SIZE);
+
+        }
 
 
     }

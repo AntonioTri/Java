@@ -75,7 +75,7 @@ public class EnemyManager {
                 g.drawImage(nightBorneImages[nb.getState()][nb.getAniIndex()], 
                             (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
                             ((int)nb.getHitbox().y - yLevelOffset - NIGHT_BORNE_DROW_OFFSET_Y),
-                            (NIGHT_BORNE_WIDHT + 25) * nb.flipW() ,
+                            (NIGHT_BORNE_WIDHT + 25) * nb.flipW(),
                              NIGHT_BORNE_HEIGHT + 25, null);
 
                 nb.drawHitbox(g, xLevelOffset, yLevelOffset);
@@ -136,7 +136,7 @@ public class EnemyManager {
             if (hb.getActive() && attackBox.intersects(hb.getHitbox()) && hb.getCurrentHealth() > 0 && !hb.getInvulnerability()) {
                 
                 hb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
-
+                System.out.println("Hurted hellbound");
                 if (areaAttack == 0) return;
             }
         }

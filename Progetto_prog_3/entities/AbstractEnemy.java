@@ -1,7 +1,7 @@
 package Progetto_prog_3.entities;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
 import static Progetto_prog_3.utils.HelpMetods.*;
@@ -19,7 +19,7 @@ public abstract class AbstractEnemy extends Entity{
     protected boolean firstUpdate = true;
     protected int wlakDir = LEFT;
     protected int enemyTileY;
-    protected float attackDistance = Game.TILES_SIZE;
+    protected float attackDistance, visionDistance;
     protected boolean attackChecked, invulnerability = false;
 
     //Variabile per osservare se è morto oppure no
@@ -32,6 +32,7 @@ public abstract class AbstractEnemy extends Entity{
         this.walkSpeed *= 0.8f;
         initHitbox(x, y, width, height);
         maxHealth = getMaxHealth(enemyType);
+        visionDistance = getVisionDistance(enemyType);
         attackDistance = getAttackDistance(enemyType);
         currentHealth = maxHealth;
     
@@ -73,18 +74,20 @@ public abstract class AbstractEnemy extends Entity{
     //Questo metodo ci dice se il player si trova in range di visione per far muovere il nemico verso il player
     protected boolean isPlayerInRange(Player player) {
 
-        int absValue = (int)Math.abs(player.getHitbox().x - hitbox.x);
+        //La distanza viene calcolata in base al centro della hitbox delle entità
+        int absValue = (int)Math.abs((player.getHitbox().x + player.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
         //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
         //per 5, la condizione è vera e ritora vero, altrimenti falso
-        return absValue <= attackDistance * 5;
+        return absValue <= visionDistance;
     }
 
 
     //Questo metodo ci permette di osservare se il player è in range di attacco, il metodo è uguale a quello di prima
     //Con l'unica differenza che viene fatto il controllo non su una distanza di 5 blocchi ma su una distanza di 1 ebbasta
     protected boolean isPlayerCloseForAttack(Player player){
-        
-        int absValue = (int)Math.abs(player.hitbox.x - hitbox.x);
+
+        //La distanza viene calcolata in base al centro della hitbox delle entità
+        int absValue = (int)Math.abs((player.getHitbox().x + player.getHitbox().width / 2) - (hitbox.x + hitbox.width / 2));
         //Se la distanza in orizzontale è minore di una lungheza di attacco che vale un blocco
         return absValue <= attackDistance;
     }
@@ -223,23 +226,8 @@ public abstract class AbstractEnemy extends Entity{
         newState(NIGHT_BORNE_IDLE);
     }
 
-    //I successivi due metodi ci permettono di modificare la direzione del movimento o per 
-    //meglio dire, il modo in cui viene disegnato uno sprite, per dare l'illusione che il nemico stia
-    //facendo una zione oppure l'altra
-    public int flipX(){
-        if (wlakDir == LEFT) {
-            return hitBoxWidth + 10;
-        } else{
-            return 0;
-        }
-    }
-    public int flipW(){
-        if (wlakDir == LEFT) {
-            return -1;
-        } else{
-            return 1;
-        }
-    }
+    public abstract int flipX();
+    public abstract int flipW();
 
     public boolean getActive(){
         return active;

@@ -107,4 +107,24 @@ public class NightBorne extends AbstractEnemy{
         }
     }
 
+    //I successivi due metodi ci permettono di modificare la direzione del movimento o per 
+    //meglio dire, il modo in cui viene disegnato uno sprite, per dare l'illusione che il nemico stia
+    //facendo una zione oppure l'altra
+    @Override
+    public int flipX(){
+        if (wlakDir == LEFT) {
+            return hitBoxWidth + 10;
+        } else{
+            return 0;
+        }
+    }
+    @Override
+    public int flipW(){
+        if (wlakDir == LEFT) {
+            return -1;
+        } else{
+            return 1;
+        }
+    }
+
 }

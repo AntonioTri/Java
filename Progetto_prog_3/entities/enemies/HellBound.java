@@ -29,7 +29,7 @@ public class HellBound extends AbstractEnemy{
 
     private void initattackBox() {
         
-        attackBox = new Rectangle2D.Float(x, y, (int)(HELL_BOUND_DEAFULT_WIDTH/3), HELL_BOUND_DEAFULT_HEIGHT);
+        attackBox = new Rectangle2D.Float(x, y, (int)(HELL_BOUND_DEAFULT_WIDTH/3), HELL_BOUND_DEAFULT_HEIGHT + (int)(3 * Game.SCALE));
     
     }
     
@@ -43,7 +43,7 @@ public class HellBound extends AbstractEnemy{
         updateAnimationTick();
 
         if (state == HELL_BOUND_HIT) {
-            gainKnokBack();
+            //gainKnokBack();
             this.invulnerability = true;
         } else {
             this.invulnerability = false;
@@ -56,31 +56,12 @@ public class HellBound extends AbstractEnemy{
             attackBox.x = hitbox.x;
             attackBox.y = hitbox.y; 
         } else {
-            attackBox.x = hitbox.x + (int)((HELL_BOUND_DEAFULT_WIDTH/3 )* 3);
+            attackBox.x = hitbox.x + (int)(hitbox.width - attackBox.width);
             attackBox.y = hitbox.y;
         }
     }
     
     private void updateMove(int[][] levelData, Player player) {
-
-        // if (jumping && canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData)) {
-        //     hitbox.y += airSpeed;
-        //     airSpeed += GRAVITY;
-            
-        //     if (canMoveHere(hitbox.x + walkSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
-        //         move(levelData);
-                
-        //     } else {
-        //         hitbox.x = getEntityXPosNextWall(hitbox, walkSpeed);
-        //     }
-
-        // } else {
-        //     System.out.println("Lo sto mandando nell'ipersfera");
-        //     System.out.println(jumping);
-        //     System.out.println(canMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, levelData));
-        //     hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
-        //     jumping = false;
-        // }
 
         if (firstUpdate) {
             firstUpdateCheck(levelData);
@@ -93,17 +74,16 @@ public class HellBound extends AbstractEnemy{
             switch (state) {
                     
                 case HELL_BOUND_WALK:    
-                    this.walkSpeed = 1f;
-                    aniSpeed = 20;
+                    this.walkSpeed = 0.4f;
+                    aniSpeed = 17;
 
                     if (canSeePlayer(levelData, player)) {
-                        System.out.println(enemyTileY);
-                        System.out.println((int)(player.y / Game.TILES_SIZE));
                         System.out.println("Can see player");
 
                     }
                     
                     move(levelData);
+                    break;
 
                 default:
                     break;
@@ -112,18 +92,23 @@ public class HellBound extends AbstractEnemy{
 
         }
     }
-    
-    private void jumpAttack() {
 
-        // if (jumping) return;
-        
-        // jumping = true;
-        // airSpeed = jumpSpeed;
-        newState(HELL_BOUND_WALK);
-   
+    @Override
+    public int flipX() {
+        if (wlakDir == LEFT) {
+            return 0;
+        } else{
+            return hitBoxWidth;
+        }
     }
 
-    private void gainKnokBack() {
+    @Override
+    public int flipW() {
+        if (wlakDir == LEFT) {
+            return 1;
+        } else { 
+            return -1;
+        }
     }
 
 
