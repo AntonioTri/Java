@@ -91,13 +91,16 @@ public class NightBorne extends AbstractEnemy{
                     
                 case NIGHT_BORNE_ATTACK:
 
-                    aniSpeed = 12;
+                    aniSpeed = 13;
 
+                    //La variabile attackChecked identifica se l'attacco è stato eseguito
+                    //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
+                    //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
+                    //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
                     if (aniIndex == 0) {
                         attackChecked = false;
                     }
-                    if (aniIndex == 10 /*oppure 9, bisogna vedere */ && !attackChecked) {
-
+                    if (aniIndex == 10 && !attackChecked) {
                         checkEnemyHit(attackBox, player);
                     }
                     break;

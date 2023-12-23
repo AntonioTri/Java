@@ -117,7 +117,7 @@ public class EnemyManager {
     }
 
     //Se il player attacca il nemico a questo viene applicato il danno del player
-    public void checkEnemyHit(Rectangle2D.Float attackBox, int areaAttack){
+    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack){
         for (NightBorne nb : nightBornes) {
             //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, VIENE APPLICATO IL DANNO DEL PLAYER
             if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0 && !nb.getInvulnerability()) {
@@ -134,9 +134,7 @@ public class EnemyManager {
 
         for (HellBound hb : hellBounds) {
             if (hb.getActive() && attackBox.intersects(hb.getHitbox()) && hb.getCurrentHealth() > 0 && !hb.getInvulnerability()) {
-                
                 hb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
-                System.out.println("Hurted hellbound");
                 if (areaAttack == 0) return;
             }
         }

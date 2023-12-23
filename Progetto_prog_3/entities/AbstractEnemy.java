@@ -20,7 +20,7 @@ public abstract class AbstractEnemy extends Entity{
     protected int wlakDir = LEFT;
     protected int enemyTileY;
     protected float attackDistance, visionDistance;
-    protected boolean attackChecked, invulnerability = false;
+    protected boolean attackChecked = false, invulnerability = false;
 
     //Variabile per osservare se è morto oppure no
     protected boolean active = true;
@@ -143,8 +143,8 @@ public abstract class AbstractEnemy extends Entity{
         if (attackBox.intersects(player.hitbox)) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
+            attackChecked = true;
         }
-        attackChecked = true;
     }
 
     protected void updateAnimationTick(){
@@ -161,15 +161,18 @@ public abstract class AbstractEnemy extends Entity{
                 if (enemyType == NIGHT_BORNE) {
                     switch (state) {
                         case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> state = IDLE;
-                        case NIGHT_BORNE_DIE -> active = false;
-    
+                        case NIGHT_BORNE_DIE -> this.active = false;
                     }
                 } else if (enemyType == HELL_BOUND) {
                     switch (state) {
-                        case HELL_BOUND_JUMP, HELL_BOUND_HIT, HELL_BOUND_RUN -> state = HELL_BOUND_WALK;
-                        case HELL_BOUND_IDLE -> state = HELL_BOUND_WALK;
-                        case HELL_BOUND_DIE -> active = false;
-    
+                        case HELL_BOUND_JUMP, HELL_BOUND_RUN, HELL_BOUND_SLIDE -> state = HELL_BOUND_WALK;
+                        case HELL_BOUND_HIT -> {
+                            state = HELL_BOUND_WALK;
+                            aniSpeed = 20;
+                        }
+                        case HELL_BOUND_DIE -> {
+                            this.active = false;
+                        }
                     }
                 }
             }

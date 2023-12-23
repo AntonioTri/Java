@@ -111,7 +111,7 @@ public class Constants {
             public static final int HELL_BOUND_RUN = 1;
             public static final int HELL_BOUND_WALK = 2;
             public static final int HELL_BOUND_HIT = 3;
-            public static final int HELL_BOUND_IDLE = 4;
+            public static final int HELL_BOUND_SLIDE = 4;
             public static final int HELL_BOUND_DIE = 5;
 
             public static final int HELL_BOUND_DEAFULT_WIDTH = 64;
@@ -155,8 +155,8 @@ public class Constants {
                         case HELL_BOUND_RUN: return 5;
                         case HELL_BOUND_JUMP: return 6;
                         case HELL_BOUND_HIT: return 5;
-                        case HELL_BOUND_IDLE: return 4;
-                        case HELL_BOUND_DIE: return 5;
+                        case HELL_BOUND_SLIDE: return 9;
+                        case HELL_BOUND_DIE: return 10;
                         default: return 12;
                     }
             
@@ -174,7 +174,7 @@ public class Constants {
                 case NIGHT_BORNE:
                     return 20;
                 case HELL_BOUND:
-                    return 30;
+                    return 10;
                 default:
                     return 0;
             }
@@ -187,7 +187,7 @@ public class Constants {
                 case NIGHT_BORNE:
                     return 0;
                 case HELL_BOUND:
-                    return 20;
+                    return 0;
                 default:
                     return 0;
             }

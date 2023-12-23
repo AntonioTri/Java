@@ -291,14 +291,14 @@ public class Player extends Entity{
         
         //Viene fatto il controllo sul danno solo quando l'animazione si trova in un certo indice
         if (aniIndex == 1 && !ultimateActive){
-            playing.checkEnemyHit(attackBox, 0);
+            playing.checkPlayerHitEnemy(attackBox, 0);
             playing.checkObjectHit(attackBox, 0);
             attackChecked = false;
             
         }
 
         if (aniIndex >= 7 && aniIndex <= 13 && ultimateActive) {
-            playing.checkEnemyHit(ultimateAttackBox, 1);
+            playing.checkPlayerHitEnemy(ultimateAttackBox, 1);
             playing.checkObjectHit(ultimateAttackBox, 1);
             attackChecked = false;
         }

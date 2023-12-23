@@ -349,14 +349,15 @@ public class HelpMetods {
 
     //Questa funzione viene utilizzata dalla precedente per osservare se il pixel della direzione in cui ci si muove
     //appartenga ad un muro oppure no, viene verificata la non appartenenza al level data corrente
-    private static boolean isSolid(float x , float y, int[][] levelData){
+    public static boolean isSolid(float x , float y, int[][] levelData){
 
         //Si prende la grandezza del livello in larghezza (almeno per ora) per vedere se il movimento sia possibilitato
         int maxWidth = levelData[0].length * Game.TILES_SIZE;
+        int maxHeight = levelData.length * Game.TILES_SIZE;
         if (x< 0 || x>= maxWidth) {
             return true;
         }
-        if (y<0 || y>= Game.GAME_HEIGHT) {
+        if (y<0 || y>= maxHeight) {
             return true;
         }
 

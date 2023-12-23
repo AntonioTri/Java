@@ -1,26 +1,25 @@
 package Progetto_prog_3.entities.enemies;
 
 import Progetto_prog_3.Game;
+import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.AbstractEnemy;
 import Progetto_prog_3.entities.Player;
 
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 import static Progetto_prog_3.utils.Constants.Directions.LEFT;
 import static Progetto_prog_3.utils.Constants.Directions.RIGHT;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.getSpriteAmount;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
-import static Progetto_prog_3.utils.HelpMetods.canMoveHere;
-import static Progetto_prog_3.utils.HelpMetods.getEntityXPosNextWall;
-import static Progetto_prog_3.utils.HelpMetods.getEntityYPosFloorRoofRelative;
-import static Progetto_prog_3.utils.HelpMetods.isEntityOnFloor;
-import static Progetto_prog_3.utils.HelpMetods.isFloor;
+import static Progetto_prog_3.utils.HelpMetods.*;
 
 import java.awt.geom.Rectangle2D;
 
 public class HellBound extends AbstractEnemy{
 
     private float jumpForce = -1.5f * Game.SCALE;
-    private float orizzontalSpeed = 2f * Game.SCALE;
+    private float orizzontalSpeed = 2f * Game.SCALE, slidingSpeed = 1.5f * Game.SCALE;
     private float slideDistanceTravelled = 0;
+    private boolean jumping = false;
 
 
     public HellBound(float x, float y) {
@@ -43,24 +42,26 @@ public class HellBound extends AbstractEnemy{
             updateMove(levelData, player);
             updateAttackBoxDirection();
 
-            if (attackChecked && aniIndex == 4) {
-                
-            } else {
-                updateAnimationTick();
-            }
+            if (jumping && aniIndex == 4 && state != HELL_BOUND_DIE) {
+                //Skip, non viene aggiornato il frame di caduta altrimenti si passa allo stato di walk mentre è in volo
+                //Magari si è riusciti a farlo cadere in un burrone ed in tal caso l'animazione deve fermarsi oppure
+                //il cambiamenti di stato farebbe camminare il cane in aria e causerebbe un bug
 
+                //Se non sta saltando o in tutti gli altri casi fa l'update del frame di animazione
+            } else updateAnimationTick();
         }
 
-
         if (state == HELL_BOUND_HIT) {
-            //gainKnokBack();
             this.invulnerability = true;
         } else {
             this.invulnerability = false;
         }
+
+        if (state == HELL_BOUND_DIE && aniIndex == getSpriteAmount(enemyType, state) - 1) {
+            active = false;
+        }
     }
 
-    
     private void updateAttackBoxDirection() {
         if (wlakDir == LEFT) {
             attackBox.x = hitbox.x;
@@ -77,14 +78,14 @@ public class HellBound extends AbstractEnemy{
             firstUpdateCheck(levelData);
         }
 
-
         if (inAir) {
             updateInAir(levelData);
         } else {
-
+            
             switch (state) {
                     
-                case HELL_BOUND_WALK:    
+                case HELL_BOUND_WALK:
+                    attackChecked = false;    
                     this.walkSpeed = 0.4f;
                     aniSpeed = 17;
 
@@ -97,11 +98,10 @@ public class HellBound extends AbstractEnemy{
                     break;
 
                 case HELL_BOUND_RUN:
-                    this.walkSpeed = 1.5f;
+                    this.walkSpeed = 1.8f;
                     aniSpeed = 17;
                     
                     if (isPlayerCloseForAttack(player)) {
-                        System.out.println("Player in range di attaco");
                         newState(HELL_BOUND_JUMP);
                     }
                     
@@ -109,22 +109,32 @@ public class HellBound extends AbstractEnemy{
                     break;
 
                 case HELL_BOUND_JUMP:
-                    aniSpeed = 15;
-                    attackChecked = true;    
-                    jumpAttack(levelData);
+                    aniSpeed = 15; 
+                    jumping = true;
+                    if(jumping)jumpAttack(levelData);
 
+                    //La variabile attackChecked identifica se l'attacco è stato eseguito
+                    //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
+                    //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
+                    //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
+                    if(!attackChecked) { checkEnemyHit(attackBox, player); }    
                     break;
                 
-                case HELL_BOUND_IDLE:
-                    System.out.println("Faccio lo slide");
+                case HELL_BOUND_SLIDE:
                     slide(levelData);
                     break;
 
-                default:
+                case HELL_BOUND_HIT:
+                    
+                    if (jumping) {
+                        updateInAir(levelData);
+                        jumping = false;
+                    }
                     break;
+                case HELL_BOUND_DIE: 
+                    aniSpeed = 20;
+
             }
-
-
         }
     }
 
@@ -167,46 +177,74 @@ public class HellBound extends AbstractEnemy{
         //Se il nemico si trova sul pavimento, lo stato di attacco viene spento 
         //e si resetta il loop di movimento reimpostando lo stato su WALK
         if (isEntityOnFloor(hitbox, levelData)) {
-            attackChecked = false;
-            newState(HELL_BOUND_IDLE);
-            System.out.println("New state changedo to " + state);
+            jumping = false;
+            orizzontalSpeed = 2f * Game.SCALE;
+            newState(HELL_BOUND_SLIDE);
         }
 
     }
 
+    /*
+     * Quando il cagnetto atterra sul terreno, conserva la forza del salto ed inizierà a scivolare sul terreno prima di riassestarsi
+     * Questa funzione serve a questo, fa scivolare il cane, non oltre i bordi però, era troppo complicato programmarlo
+     * Vi è una flag che indica se è stata raggiunta la distanza massima del salto, che quando diventa true, permette al
+     * loop del nemico di ricominciare da capo
+     * 
+     * Se la direzione è destra viene fatto lo slide a destra, altrimenti viene fatto a sinistra,
+     * la funzione move slide agiorna la posizione in x con una decrescenza costante
+     */
     private void slide(int[][] levelData){
 
-        int maxDistance = 0;
-
-        
-        if (wlakDir == LEFT && canMoveHere(hitbox.x - orizzontalSpeed, hitbox.y, hitbox.width, hitbox.height , levelData)) {
-           System.out.println("Ho spostato il tizio a sinistra");
-            hitbox.x -= orizzontalSpeed;
-            orizzontalSpeed -= 0.01f;
-            slideDistanceTravelled += Math.abs(orizzontalSpeed);
-
-            if (slideDistanceTravelled > Game.TILES_SIZE * 3) {
-                maxDistance = 1;
-            }
-
-        } else if(wlakDir == RIGHT && canMoveHere(hitbox.x + orizzontalSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)){
-            System.out.println("Ho spostato il tizio a destra");
-            hitbox.x += orizzontalSpeed;
-            orizzontalSpeed -= 0.1f;
-            slideDistanceTravelled += Math.abs(orizzontalSpeed);
-            
-            if (slideDistanceTravelled > Game.TILES_SIZE * 3) {
-                maxDistance = 1;
-            }
+        boolean maxDistance = false;
+        //Controlli sulla direzione, e slide in quella direzione
+        if (wlakDir == LEFT && isSolid(hitbox.x, hitbox.y + hitbox.height + 1, levelData)) {
+                maxDistance = moveSlide(levelData, -slidingSpeed);
+        } else if(wlakDir == RIGHT && isSolid(hitbox.x + hitbox.width + 1, hitbox.y + hitbox.height + 1, levelData)){
+                maxDistance = moveSlide(levelData, slidingSpeed);
         }
 
-        if (maxDistance == 1) {
+        //Se lo slide ha raggiunto la lunghezza massima viene segnalato e viene interrotto lo stato riportandolo a quell odi partenza
+        if (maxDistance) {
+            this.slidingSpeed = 1.5f * Game.SCALE;
+            this.slideDistanceTravelled = 0;
+            changeWalkDir();
             newState(HELL_BOUND_WALK);
-            orizzontalSpeed = 2f * Game.SCALE;
-            slideDistanceTravelled = 0;
-            System.out.println("Stato impostato a " + state);
         }
 
+    }
+
+    //La funzione moveSlide sposta il cane con velocità decrescente lineare
+    private boolean moveSlide(int[][] levelData, float slidingSpeed){
+
+        //Se non si trova sul bordo massimo viene fatto un agiornamento sulla posizione
+        if (canMoveHere(hitbox.x + slidingSpeed, hitbox.y, hitbox.width, hitbox.height , levelData)) {
+            hitbox.x += slidingSpeed;
+            this.slidingSpeed -= 0.0115f * Game.SCALE;
+            this.slideDistanceTravelled += Math.abs(slidingSpeed);
+            
+            //Se dopo l'aggiornamento viene trovato che la energia cinetica sio è azzerata oppure che ha slidato per 4 blocchi
+            //Si ritorna true per segnalare che è stata raggiunta la distanza massima
+            if (slideDistanceTravelled > Game.TILES_SIZE * 4 || Math.abs(slidingSpeed) <= 0.3f) {
+               return true;
+            }
+        }
+
+        //In tutti gli altri casi ritorna falso
+        return false;
+    }
+
+    //Questo metodo ci poermette di causare danno ad un nemico se questo viene colpito dal player
+    @Override
+    public void hurt(int amount, AudioPlayer ap){
+
+        currentHealth -= amount;
+
+        if (currentHealth <= 0) {
+            newState(HELL_BOUND_DIE);
+        } else {
+            newState(HELL_BOUND_HIT);
+        }
+        
     }
 
     @Override
