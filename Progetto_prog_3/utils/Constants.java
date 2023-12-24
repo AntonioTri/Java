@@ -221,6 +221,8 @@ public class Constants {
                     return 0;
                 case HELL_BOUND:
                     return 0;
+                case GHOST:
+                    return 20;
                 default:
                     return 0;
             }

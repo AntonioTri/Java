@@ -1,10 +1,13 @@
 package Progetto_prog_3.entities.enemies;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getAttackDistance;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.getEnemyDamage;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getVisionDistance;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getSpriteAmount;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
+
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -21,7 +24,7 @@ public class Ghost extends AbstractEnemy {
     //Variabili d abimente
     int attackBoxOffset = (int)(125 * Game.SCALE);
     int teleportTimer = 0, timeToTeleport = 1000;
-    private List<Point2D> spawnPoints = new ArrayList<>();
+    private List<Point2D> spawnPoints = new ArrayList<>(); 
     private boolean canTeleport = true, firstSpawn = true;
     Random random = new Random();
 
@@ -42,12 +45,12 @@ public class Ghost extends AbstractEnemy {
     //La attackbox di questo nemico è quadrata e molto ampia, applica un debuff ad area colpendo il player anche da dietro i muri
     private void initAttackBox() {
         int attackboxLenght = (int)(250 * Game.SCALE);
-        attackBox = new Rectangle2D.Float(x, y, attackboxLenght, attackboxLenght);
+        circularAttackbox = new Ellipse2D.Float(hitbox.x + hitbox.width/2, hitbox.y + hitbox.height/2 , attackboxLenght, attackboxLenght);
     }
     
     private void updateAttackBox() {
-        attackBox.x = hitbox.x - attackBoxOffset + hitbox.width/2;
-        attackBox.y = hitbox.y - attackBoxOffset + hitbox.height/2;
+        circularAttackbox.x = hitbox.x - attackBoxOffset + hitbox.width/2;
+        circularAttackbox.y = hitbox.y - attackBoxOffset + hitbox.height/2;
     }
 
     @Override
@@ -99,6 +102,7 @@ public class Ghost extends AbstractEnemy {
                 case GHOST_IDLE:
 
                     invulnerability = false;
+                    attackChecked = false;
                     updateTeleportTick();
                     if(isPlayerCloseForAttack(player)){
                         newState(GHOST_ATTACK);
@@ -108,6 +112,10 @@ public class Ghost extends AbstractEnemy {
                 //Il timer del teletrasporto non si ferma nemmeno quando il ghost attacca
                 case GHOST_ATTACK:
                     updateTeleportTick();
+                    //Come al solito, la funzione per applicare il danno viene bloccata da se stessa durante la prima esecusione
+                    //Quando si ritorna nello stato di idle per poi rifare i controlli di attackdistance, viene resettata a falso
+                    //Per permettere di fare danno nel prosimo attacco
+                    if(!attackChecked && aniIndex >= 4) checkEnemyHitEllipse(circularAttackbox, player);
                     break;
             
                 default:
@@ -231,6 +239,14 @@ public class Ghost extends AbstractEnemy {
                     }
                 }
             }
+        }
+    }
+
+    protected void checkEnemyHitEllipse(Ellipse2D.Float attackBox, Player player) {
+        if (attackBox.intersects(player.getHitbox())) {
+            //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
+            player.changeHealth(-getEnemyDamage(enemyType));
+            attackChecked = true;
         }
     }
 

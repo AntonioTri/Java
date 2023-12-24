@@ -131,7 +131,7 @@ public class EnemyManager {
                             GHOST_HEIGHT, null);
 
                 gh.drawHitbox(g, xLevelOffset, yLevelOffset);
-                gh.drowAttackBox(g, xLevelOffset, yLevelOffset);
+                gh.drowCircularAttackBox(g, xLevelOffset, yLevelOffset);
 
                 if (gh.getState() == NIGHT_BORNE_DIE) {
                     gh.setAniSpeed(20);

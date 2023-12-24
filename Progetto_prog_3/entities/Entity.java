@@ -2,6 +2,7 @@ package Progetto_prog_3.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 import Progetto_prog_3.Game;
@@ -34,6 +35,7 @@ public abstract class Entity {
 
     //AttackBox
 	protected Rectangle2D.Float attackBox;
+    protected Ellipse2D.Float circularAttackbox;
 
 
     public Entity(float x, float y, int hitBoxWidth, int hitBoxHeight){
@@ -57,6 +59,12 @@ public abstract class Entity {
     public void drowAttackBox(Graphics g, int levelOffsetX, int yLevelOffset) {
         g.setColor(Color.RED);
         g.drawRect((int)attackBox.x - levelOffsetX, (int)attackBox.y - yLevelOffset, (int)attackBox.width, (int)attackBox.height);
+
+    }
+
+    public void drowCircularAttackBox(Graphics g, int levelOffsetX, int yLevelOffset) {
+        g.setColor(Color.RED);
+        g.drawOval((int)circularAttackbox.x - levelOffsetX, (int)circularAttackbox.y - yLevelOffset, (int)circularAttackbox.width, (int)circularAttackbox.height);
 
     }
 
