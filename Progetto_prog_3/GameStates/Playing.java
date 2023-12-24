@@ -6,8 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ConcurrentHashMap.KeySetView;
-
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.UI.GameOverOverlay;
@@ -95,12 +93,12 @@ public class Playing extends State implements StateMethods{
         objectManager.checkPlayerTouched(hitbox);
     }
 
-    public void checkEnemyHit(Rectangle2D.Float attackBox) {
-        enemyManager.checkEnemyHit(attackBox);
+    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack) {
+        enemyManager.checkPlayerHitEnemy(attackBox, areaAttack);
     }
 
-    public void checkObjectHit(Rectangle2D.Float attackBox) {
-        objectManager.checkObjectHit(attackBox);
+    public void checkObjectHit(Rectangle2D.Float attackBox, int areaAttack) {
+        objectManager.checkObjectHit(attackBox, areaAttack);
     }
 
     public void checkSpikesTouched(Player p) {
@@ -341,8 +339,9 @@ public class Playing extends State implements StateMethods{
                 case KeyEvent.VK_ESCAPE:
                     paused = !paused;
                     break;
-                case KeyEvent.VK_1:
-                    game.getAudioPlayer().playEffect(AudioPlayer.PLAYER_EXPLOSION);
+                case KeyEvent.VK_E:
+                    player.ultimateAbility();
+                    break;
             }
         }
     }

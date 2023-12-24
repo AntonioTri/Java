@@ -57,6 +57,7 @@ public abstract class Entity {
     public void drowAttackBox(Graphics g, int levelOffsetX, int yLevelOffset) {
         g.setColor(Color.RED);
         g.drawRect((int)attackBox.x - levelOffsetX, (int)attackBox.y - yLevelOffset, (int)attackBox.width, (int)attackBox.height);
+
     }
 
     public Rectangle2D.Float getHitbox(){

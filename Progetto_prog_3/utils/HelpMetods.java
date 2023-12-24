@@ -10,13 +10,17 @@ import java.util.Random;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.NightBorne;
 import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.enemies.Ghost;
+import Progetto_prog_3.entities.enemies.HellBound;
 import Progetto_prog_3.objects.AbstractProjectile;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
 import Progetto_prog_3.objects.Spike;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.NIGHT_BORNE;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.GHOST;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.HELL_BOUND;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.NIGHT_BORNE;
 import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
 
 
@@ -78,6 +82,49 @@ public class HelpMetods {
                 
                 if(value == NIGHT_BORNE){
                     list.add(new NightBorne(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+
+        return list;
+
+    }
+
+    //Metodo che ci permette data una immagine levelData, ovvero un livello, di posizionare i nemici nella mappa di gioco
+    public static ArrayList<HellBound> gettHellBounds(BufferedImage img){
+
+        ArrayList<HellBound> list = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                
+                if(value == HELL_BOUND){
+                    list.add(new HellBound(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+
+        return list;
+
+    }
+
+     //Metodo che ci permette data una immagine levelData, ovvero un livello, di posizionare i nemici nella mappa di gioco
+    public static ArrayList<Ghost> getGhosts(BufferedImage img){
+
+        ArrayList<Ghost> list = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                
+                //é importante osservare come al ghost viene dato un level data, per fargli sapere dove può teletrasportarsi
+                if(value == GHOST){
+                    list.add(new Ghost( i * Game.TILES_SIZE, j * Game.TILES_SIZE, getLevelData(img)));
                 }
             }
         }
@@ -198,18 +245,62 @@ public class HelpMetods {
 
     
 
-    //Questo metodo serve alle entità perpermettere loro di capire se non vi sono ostacoli tra esse ed un'altra entità
-    //Così da permettere una determinata azione
-    public static boolean isPathClear(int[][] levelData, Rectangle2D.Float enemyHitbox, Rectangle2D.Float playerHitbox, int YTile) {
-        
-        int firstXTile = (int)(enemyHitbox.x / Game.TILES_SIZE);
-        int secondXTile = (int)(playerHitbox.x / Game.TILES_SIZE);;
+        /*
+     * Questo metodo dà intelligenza ai nemici, vengono prese le loro posizioni orizzontali e ne viene fata la differenza
+     * se il player si trova a destra del nemico vengono fatti i controlli sulla destra edl nemico e lo stesso vale per la sinistra
+     */
 
-        if (firstXTile > secondXTile) {
-            return areAllTileWalkable(secondXTile, firstXTile, YTile, levelData);
-        } else {
-            return areAllTileWalkable(firstXTile, secondXTile, YTile, levelData);
-        }
+    public static boolean isPathClear(int[][] levelData, Rectangle2D.Float enemyHitbox, Rectangle2D.Float playerHitbox, int enemyY){
+
+        int playerX = (int)(playerHitbox.x / Game.TILES_SIZE);
+        int enemyX = (int)(enemyHitbox.x / Game.TILES_SIZE);
+        int difference; 
+
+
+            if (playerX > enemyX) {
+                
+                difference = playerX - enemyX;
+                //Si esegue una scansione tra i blocchi del nemico ed i blocchi del player su due livelli 
+                //(in entrambi i casi sono ritornate le condizioni di verifica come valori booleani).
+
+                //Alla loro altezza, per controllare che i blocchi tra nemico e player siano di aria 
+                for (int i = 0; i < difference; i++) {
+                    if (isTileSolid(enemyX + i, enemyY, levelData)) {
+                        return false;
+                    }
+                    
+                }
+                
+                //E soto i piedi del nemico, per controllare che tutti i blocchi siano solidi
+                for (int i = 0; i < difference; i++) {
+                    if (!isTileSolid(enemyX + i, enemyY + 1, levelData)) {
+                        return false;
+                    }
+                    
+                }
+                
+            //Lo stesso criterio di sopra viene applicato sulla sinistra del nemico
+            } else if (playerX < enemyX){
+                
+                difference = enemyX - playerX;
+                for (int i = 0; i < difference; i++) {
+                    if (isTileSolid(enemyX - i, enemyY, levelData)) {
+                       return false;
+                    }
+                }
+    
+                for (int i = 0; i < difference; i++) {
+                    if (!isTileSolid(enemyX - i, enemyY + 1, levelData)) {
+                        return false;
+                    }
+                }
+    
+            }
+    
+        //In ogni caso favorevole, ovvero quello in cui non ci sono ostacoli o burroni, viene ritornato vero
+        //Per segnalare che il percorso sia lbero
+        return true;
+
 
     }
 
@@ -274,20 +365,23 @@ public class HelpMetods {
                     return false;
                 }
             }
-        }
-        return true;
+        } else
+            return false;
+
+        return false;
     }
 
     //Questa funzione viene utilizzata dalla precedente per osservare se il pixel della direzione in cui ci si muove
     //appartenga ad un muro oppure no, viene verificata la non appartenenza al level data corrente
-    private static boolean isSolid(float x , float y, int[][] levelData){
+    public static boolean isSolid(float x , float y, int[][] levelData){
 
         //Si prende la grandezza del livello in larghezza (almeno per ora) per vedere se il movimento sia possibilitato
         int maxWidth = levelData[0].length * Game.TILES_SIZE;
+        int maxHeight = levelData.length * Game.TILES_SIZE;
         if (x< 0 || x>= maxWidth) {
             return true;
         }
-        if (y<0 || y>= Game.GAME_HEIGHT) {
+        if (y<0 || y>= maxHeight) {
             return true;
         }
 
@@ -300,6 +394,11 @@ public class HelpMetods {
 
     //Controlliamo qui se il blocco in questione sia solido
     public static boolean isTileSolid(int xTile, int yTile, int[][] levelData){
+
+        if (xTile <= 0 ) xTile = 0;
+        if (yTile <= 0 ) yTile = 0;
+        if (xTile >= levelData[0].length) xTile = levelData[0].length;
+        if (yTile >= levelData.length   ) yTile = levelData.length;
 
         int value = levelData[yTile][xTile];
 
@@ -315,10 +414,7 @@ public class HelpMetods {
     //player e muri, e vengono risommati al movimento se questo sta facendo overlapping con del terreno
     public static float getEntityXPosNextWall(Rectangle2D.Float hitbox, float xSpeed) {
 		int currentTile = (int) (hitbox.x / Game.TILES_SIZE);
-
-        // if () {
-            
-        // }
+       
 		if (xSpeed > 0) {
 			// Right
 			int tileXPos = currentTile * Game.TILES_SIZE;
@@ -351,7 +447,6 @@ public class HelpMetods {
         if (!isSolid(hitbox.x, hitbox.y + hitbox.height + 1, levelData) && !isSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, levelData)) {
             return false;
         }
-        
         return true;
     }
 

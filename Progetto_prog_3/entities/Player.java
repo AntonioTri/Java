@@ -27,8 +27,8 @@ public class Player extends Entity{
     private int[][] levelData;
 
     //Variabili per le hitbox
-    private float XOffset = 11 * Game.SCALE;
-    private float YOffset = 30 * Game.SCALE;
+    private float XOffset = 13 * Game.SCALE;
+    private float YOffset = 26 * Game.SCALE;
 
     //Variabili per il salto
     private float jumpSpeed = -2.25f * Game.SCALE;
@@ -36,6 +36,8 @@ public class Player extends Entity{
 
     // StatusBarUI
 	private BufferedImage statusBarImg;
+    //Ultimate
+    private BufferedImage[] ultimate;
 
 	private int statusBarWidth = (int) (192 * Game.SCALE);
 	private int statusBarHeight = (int) (58 * Game.SCALE);
@@ -65,10 +67,12 @@ public class Player extends Entity{
     private int tyleY = 0;
 
     //Variabili per l'abilità speciale e per gli attacchi normali
-    private boolean powerAttackActive;
+    private boolean powerAttackActive, ultimateActive;
     private int powerAttackTick, powerGrowSpeed = 15, powerGrowTick;
+    // private int ultimateTick, ultimateGrowSpeed = 15, ultimateGrowTick;
 	private boolean attackChecked;
     
+    private Rectangle2D.Float ultimateAttackBox;
     private int damage = 5;
     private Playing playing;
     
@@ -81,7 +85,7 @@ public class Player extends Entity{
         initStates();
         loadAnimations();
         initHitbox(x, y, 25 * Game.SCALE, 32 * Game.SCALE);
-        initAttackBox();
+        initAttackBoxes();
     }
 
     private void initStates(){
@@ -90,8 +94,9 @@ public class Player extends Entity{
         this.currentHealth = maxHealth;
     }
 
-    private void initAttackBox(){
+    private void initAttackBoxes(){
         attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(25 * Game.SCALE));
+        ultimateAttackBox = new Rectangle2D.Float(x, y, (int)(PLAYER_EXPLOSION_WIDTH * 0.85 ), (int)(PLAYER_EXPLOSION_HEIGHT * 0.85));
     }
 
     //funzione per fare l'update delle caratterisctiche del personaggio
@@ -155,11 +160,31 @@ public class Player extends Entity{
 
         }
 
-        if (attacking) checkAttack();
+        if (attacking || ultimateActive) checkAttack();
         
         updateAnimationTick();
         setAnimation();
         
+    }
+
+        
+    //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
+    //Se l'indice diventa magiore del numero di frame viene ripristinato a 0 e si riparte da capo
+    private void updateAnimationTick() {
+
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+
+            aniTick = 0;
+            aniIndex++;
+
+            if (aniIndex >= getSpriteAmount(state)) {
+                aniIndex = 0;
+                attacking = false;
+                attackChecked = false;
+                ultimateActive = false;
+            }
+        }
     }
 
     //In questa funzione decidiamo la posizione della attackbox in base al movimento del giocatore e relativamente alla posizione dello stesso    
@@ -175,6 +200,8 @@ public class Player extends Entity{
 
         attackBox.y = hitbox.y + (Game.SCALE * 5);
 
+        ultimateAttackBox.x = hitbox.x + hitbox.width - PLAYER_EXPLOSION_WIDTH/2;
+        ultimateAttackBox.y = hitbox.y + hitbox.height - PLAYER_EXPLOSION_HEIGHT/2;
     }
 
     //Dato che il programma viene refreshato 120 volte al secondo dato il game loop, aniIndex verrà modificato 
@@ -186,14 +213,37 @@ public class Player extends Entity{
         //La terza è che  vengono aggiunte variabili di "flip", se il personagio cammina verso destra è tutto apposto
         //Se va verso sinistra, l'immagine viene mostrata riflessa al contrario rispetto al suo asse y, e per ovviare a questo problema
         //Le viene sommato un offset agiuntivo per spostarla di nuovo nella posizione corretta 
+        
+
         g.drawImage(animations[state][aniIndex], 
-                    (int)(hitbox.x - XOffset) - xLevelOffset + flipX + 14, 
-                    (int)(hitbox.y - YOffset) - yLevelOffset, 
-                    hitBoxWidth * flipW, hitBoxHeight, null);
+                        (int)(hitbox.x - XOffset) - xLevelOffset + flipX, 
+                        (int)(hitbox.y - YOffset) - yLevelOffset, 
+                        hitBoxWidth * flipW, hitBoxHeight, null);
+        
+
+    
+        if (state == USING_ULTIMATE){
+            g.drawImage(ultimate[aniIndex], 
+                    (int)( hitbox.x - hitbox.width * 1.1 - xLevelOffset - PLAYER_EXPLOSION_WIDTH/2),
+                    (int)( hitbox.y - hitbox.height/ 1.1 - yLevelOffset - PLAYER_EXPLOSION_HEIGHT/2),
+                    PLAYER_EXPLOSION_DRAW_WIDTH, PLAYER_EXPLOSION_DRAW_HEIGHT, null);
+
+        }
 
         drawHitbox(g, xLevelOffset, yLevelOffset);
         drowAttackBox(g, xLevelOffset, yLevelOffset);
         drawUI(g);
+
+
+    }
+
+    @Override
+    public void drowAttackBox(Graphics g, int levelOffsetX, int yLevelOffset) {
+        g.setColor(Color.RED);
+        g.drawRect((int)attackBox.x - levelOffsetX, (int)attackBox.y - yLevelOffset, (int)attackBox.width, (int)attackBox.height);
+
+        g.setColor(Color.GREEN);
+        g.drawRect((int)ultimateAttackBox.x - levelOffsetX, (int)ultimateAttackBox.y - yLevelOffset, (int)ultimateAttackBox.width, (int)ultimateAttackBox.height);
     }
 
     //Disegna la UI di gioco, per ora soltanto la health bar e la power bar
@@ -223,37 +273,6 @@ public class Player extends Entity{
         }
     }
 
-    //Metodo che ci permette di modifdicare il valore degli HP e sotto quello che ci permette di cambiare valore agli AP( Ability Points )
-    public void changeHealth(int value){
-
-        currentHealth += value;
-
-        if (value < 0) {
-            //Effetto del danno
-            playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_HURT);
-        }
-
-        if (currentHealth <= 0) {
-            currentHealth = 0;
-            //GAME OVER HAPPENS
-
-        } else if (currentHealth >= maxHealth){
-            currentHealth = maxHealth;
-        }
-
-    } 
-
-    public void changePower(int value) {
-        powerValue += value;
-        
-        if (powerValue >= powerMaxValue) {
-            powerValue = powerMaxValue;
-        } else if (powerValue <= 0) {
-            powerValue = 0;
-        }
-
-    }
-
     //Viene fatto un controllo ogni volta che il player attacca per vdere se sta colpendo un nemico
     //in tal caso deve applicare i danni a quel nemico
     private void checkAttack() {
@@ -262,19 +281,48 @@ public class Player extends Entity{
             return;
         }
 
+        //Viene fatto un controllo 
+        if (!ultimateActive) this.damage = 5; 
+
         //Viene settato l'attacco a true se il controllo precedente fallisce ( vuol dire che si sta attaccando perchè la flag è !vera ),
         //il game loop lo resetterebbe a falso in tutti i casi con una velocità quasi istantanea, allora serve tenerlo a vero per
         //evitare che la chiamata di questa funzione ritorni nel'update successivo
         attackChecked = true;
         
         //Viene fatto il controllo sul danno solo quando l'animazione si trova in un certo indice
-        if (aniIndex == 1 ){
-            playing.checkEnemyHit(attackBox);
-            playing.checkObjectHit(attackBox);
+        if (aniIndex == 1 && !ultimateActive){
+            playing.checkPlayerHitEnemy(attackBox, 0);
+            playing.checkObjectHit(attackBox, 0);
             attackChecked = false;
             
         }
 
+        if (aniIndex >= 7 && aniIndex <= 13 && ultimateActive) {
+            playing.checkPlayerHitEnemy(ultimateAttackBox, 1);
+            playing.checkObjectHit(ultimateAttackBox, 1);
+            attackChecked = false;
+        }
+
+    }
+
+    //Questo metodo ci permette di usare la ultimate ability, se il player ha tutta l'energia viene tolta tutta
+    //e successivamente eseguita la ultimate, se questa è già attiva viene impedito di riutilizzarla
+    public void ultimateAbility(){
+        if (ultimateActive) {
+            return;
+        }
+        if (powerValue == powerMaxValue) {
+
+            ultimateActive = true;
+            aniTick = 0;
+            aniIndex = 0;
+
+            this.damage = 20;
+
+            changePower(-powerMaxValue);
+            playing.getGame().getAudioPlayer().playEffect(AudioPlayer.PLAYER_EXPLOSION);
+
+        }
     }
 
     //Metodo che esegue il dash, ne viene fatto uno solo se si ha abbastanza energia
@@ -297,24 +345,6 @@ public class Player extends Entity{
     //Funzione che controlla se il player sta toccando una Spina
     private void checkSpikesTouched() {
         playing.checkSpikesTouched(this);
-    }
-    
-    //Questa funzione fa avanzare il frame di animazione del personaggio ogni 40 tick del programma
-    //Se l'indice diventa magiore del numero di frame viene ripristinato a 0 e si riparte da capo
-    private void updateAnimationTick() {
-
-        aniTick++;
-        if (aniTick >= aniSpeed) {
-
-            aniTick = 0;
-            aniIndex++;
-
-            if (aniIndex >= getSpriteAmount(state)) {
-                aniIndex = 0;
-                attacking = false;
-                attackChecked = false;
-            }
-        }
     }
 
     //Qui viene settata l'animazione in base agli imput del giocatore, per ogni azione viene settata una velocità di animazione unica
@@ -341,12 +371,19 @@ public class Player extends Entity{
             }
         }
 
+        if (ultimateActive) {
+            state = USING_ULTIMATE;
+            aniSpeed = 23;
+            return;
+        }
+        
         if (powerAttackActive) {
             state = LIGHT_ATTACK;
             aniIndex = 1;
             aniTick = 0;
             return;
         }
+
         
         if (attacking) {
             state = LIGHT_ATTACK;
@@ -378,8 +415,8 @@ public class Player extends Entity{
         //Salto
 		if (jump) jump();
     
-        //Impedimento di movimenti concorrenti
-        if (!inAir && !powerAttackActive &&((!left && !right) || (right && left))) {
+        //Impedimento di movimenti e azioni concorrenti
+        if ( ultimateActive || (!inAir && !powerAttackActive && ((!left && !right) || (right && left)))) {
             return;
         }
 
@@ -391,13 +428,13 @@ public class Player extends Entity{
         //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto 
 		if (left && !right){
 			xSpeed -= walkSpeed;
-            flipX = hitBoxWidth - 60;
+            flipX = hitBoxWidth - 45;
             flipW = -1;
         }
         
         if (right && !left){
 			xSpeed += walkSpeed;
-            flipX = 0;
+            flipX = 18;
             flipW = 1;
         }
 
@@ -455,6 +492,36 @@ public class Player extends Entity{
         }
     }
 
+    //Metodo che ci permette di modifdicare il valore degli HP e sotto quello che ci permette di cambiare valore agli AP( Ability Points )
+    public void changeHealth(int value){
+
+        currentHealth += value;
+
+        if (value < 0) {
+            //Effetto del danno
+            playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_HURT);
+        }
+
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            //GAME OVER HAPPENS
+
+        } else if (currentHealth >= maxHealth){
+            currentHealth = maxHealth;
+        }
+
+    } 
+
+    public void changePower(int value) {
+        powerValue += value;
+        
+        if (powerValue >= powerMaxValue) {
+            powerValue = powerMaxValue;
+        } else if (powerValue <= 0) {
+            powerValue = 0;
+        }
+
+    }
 
 
     //Questo metodo ci serve a resettare tutte le caratteristiche del giocatore se ne si trova il bisogno
@@ -484,14 +551,21 @@ public class Player extends Entity{
 
         BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.PLAYER_ATLAS);
 
-            animations = new BufferedImage[10][10];
+            animations = new BufferedImage[11][15];
 
             for(int j=0; j< animations.length ; j++){
-                for(int i=0; i<animations[j].length; i++){
+                for(int i=0; i<animations[j].length; i++){                
                     animations[j][i] = img.getSubimage(i*128, j*128, 128, 128);
-
                 }
             }
+        
+        //Si carica inoltre l'ultimate e la barra della vita/punti abilità
+        img = LoadSave.getSpriteAtlas(LoadSave.PLAYER_EXPLOSION);
+        ultimate = new BufferedImage[15];
+            
+        for (int i = 0; i < ultimate.length; i++) {
+            ultimate[i] = img.getSubimage(i * PLAYER_EXPLOSION_DEFAULT_WIDTH, 0, PLAYER_EXPLOSION_DEFAULT_WIDTH, PLAYER_EXPLOSION_DEFAULT_HEIGHT);
+        }
 
         statusBarImg = LoadSave.getSpriteAtlas(LoadSave.HEALT_POWER_BAR);
 
@@ -578,7 +652,10 @@ public class Player extends Entity{
     public void setAttck(boolean attacking){
         this.attacking = attacking;
     }
-    
+
+    public void setUltimateActive(boolean ultimateActive){
+        this.ultimateActive = ultimateActive;
+    }
 
     public int getDamage(){
         return damage;
