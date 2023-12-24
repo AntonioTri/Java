@@ -312,10 +312,10 @@ public class HelpMetods {
 
         if (firstXTile > secondXTile) {
 
-            return areAllTilesClear(secondXTile, firstXTile, cannonTyleY, levelData);
+            return areAllTilesClear(secondXTile + 1, firstXTile, cannonTyleY, levelData);
 
         } else {
-
+            
             return areAllTilesClear(firstXTile, secondXTile, cannonTyleY, levelData);
 
         }
@@ -349,6 +349,7 @@ public class HelpMetods {
     }
 
     public static boolean areAllTilesClear(int xStart, int xEnd, int y, int[][] levelData){
+
         for (int i = 0; i < xEnd - xStart; i++) {
             if (isTileSolid(xStart + i, y , levelData)) {
                 return false;

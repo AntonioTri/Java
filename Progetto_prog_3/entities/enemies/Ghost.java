@@ -105,8 +105,10 @@ public class Ghost extends AbstractEnemy {
                     }
                     break;
                 
-                
-
+                //Il timer del teletrasporto non si ferma nemmeno quando il ghost attacca
+                case GHOST_ATTACK:
+                    updateTeleportTick();
+                    break;
             
                 default:
                     break;
