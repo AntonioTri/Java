@@ -147,6 +147,11 @@ public class Constants {
 
             public static final int GHOST_DRAW_OFFSET_X = (int) (23 * Game.SCALE);
             public static final int GHOST_DRAW_OFFSET_Y = (int) (5 * Game.SCALE);
+
+            //Sono 15 frame
+            public static final int GHOST_ELECTRIC_BALL_DEFAULT_LENGHT = 250;
+            public static final int GHOST_ELECTRIC_BALL_LENGHT = (int)(250 * Game.SCALE);
+
         }
 
 
@@ -185,7 +190,7 @@ public class Constants {
                     switch (enemyState) {
                         case GHOST_SPAWN: return 6;
                         case GHOST_IDLE: return 7;
-                        case GHOST_ATTACK: return 13;
+                        case GHOST_ATTACK: return 15;
                         case GHOST_TELEPORT: return 7;
                         default: return 1;
                         

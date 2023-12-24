@@ -1,15 +1,7 @@
 package Progetto_prog_3.entities.enemies;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.getAttackDistance;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.getEnemyDamage;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.getVisionDistance;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.getSpriteAmount;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
-import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
-
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,12 +10,18 @@ import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.AbstractEnemy;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.utils.Constants.EnemtConstants;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.getAttackDistance;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.getEnemyDamage;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.getVisionDistance;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.getSpriteAmount;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
+import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
 
 public class Ghost extends AbstractEnemy {
 
     //Variabili d abimente
     int attackBoxOffset = (int)(125 * Game.SCALE);
-    int teleportTimer = 0, timeToTeleport = 1000;
+    int teleportTimer = 0, timeToTeleport = 1000, attackTimer = 0;;
     private List<Point2D> spawnPoints = new ArrayList<>(); 
     private boolean canTeleport = true, firstSpawn = true;
     Random random = new Random();
@@ -100,17 +98,23 @@ public class Ghost extends AbstractEnemy {
                 
                 //Nel caso di ritorno in stato di Idle, viene settata l'invulnerabilità guadagnata durante il teletrasporto a falso
                 case GHOST_IDLE:
-
+                    //L'attack timer serve a non far spammare l'attacco dal ghost, comunque è un attacco ad area molto potente,
+                    //Ok la difficoltà ma teniamolo bilanciato
+                    attackTimer++;
+                    aniSpeed = 20;
                     invulnerability = false;
                     attackChecked = false;
                     updateTeleportTick();
-                    if(isPlayerCloseForAttack(player)){
+                    //Se è passato abbastanza tempo viene eseguito l'attacco
+                    if(attackTimer >= 300 && isPlayerCloseForAttack(player)){
+                        attackTimer = 0;
                         newState(GHOST_ATTACK);
                     }
                     break;
                 
                 //Il timer del teletrasporto non si ferma nemmeno quando il ghost attacca
                 case GHOST_ATTACK:
+                    aniSpeed = 17;
                     updateTeleportTick();
                     //Come al solito, la funzione per applicare il danno viene bloccata da se stessa durante la prima esecusione
                     //Quando si ritorna nello stato di idle per poi rifare i controlli di attackdistance, viene resettata a falso
@@ -203,7 +207,8 @@ public class Ghost extends AbstractEnemy {
             timeToTeleport = random.nextInt(300) + 700;
             //Il ghost diventa invulnerabile quando si teletrasporta
             invulnerability = true;
-            newState(GHOST_TELEPORT);
+            //Inoltre viene impedito al ghost di teletrasportarsi quando sta attaccando
+            if(state != GHOST_ATTACK)newState(GHOST_TELEPORT);
         }
     }
 

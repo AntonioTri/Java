@@ -41,6 +41,7 @@ public class LoadSave {
     public static final String NIGHT_BORNE_ATLAS = "entity/NightBorne.png";
     public static final String HELL_BOUND_ATLAS = "entity/HellBound.png";
     public static final String GHOST_ATLAS = "entity/Ghost.png";
+    public static final String GHOST_ATTACK_BALL = "entity/Ghost_attack.png";
     public static final String CANNON_ATLAS = "entity/cannon_atlas.png";
     public static final String CANNON_BALL = "entity/ball.png";
 
