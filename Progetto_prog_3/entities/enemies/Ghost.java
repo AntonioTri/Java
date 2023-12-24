@@ -251,6 +251,7 @@ public class Ghost extends AbstractEnemy {
         if (attackBox.intersects(player.getHitbox())) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
+            statusManager.applySlow(player, 2, 0.7f);
             attackChecked = true;
         }
     }

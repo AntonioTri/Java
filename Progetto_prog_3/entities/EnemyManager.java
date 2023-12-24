@@ -2,6 +2,7 @@ package Progetto_prog_3.entities;
 
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RectangularShape;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -155,7 +156,7 @@ public class EnemyManager {
     }
 
     //Se il player attacca il nemico a questo viene applicato il danno del player
-    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack){
+    public void checkPlayerHitEnemy(RectangularShape attackBox, int areaAttack){
         for (NightBorne nb : nightBornes) {
             //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, VIENE APPLICATO IL DANNO DEL PLAYER
             if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0 && !nb.getInvulnerability()) {

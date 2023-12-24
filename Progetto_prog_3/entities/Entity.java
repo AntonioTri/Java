@@ -6,6 +6,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 import Progetto_prog_3.Game;
+import Progetto_prog_3.Status.StatusManager;
 
 //Classe madre per tutte le entità che dovranno essere create, come i nemici o gli oggetti raccoglibili, 
 //implementa una posizione di partenza, 
@@ -37,6 +38,9 @@ public abstract class Entity {
 	protected Rectangle2D.Float attackBox;
     protected Ellipse2D.Float circularAttackbox;
 
+    //Status manager per applicare gli effetti di buff e di debuff, dal player al player, da nemico a player, da player a nemico, eccetera
+    protected StatusManager statusManager;
+
 
     public Entity(float x, float y, int hitBoxWidth, int hitBoxHeight){
 
@@ -44,6 +48,7 @@ public abstract class Entity {
         this.y = y;
         this.hitBoxWidth = hitBoxWidth;
         this.hitBoxHeight = hitBoxHeight;
+        statusManager = new StatusManager();
 
     }
 
@@ -82,6 +87,14 @@ public abstract class Entity {
 
     public int getCurrentHealth(){
         return currentHealth;
+    }
+
+    public float getWalkSpeed() {
+        return walkSpeed;
+    }
+
+    public void setWalkSpeed(float walkSpeed) {
+        this.walkSpeed = walkSpeed;
     }
 
 }

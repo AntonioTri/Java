@@ -99,7 +99,7 @@ public class LevelCompletedOverlay implements MenusOverlayInterface {
             currentPlayerHealth = playing.getGame().getPlaying().getPlayer().getCurrentHealth();
             playing.loadNextLevel();
             playing.getGame().getPlaying().getPlayer().setCurrentHealth(currentPlayerHealth);
-            playing.getGame().getAudioPlayer().setLevelSong(playing.getLevelManager().getLevelIndex());
+            playing.getGame().getAudioPlayer().setLevelSong(0);
         }
 
         menuButton.resetBools();
