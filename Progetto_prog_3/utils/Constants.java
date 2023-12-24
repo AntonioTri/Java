@@ -2,6 +2,7 @@ package Progetto_prog_3.utils;
 import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 
 import Progetto_prog_3.Game;
 
@@ -104,7 +105,7 @@ public class Constants {
 
 
         public static class HellBound {
-             //Variabili per l'hell bound
+            //Variabili per l'hell bound
             public static final int HELL_BOUND = 1;
 
             public static final int HELL_BOUND_JUMP = 0;
@@ -126,7 +127,28 @@ public class Constants {
         }
         
 
-       
+        public static class Ghost {
+            // Variabili per il ghost
+            public static final int GHOST = 2;
+
+            public static final int GHOST_SPAWN = 0;
+            public static final int GHOST_IDLE = 1;  
+            public static final int GHOST_ATTACK = 2;
+            public static final int GHOST_TELEPORT = 3;
+            public static final int GHOST_HIT = 4;
+            public static final int GHOST_DIE = 5;
+            public static final int GHOST_NOT_SPAWNED = 6;
+
+            public static final int GHOST_DEFAULT_WIDTH = 64;
+            public static final int GHOST_DEFAULT_HEIGHT = 52;
+
+            public static final int GHOST_WIDTH = (int) (GHOST_DEFAULT_WIDTH * Game.SCALE);
+            public static final int GHOST_HEIGHT = (int) (GHOST_DEFAULT_HEIGHT * Game.SCALE);
+
+            public static final int GHOST_DRAW_OFFSET_X = (int) (23 * Game.SCALE);
+            public static final int GHOST_DRAW_OFFSET_Y = (int) (5 * Game.SCALE);
+        }
+
 
 
         //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
@@ -142,9 +164,7 @@ public class Constants {
                         case NIGHT_BORNE_ATTACK: return 12;
                         case NIGHT_BORNE_HITTED: return 5;
                         case NIGHT_BORNE_DIE: return 23;
-                    
-                        default:
-                        return 9;
+                        default:return 9;
                             
                     }
 
@@ -158,6 +178,17 @@ public class Constants {
                         case HELL_BOUND_SLIDE: return 9;
                         case HELL_BOUND_DIE: return 10;
                         default: return 12;
+                    }
+
+                case GHOST:
+                    
+                    switch (enemyState) {
+                        case GHOST_SPAWN: return 6;
+                        case GHOST_IDLE: return 7;
+                        case GHOST_ATTACK: return 13;
+                        case GHOST_TELEPORT: return 7;
+                        default: return 1;
+                        
                     }
             
                 default:
@@ -175,6 +206,8 @@ public class Constants {
                     return 20;
                 case HELL_BOUND:
                     return 10;
+                case GHOST:
+                    return 15;
                 default:
                     return 0;
             }
@@ -206,6 +239,9 @@ public class Constants {
                 case HELL_BOUND:
                     distance = 3f;
                     break;
+                case GHOST:
+                    distance = 4.5f;
+                    break;
                 default:
                     distance = 1f;
                     break;
@@ -224,6 +260,9 @@ public class Constants {
                     break;
                 case HELL_BOUND:
                     distance = 10f;
+                    break;
+                case GHOST:
+                    distance = 7f;
                     break;
                 default:
                     distance = 1f;

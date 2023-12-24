@@ -7,19 +7,22 @@ import java.util.ArrayList;
 
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.entities.enemies.Ghost;
 import Progetto_prog_3.entities.enemies.HellBound;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
-
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 
 public class EnemyManager {
     
     private Playing playing;
-    private BufferedImage[][] nightBorneImages, hellBoundsImage;
+    private BufferedImage[][] nightBorneImages, hellBoundsImage, ghostImage;
     private ArrayList<NightBorne> nightBornes = new ArrayList<>();
     private ArrayList<HellBound> hellBounds = new ArrayList<>();
+    private ArrayList<Ghost> ghosts = new ArrayList<>();
+
 
     public EnemyManager(Playing playing){
         this.playing = playing;
@@ -29,6 +32,7 @@ public class EnemyManager {
     public void addEnemies(Level level) {
         nightBornes = level.getnNightBornes();
         hellBounds = level.getHellBounds();
+        ghosts = level.getGhosts();
     }
 
     public void update(int[][] levelData, Player player){
@@ -46,6 +50,13 @@ public class EnemyManager {
         for (HellBound hb : hellBounds) {
             if (hb.getActive()) {
                 hb.update(levelData, player);
+                isAnyActive = true;
+            }
+        }
+
+        for (Ghost gh : ghosts) {
+            if (gh.getActive()) {
+                gh.update(levelData, player);
                 isAnyActive = true;
             }
         }
@@ -106,12 +117,29 @@ public class EnemyManager {
                     hb.setAniSpeed(20);
                     hb.setInvulnerability(true);
                 }
-
-            
             }
         }
 
+        for (Ghost gh : ghosts) {
+            
+            if (gh.getActive()) {
+                
+                g.drawImage(ghostImage[gh.getState()][gh.getAniIndex()],
+                            (int)gh.getHitbox().x - xLevelOffset - GHOST_DRAW_OFFSET_X + gh.flipX(playing.getPlayer()), 
+                            ((int) gh.getHitbox().y - yLevelOffset - GHOST_DRAW_OFFSET_Y), 
+                            GHOST_WIDTH * gh.flipW(playing.getPlayer()),
+                            GHOST_HEIGHT, null);
 
+                gh.drawHitbox(g, xLevelOffset, yLevelOffset);
+                gh.drowAttackBox(g, xLevelOffset, yLevelOffset);
+
+                if (gh.getState() == NIGHT_BORNE_DIE) {
+                    gh.setAniSpeed(20);
+                    gh.setInvulnerability(true);
+                    
+                }
+            }
+        }
 
 
     }
@@ -139,6 +167,13 @@ public class EnemyManager {
             }
         }
 
+        for (Ghost gh : ghosts) {
+            if (gh.getActive() && attackBox.intersects(gh.getHitbox()) && gh.getCurrentHealth() > 0 && !gh.getInvulnerability()) {
+                gh.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
+                if (areaAttack == 0) return;
+            }
+        }
+
     }
 
     public void resetAllEnemyes(){
@@ -149,6 +184,10 @@ public class EnemyManager {
 
         for (AbstractEnemy hb : hellBounds) {
             hb.resetEnemy();
+        }
+
+        for (AbstractEnemy gh : ghosts) {
+            gh.resetEnemy();
         }
 
     }
@@ -173,6 +212,13 @@ public class EnemyManager {
             }
         }
 
+        ghostImage = new BufferedImage[7][13];
+        temp = LoadSave.getSpriteAtlas(LoadSave.GHOST_ATLAS);
+        for(int j = 0; j < ghostImage.length; j++){
+            for (int i = 0; i < ghostImage[j].length; i++) {
+                ghostImage[j][i] = temp.getSubimage(i * GHOST_DEFAULT_WIDTH, j * GHOST_DEFAULT_HEIGHT, GHOST_DEFAULT_WIDTH, GHOST_DEFAULT_HEIGHT);
+            }
+        }
 
     }
 }

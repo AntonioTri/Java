@@ -1,6 +1,7 @@
 package Progetto_prog_3.entities;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
@@ -163,6 +164,7 @@ public abstract class AbstractEnemy extends Entity{
                         case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> state = IDLE;
                         case NIGHT_BORNE_DIE -> this.active = false;
                     }
+
                 } else if (enemyType == HELL_BOUND) {
                     switch (state) {
                         case HELL_BOUND_JUMP, HELL_BOUND_RUN, HELL_BOUND_SLIDE -> state = HELL_BOUND_WALK;
@@ -174,7 +176,8 @@ public abstract class AbstractEnemy extends Entity{
                             this.active = false;
                         }
                     }
-                }
+
+                } 
             }
         }
     }
@@ -228,9 +231,6 @@ public abstract class AbstractEnemy extends Entity{
         currentHealth = maxHealth;
         newState(NIGHT_BORNE_IDLE);
     }
-
-    public abstract int flipX();
-    public abstract int flipW();
 
     public boolean getActive(){
         return active;

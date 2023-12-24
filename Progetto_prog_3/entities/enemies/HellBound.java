@@ -247,7 +247,6 @@ public class HellBound extends AbstractEnemy{
         
     }
 
-    @Override
     public int flipX() {
         if (wlakDir == LEFT) {
             return 0;
@@ -256,7 +255,6 @@ public class HellBound extends AbstractEnemy{
         }
     }
 
-    @Override
     public int flipW() {
         if (wlakDir == LEFT) {
             return 1;
