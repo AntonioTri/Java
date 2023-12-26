@@ -191,9 +191,6 @@ public abstract class AbstractEnemy extends Entity{
         } else {
             inAir = false;
             hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
-            if (hitbox.height < Game.TILES_SIZE) {
-                hitbox.y -= Game.TILES_SIZE;
-            }
             //Otteniamo in questo modo la posiizone in y
             enemyTileY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
         }

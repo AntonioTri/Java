@@ -2,9 +2,11 @@ package Progetto_prog_3.entities;
 
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RectangularShape;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.entities.enemies.Ghost;
@@ -19,6 +21,7 @@ public class EnemyManager {
     
     private Playing playing;
     private BufferedImage[][] nightBorneImages, hellBoundsImage, ghostImage;
+    private BufferedImage[] ghostAttack;
     private ArrayList<NightBorne> nightBornes = new ArrayList<>();
     private ArrayList<HellBound> hellBounds = new ArrayList<>();
     private ArrayList<Ghost> ghosts = new ArrayList<>();
@@ -131,9 +134,17 @@ public class EnemyManager {
                             GHOST_HEIGHT, null);
 
                 gh.drawHitbox(g, xLevelOffset, yLevelOffset);
-                gh.drowAttackBox(g, xLevelOffset, yLevelOffset);
+                gh.drowCircularAttackBox(g, xLevelOffset, yLevelOffset);
 
-                if (gh.getState() == NIGHT_BORNE_DIE) {
+                if (gh.getState() == GHOST_ATTACK) {
+                    g.drawImage(ghostAttack[gh.getAniIndex()],
+                                (int)(gh.getHitbox().x - (113 * Game.SCALE) - xLevelOffset), 
+                                (int)(gh.getHitbox().y - (100 * Game.SCALE) - yLevelOffset), 
+                                GHOST_ELECTRIC_BALL_LENGHT, 
+                                GHOST_ELECTRIC_BALL_LENGHT, null);
+                }
+
+                if (gh.getState() == GHOST_DIE) {
                     gh.setAniSpeed(20);
                     gh.setInvulnerability(true);
                     
@@ -145,7 +156,7 @@ public class EnemyManager {
     }
 
     //Se il player attacca il nemico a questo viene applicato il danno del player
-    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack){
+    public void checkPlayerHitEnemy(RectangularShape attackBox, int areaAttack){
         for (NightBorne nb : nightBornes) {
             //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, VIENE APPLICATO IL DANNO DEL PLAYER
             if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0 && !nb.getInvulnerability()) {
@@ -212,12 +223,18 @@ public class EnemyManager {
             }
         }
 
-        ghostImage = new BufferedImage[7][13];
+        ghostImage = new BufferedImage[7][15];
         temp = LoadSave.getSpriteAtlas(LoadSave.GHOST_ATLAS);
         for(int j = 0; j < ghostImage.length; j++){
             for (int i = 0; i < ghostImage[j].length; i++) {
                 ghostImage[j][i] = temp.getSubimage(i * GHOST_DEFAULT_WIDTH, j * GHOST_DEFAULT_HEIGHT, GHOST_DEFAULT_WIDTH, GHOST_DEFAULT_HEIGHT);
             }
+        }
+
+        ghostAttack = new BufferedImage[15];
+        temp = LoadSave.getSpriteAtlas(LoadSave.GHOST_ATTACK_BALL);
+        for (int i = 0; i < ghostAttack.length; i++) {
+            ghostAttack[i] = temp.getSubimage(i * GHOST_ELECTRIC_BALL_DEFAULT_LENGHT, 0, GHOST_ELECTRIC_BALL_DEFAULT_LENGHT, GHOST_ELECTRIC_BALL_DEFAULT_LENGHT);
         }
 
     }

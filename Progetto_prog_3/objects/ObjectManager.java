@@ -195,7 +195,7 @@ public class ObjectManager {
     private void updateCanons(int[][] levelData, Player player) {
         for (Cannon c : cannons) {
             if (!c.doAnimation 
-                && ( c.getCannonTyleY() == player.getPlayerTileY() + 1) //Qua viene agiunto un + 1 peerchè la y del player si trova su un blocco più in alto
+                && ( c.getCannonTyleY() == player.getPlayerTileY()) //Qua viene agiunto un + 1 peerchè la y del player si trova su un blocco più in alto
                 && isPlayereInRange(c, player) 
                 && isPlayereInFrontOfCannon(c, player)
                 && canCannonSeePlayer(levelData, player.getHitbox(), c.getHitbox(), c.getCannonTyleY())) {

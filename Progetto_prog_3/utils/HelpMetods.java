@@ -312,10 +312,10 @@ public class HelpMetods {
 
         if (firstXTile > secondXTile) {
 
-            return areAllTilesClear(secondXTile, firstXTile, cannonTyleY, levelData);
+            return areAllTilesClear(secondXTile + 1, firstXTile, cannonTyleY, levelData);
 
         } else {
-
+            
             return areAllTilesClear(firstXTile, secondXTile, cannonTyleY, levelData);
 
         }
@@ -349,6 +349,7 @@ public class HelpMetods {
     }
 
     public static boolean areAllTilesClear(int xStart, int xEnd, int y, int[][] levelData){
+
         for (int i = 0; i < xEnd - xStart; i++) {
             if (isTileSolid(xStart + i, y , levelData)) {
                 return false;
@@ -427,13 +428,16 @@ public class HelpMetods {
 
     //La successiva è identica alla precedente, soltanto che analizza la possibilità del movimento in verticale, anzicchè in orizzontale
 	public static float getEntityYPosFloorRoofRelative(Rectangle2D.Float hitbox, float airSpeed) {
-		int currentTile = (int) (hitbox.y / Game.TILES_SIZE);
+
+		int currentTile = (int) ((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
+
 		if (airSpeed > 0) {
 			// Falling - touching floor
 			int tileYPos = currentTile * Game.TILES_SIZE;
 			int yOffset = (int) (Game.TILES_SIZE - hitbox.height);
-            //!!!!!Il + Game size dovrebbe esser aggiunto a tutte le entita che hanno una altezza maggiore di n blocco, ovvero 32 pixle!!!!!
-			return tileYPos + yOffset - 1 + Game.TILES_SIZE;
+            return tileYPos + yOffset - 1;
+            
+
 		} else
 			// Jumping
 			return currentTile * Game.TILES_SIZE;

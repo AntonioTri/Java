@@ -117,7 +117,7 @@ public class HellBound extends AbstractEnemy{
                     //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
                     //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
                     //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
-                    if(!attackChecked) { checkEnemyHit(attackBox, player); }    
+                    if(!attackChecked) checkEnemyHit(attackBox, player);    
                     break;
                 
                 case HELL_BOUND_SLIDE:

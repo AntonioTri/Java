@@ -81,14 +81,14 @@ public class Player extends Entity{
     public Player(float x, float y, int width, int height, Playing playing){
         super(x, y, width, height);
         this.playing = playing;
-        this.walkSpeed = 1.7f;
         initStates();
         loadAnimations();
-        initHitbox(x, y, 25 * Game.SCALE, 32 * Game.SCALE);
+        initHitbox(x, y, 25 * Game.SCALE, 31 * Game.SCALE);
         initAttackBoxes();
     }
 
     private void initStates(){
+        this.walkSpeed = 1.7f;
         this.state = IDLE;
         this.maxHealth = 100;
         this.currentHealth = maxHealth;
@@ -147,7 +147,7 @@ public class Player extends Entity{
         if (moving) {
             checkPotionTouched();
             checkSpikesTouched();
-            tyleY = (int)(hitbox.y / Game.TILES_SIZE);
+            tyleY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
 
             if (powerAttackActive) {
                 powerAttackTick++;

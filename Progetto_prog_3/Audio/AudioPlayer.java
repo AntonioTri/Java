@@ -130,7 +130,7 @@ public class AudioPlayer {
 
     private void updateSongVolume(){
 
-        FloatControl gaincoControl = (FloatControl)songs[currentSongId].getControl(FloatControl.Type.MASTER_GAIN);
+        FloatControl gaincoControl = (FloatControl)songs[0].getControl(FloatControl.Type.MASTER_GAIN);
         float range = gaincoControl.getMaximum() - gaincoControl.getMinimum();
         float gane = (range * volume) + gaincoControl.getMinimum();
         gaincoControl.setValue(gane);
@@ -180,8 +180,8 @@ public class AudioPlayer {
     }
 
     public void stopSong(){
-        if (songs[currentSongId].isActive()) {
-            songs[currentSongId].stop();
+        if (songs[0].isActive()) {
+            songs[0].stop();
         }
     }
 
