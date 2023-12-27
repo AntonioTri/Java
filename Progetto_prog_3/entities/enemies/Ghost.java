@@ -10,12 +10,12 @@ import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.AbstractEnemy;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.utils.Constants.EnemtConstants;
+import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getAttackDistance;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getEnemyDamage;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getVisionDistance;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getSpriteAmount;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
-import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
 
 public class Ghost extends AbstractEnemy {
 
@@ -108,6 +108,7 @@ public class Ghost extends AbstractEnemy {
                     //Se è passato abbastanza tempo viene eseguito l'attacco
                     if(attackTimer >= 300 && isPlayerCloseForAttack(player)){
                         attackTimer = 0;
+                        audioPlayer.playEffect(AudioPlayer.GHOST_ATTACK_1);
                         newState(GHOST_ATTACK);
                     }
                     break;
