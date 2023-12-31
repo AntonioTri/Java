@@ -1,7 +1,8 @@
 package Progetto_prog_3.utils;
-import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_HEIGHT;
-import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_SPEED;
-import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_WIDTH;
+import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 
 import Progetto_prog_3.Game;
 
@@ -78,25 +79,82 @@ public class Constants {
     //Variabili statiche per definire I nemici, per ora soltanto i nightbornes
     public static class EnemtConstants{
 
+        public static class NightBorne {
+            
+            //Variabili per il nightborne
+            public static final int NIGHT_BORNE = 0;
 
-        public static final int NIGHT_BORNE = 0;
-
-        public static final int NIGHT_BORNE_IDLE = 0;
-        public static final int NIGHT_BORNE_RUN = 1;
-        public static final int NIGHT_BORNE_ATTACK = 2;
-        public static final int NIGHT_BORNE_HITTED = 3;
-        public static final int NIGHT_BORNE_DIE = 4; 
+            public static final int NIGHT_BORNE_IDLE = 0;
+            public static final int NIGHT_BORNE_RUN = 1;
+            public static final int NIGHT_BORNE_ATTACK = 2;
+            public static final int NIGHT_BORNE_HITTED = 3;
+            public static final int NIGHT_BORNE_DIE = 4; 
 
 
-        public static final int NIGHT_BORNE_DEFAULT_WIDHT = 80;
-        public static final int NIGHT_BORNE_DEFAULT_HEIGHT = 80;
+            public static final int NIGHT_BORNE_DEFAULT_WIDHT = 80;
+            public static final int NIGHT_BORNE_DEFAULT_HEIGHT = 80;
 
-        public static final int NIGHT_BORNE_WIDHT = (int)(NIGHT_BORNE_DEFAULT_WIDHT * Game.SCALE);
-        public static final int NIGHT_BORNE_HEIGHT = (int)(NIGHT_BORNE_DEFAULT_HEIGHT * Game.SCALE);
+            public static final int NIGHT_BORNE_WIDHT = (int)(NIGHT_BORNE_DEFAULT_WIDHT * Game.SCALE);
+            public static final int NIGHT_BORNE_HEIGHT = (int)(NIGHT_BORNE_DEFAULT_HEIGHT * Game.SCALE);
+            
+            //Questo è l'offset di posizionamento della hitbox del naightborne
+            public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(20 * Game.SCALE);
+            public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(33 * Game.SCALE);
+            
+        }
+
+
+        public static class HellBound {
+            //Variabili per l'hell bound
+            public static final int HELL_BOUND = 1;
+
+            public static final int HELL_BOUND_JUMP = 0;
+            public static final int HELL_BOUND_RUN = 1;
+            public static final int HELL_BOUND_WALK = 2;
+            public static final int HELL_BOUND_HIT = 3;
+            public static final int HELL_BOUND_SLIDE = 4;
+            public static final int HELL_BOUND_DIE = 5;
+
+            public static final int HELL_BOUND_DEAFULT_WIDTH = 64;
+            public static final int HELL_BOUND_DEAFULT_HEIGHT = 48;
+
+            public static final int HELL_BOUND_WIDTH = (int)(HELL_BOUND_DEAFULT_WIDTH * Game.SCALE);
+            public static final int HELL_BOUND_HEIGHT = (int)(HELL_BOUND_DEAFULT_HEIGHT * Game.SCALE);
+            
+            public static final int HELL_BOUND_DROW_OFFSET_X = (int)(9 * Game.SCALE);
+            public static final int HELL_BOUND_DROW_OFFSET_Y = (int)(20 * Game.SCALE);
+            
+        }
         
-        //Questo è l'offset di posizionamento della hitbox del naightborne
-        public static final int NIGHT_BORNE_DROW_OFFSET_X = (int)(20 * Game.SCALE);
-        public static final int NIGHT_BORNE_DROW_OFFSET_Y = (int)(33 * Game.SCALE);
+
+        public static class Ghost {
+            // Variabili per il ghost
+            public static final int GHOST = 2;
+
+            public static final int GHOST_SPAWN = 0;
+            public static final int GHOST_IDLE = 1;  
+            public static final int GHOST_ATTACK = 2;
+            public static final int GHOST_TELEPORT = 3;
+            public static final int GHOST_HIT = 4;
+            public static final int GHOST_DIE = 5;
+            public static final int GHOST_NOT_SPAWNED = 6;
+
+            public static final int GHOST_DEFAULT_WIDTH = 64;
+            public static final int GHOST_DEFAULT_HEIGHT = 52;
+
+            public static final int GHOST_WIDTH = (int) (GHOST_DEFAULT_WIDTH * Game.SCALE);
+            public static final int GHOST_HEIGHT = (int) (GHOST_DEFAULT_HEIGHT * Game.SCALE);
+
+            public static final int GHOST_DRAW_OFFSET_X = (int) (23 * Game.SCALE);
+            public static final int GHOST_DRAW_OFFSET_Y = (int) (5 * Game.SCALE);
+
+            //Sono 15 frame
+            public static final int GHOST_ELECTRIC_BALL_DEFAULT_LENGHT = 250;
+            public static final int GHOST_ELECTRIC_BALL_LENGHT = (int)(250 * Game.SCALE);
+
+        }
+
+
 
         //Metodo per ottenere il numero di sprite giusto per ogni animazione di un nemico
         //con uno switch sul tipo di nemico fa il return adeguato
@@ -111,10 +169,31 @@ public class Constants {
                         case NIGHT_BORNE_ATTACK: return 12;
                         case NIGHT_BORNE_HITTED: return 5;
                         case NIGHT_BORNE_DIE: return 23;
-                    
-                        default:
-                        return 9;
+                        default:return 9;
                             
+                    }
+
+                case HELL_BOUND:
+                    
+                    switch (enemyState) {
+                        case HELL_BOUND_WALK: return 12;
+                        case HELL_BOUND_RUN: return 5;
+                        case HELL_BOUND_JUMP: return 6;
+                        case HELL_BOUND_HIT: return 5;
+                        case HELL_BOUND_SLIDE: return 9;
+                        case HELL_BOUND_DIE: return 10;
+                        default: return 12;
+                    }
+
+                case GHOST:
+                    
+                    switch (enemyState) {
+                        case GHOST_SPAWN: return 6;
+                        case GHOST_IDLE: return 7;
+                        case GHOST_ATTACK: return 15;
+                        case GHOST_TELEPORT: return 7;
+                        default: return 1;
+                        
                     }
             
                 default:
@@ -130,22 +209,76 @@ public class Constants {
             switch (enemyType) {
                 case NIGHT_BORNE:
                     return 20;
+                case HELL_BOUND:
+                    return 10;
+                case GHOST:
+                    return 15;
                 default:
                     return 0;
             }
         }
 
-         //Metodo che ci permette di ritornare il valore di DANNO dato uno specifico nemico
+        //Metodo che ci permette di ritornare il valore di DANNO dato uno specifico nemico
         public static int getEnemyDamage(int enemyType){
 
             switch (enemyType) {
                 case NIGHT_BORNE:
-                    return 4;
+                    return 0;
+                case HELL_BOUND:
+                    return 0;
+                case GHOST:
+                    return 20;
                 default:
                     return 0;
             }
 
-         }
+        }
+
+         //Metodo per ottenre la distanza di attacco
+        public static int getAttackDistance(int enemyType){
+
+            float distance;
+
+            switch (enemyType) {
+                case NIGHT_BORNE:
+                    distance = 1.68f; 
+                    break;
+                case HELL_BOUND:
+                    distance = 3f;
+                    break;
+                case GHOST:
+                    distance = 4.5f;
+                    break;
+                default:
+                    distance = 1f;
+                    break;
+            }
+
+            return (int)(distance * Game.TILES_SIZE);
+
+        }
+
+        public static int getVisionDistance(int enemyType) {
+            float distance;
+
+            switch (enemyType) {
+                case NIGHT_BORNE:
+                    distance = 6f; 
+                    break;
+                case HELL_BOUND:
+                    distance = 10f;
+                    break;
+                case GHOST:
+                    distance = 7f;
+                    break;
+                default:
+                    distance = 1f;
+                    break;
+            }
+
+            return (int)(distance * Game.TILES_SIZE);
+
+        }
 
 
     }
@@ -279,6 +412,14 @@ public class Constants {
         public static final int JUMPING_DOWN = 7;
         public static final int HURT = 8;
         public static final int DIE = 9;
+        public static final int USING_ULTIMATE = 10;
+
+        public static final int PLAYER_EXPLOSION_DEFAULT_WIDTH = 262;
+        public static final int PLAYER_EXPLOSION_DEFAULT_HEIGHT = 252;
+        public static final int PLAYER_EXPLOSION_HEIGHT = (int)(PLAYER_EXPLOSION_DEFAULT_HEIGHT * Game.SCALE);
+        public static final int PLAYER_EXPLOSION_WIDTH = (int)(PLAYER_EXPLOSION_DEFAULT_WIDTH * Game.SCALE);
+        public static final int PLAYER_EXPLOSION_DRAW_HEIGHT = (int)((PLAYER_EXPLOSION_DEFAULT_HEIGHT + 100) * Game.SCALE);
+        public static final int PLAYER_EXPLOSION_DRAW_WIDTH = (int)((PLAYER_EXPLOSION_DEFAULT_WIDTH + 100) * Game.SCALE);
 
         //Metodo per ottenere il numero di sprite corrispetivo in base all'azione del player
         public static int getSpriteAmount(int PLAYER_ACTION){
@@ -313,6 +454,9 @@ public class Constants {
 
                 case DIE:
                     return 4;
+                
+                case USING_ULTIMATE:
+                    return 15;
             
                 default:
                     return 1;

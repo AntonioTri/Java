@@ -39,6 +39,9 @@ public class LoadSave {
     //Entity
     public static final String PLAYER_ATLAS = "entity/MageAnimations.png";
     public static final String NIGHT_BORNE_ATLAS = "entity/NightBorne.png";
+    public static final String HELL_BOUND_ATLAS = "entity/HellBound.png";
+    public static final String GHOST_ATLAS = "entity/Ghost.png";
+    public static final String GHOST_ATTACK_BALL = "entity/Ghost_attack.png";
     public static final String CANNON_ATLAS = "entity/cannon_atlas.png";
     public static final String CANNON_BALL = "entity/ball.png";
 
@@ -46,6 +49,8 @@ public class LoadSave {
     public static final String BOXES_SPRITE = "loot/objects_sprites.png";
     public static final String POTIONS = "loot/potions_sprites.png";
     
+    //Special abilities
+    public static final String PLAYER_EXPLOSION = "entity/circle_explosion.png";
 
     public static BufferedImage[] getAllLevels(){
 

@@ -5,7 +5,7 @@ import java.awt.Color;
 public class BrigeTest {
     public static void main(String[] args){
 
-        Shape tri = new Shape(new GreenColor()); 
+        //Shape tri = new Shape(new GreenColor()); 
 
     }
 }

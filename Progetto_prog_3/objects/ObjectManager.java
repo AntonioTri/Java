@@ -92,7 +92,7 @@ public class ObjectManager {
      * il codice vcerrà sempre eseguito, viene spawnata la pozione al posto della scatola appena rottae viene settata la flag di spawn pozione a falso
      * 
      */
-    public void checkObjectHit(Rectangle2D.Float playerAttackBox){
+    public void checkObjectHit(Rectangle2D.Float playerAttackBox, int areaAttack){
 
         for (LootBox box : lootBoxes) {
             if (box.isActive() && box.getHitbox().intersects(playerAttackBox)) {
@@ -114,9 +114,11 @@ public class ObjectManager {
                                             type));
                     box.setCanSpawnPotion(false);
                     System.out.println("Spawned a Potion");
-                    }
+                }
 
-                return;
+                //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti gli oggetti
+                //invece che fermarsi al primo oggetto colpito
+                if(areaAttack == 0) return;
                 
             }
         }
@@ -193,7 +195,7 @@ public class ObjectManager {
     private void updateCanons(int[][] levelData, Player player) {
         for (Cannon c : cannons) {
             if (!c.doAnimation 
-                && ( c.getCannonTyleY() == player.getPlayerTileY() + 1) //Qua viene agiunto un + 1 peerchè la y del player si trova su un blocco più in alto
+                && ( c.getCannonTyleY() == player.getPlayerTileY()) //Qua viene agiunto un + 1 peerchè la y del player si trova su un blocco più in alto
                 && isPlayereInRange(c, player) 
                 && isPlayereInFrontOfCannon(c, player)
                 && canCannonSeePlayer(levelData, player.getHitbox(), c.getHitbox(), c.getCannonTyleY())) {
@@ -237,7 +239,7 @@ public class ObjectManager {
             }
             //Controllo della collisione con il player
             if (player.getHitbox().intersects(cb.getHitbox()) && cb.getCanDoDamage()) {
-                player.changeHealth(-25);
+                player.changeHealth(0);
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
             //Controllo della collisione con un muro
@@ -273,7 +275,7 @@ public class ObjectManager {
 
             if (c.getObjType() == CANNON_RIGHT) {
                 X += width;
-                Y += height - Game.TILES_SIZE;
+                Y += height - (25 * Game.SCALE);
                 width *= -1;
                 
             }

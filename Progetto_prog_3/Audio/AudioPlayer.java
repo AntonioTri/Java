@@ -60,18 +60,21 @@ public class AudioPlayer {
 
     public static final int PLAYER_EXPLOSION = 20;
 
+    public static final int GHOST_ATTACK = 21;
+    public static final int GHOST_ATTACK_1 = 21;
+    public static final int GHOST_ATTACK_2 = 22;
+    public static final int GHOST_ATTACK_3 = 23;
+    
     //La clip è il modo di java di eseguirre suoni in un programma, è un contenitore capace di storare file .WAV
     private Clip[] songs, effects;
 
     //Variabili di ambiente
-    private Game game;
     private int currentSongId;
-    private float volume = 1f;
+    private float volume = 0.5f;
     private boolean songMute, effectMute;
     private Random rand = new Random();
 
-    public AudioPlayer(Game game){
-        this.game = game;
+    public AudioPlayer(){
         loadSong();
         loadSoundEffects();
         playSong(MENU_MUSIC);
@@ -80,7 +83,7 @@ public class AudioPlayer {
 
     private void loadSong(){
 
-        String[] names = {"menuMusic", "backgroundAudio"};
+        String[] names = {"game_sounds/menuMusic", "game_sounds/backgroundAudio"};
         songs = new Clip[names.length];
 
         for (int i = 0; i < songs.length; i++) {
@@ -91,12 +94,13 @@ public class AudioPlayer {
 
     private void loadSoundEffects(){
 
-        String[] effectsName = {"hurt1", "hurt2", "hurt3", "jumping1", "jumping2",
-                                "landing", "landing2", "walking_on_grass",
-                                "nightBorneDie", "nightBorneHurt1","nightBorneHurt2","nightBorneHurt3",
-                                "attack1", "attack2", "attack3",
-                                "lvlcompleted", "gameover",
-                                "dash1", "dash2", "dash3", "playerFireExplosion"};
+        String[] effectsName = {"player_sounds/hurt1", "player_sounds/hurt2", "player_sounds/hurt3", "player_sounds/jumping1", "player_sounds/jumping2",
+                                "player_sounds/landing", "player_sounds/landing2", "player_sounds/walking_on_grass",
+                                "nightborne_sounds/nightBorneDie", "nightborne_sounds/nightBorneHurt1","nightborne_sounds/nightBorneHurt2","nightborne_sounds/nightBorneHurt3",
+                                "player_sounds/attack1", "player_sounds/attack2", "player_sounds/attack3",
+                                "game_sounds/lvlcompleted", "game_sounds/gameover",
+                                "player_sounds/dash1", "player_sounds/dash2", "player_sounds/dash3", "player_sounds/playerFireExplosion",
+                                "ghost_sounds/ghost_attack", "ghost_sounds/ghost_attack2", "ghost_sounds/ghost_attack3"};
 
         effects = new Clip[effectsName.length];
 
@@ -130,7 +134,7 @@ public class AudioPlayer {
 
     private void updateSongVolume(){
 
-        FloatControl gaincoControl = (FloatControl)songs[currentSongId].getControl(FloatControl.Type.MASTER_GAIN);
+        FloatControl gaincoControl = (FloatControl)songs[0].getControl(FloatControl.Type.MASTER_GAIN);
         float range = gaincoControl.getMaximum() - gaincoControl.getMinimum();
         float gane = (range * volume) + gaincoControl.getMinimum();
         gaincoControl.setValue(gane);
@@ -180,8 +184,8 @@ public class AudioPlayer {
     }
 
     public void stopSong(){
-        if (songs[currentSongId].isActive()) {
-            songs[currentSongId].stop();
+        if (songs[0].isActive()) {
+            songs[0].stop();
         }
     }
 
@@ -233,7 +237,11 @@ public class AudioPlayer {
 
 
     public void playEffect(int EFFECT) {
-        
+
+        if (EFFECT >= 21) {
+            System.out.println("Playing ghost attack effect number" + (EFFECT - 20));
+        }
+
         effects[EFFECT].setMicrosecondPosition(0);
         effects[EFFECT].start();
 
@@ -260,7 +268,8 @@ public class AudioPlayer {
             case PLAYER_LANDING: return 2;
             case PLAYER_HURT: return 3;
             case NIGHTBORNE_HURT: return 3;
-            case PLAYER_DASHING: return 3; 
+            case PLAYER_DASHING: return 3;
+            case GHOST_ATTACK: return 3; 
             default: return SOUND;
         }
     }

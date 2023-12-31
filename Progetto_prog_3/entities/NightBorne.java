@@ -1,6 +1,6 @@
 package Progetto_prog_3.entities;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
@@ -37,6 +37,8 @@ public class NightBorne extends AbstractEnemy{
         } else {
             this.invulnerability = false;
         }
+
+     
 
     }
 
@@ -89,19 +91,40 @@ public class NightBorne extends AbstractEnemy{
                     
                 case NIGHT_BORNE_ATTACK:
 
-                    aniSpeed = 12;
+                    aniSpeed = 13;
 
+                    //La variabile attackChecked identifica se l'attacco è stato eseguito
+                    //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
+                    //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
+                    //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
                     if (aniIndex == 0) {
                         attackChecked = false;
                     }
-                    if (aniIndex == 10 /*oppure 9, bisogna vedere */ && !attackChecked) {
-
+                    if (aniIndex == 10 && !attackChecked) {
                         checkEnemyHit(attackBox, player);
                     }
-                case NIGHT_BORNE_HITTED:
+                    break;
                     
             
             }
+        }
+    }
+
+    //I successivi due metodi ci permettono di modificare la direzione del movimento o per 
+    //meglio dire, il modo in cui viene disegnato uno sprite, per dare l'illusione che il nemico stia
+    //facendo una zione oppure l'altra
+    public int flipX(){
+        if (wlakDir == LEFT) {
+            return hitBoxWidth + 10;
+        } else{
+            return 0;
+        }
+    }
+    public int flipW(){
+        if (wlakDir == LEFT) {
+            return -1;
+        } else{
+            return 1;
         }
     }
 

@@ -21,8 +21,8 @@ public class Game implements Runnable{
     
 
     //Variabili per la mappa
-    public final static int TILES_DEFAULT_SIZE = 32;
     public final static float SCALE = 2f;
+    public final static int TILES_DEFAULT_SIZE = 32;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
     public final static int TILES_SIZE = (int)(TILES_DEFAULT_SIZE * SCALE);
@@ -57,7 +57,7 @@ public class Game implements Runnable{
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
         audioOptions = new AudioOptions(this);
-        audioPlayer = new AudioPlayer(this);
+        audioPlayer = new AudioPlayer();
         gameOptions = new GameOptions(this);
         menu = new Menu(this);
         playing = new Playing(this);
