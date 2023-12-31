@@ -1,4 +1,4 @@
-package StrategyPattern;
+package DesignPatterns.StrategyPattern;
 
 //La classe can't Fly implementa l'interfaccia in modo che non possa volare
 public class CanTfly implements FlyInterface {
