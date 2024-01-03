@@ -362,7 +362,6 @@ public class Constants {
             public static final int SUOND_SIZE_DEFAULT = 42;
             public static final int SUOND_SIZE = (int)(SUOND_SIZE_DEFAULT * Game.SCALE);
 
-
         }
 
         //Variabili statiche per definire la grandezza dei bottoni di reset, home e resume

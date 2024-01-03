@@ -13,7 +13,9 @@ import Progetto_prog_3.Game;
  * le stesse caratteristiche, una hitbox, un metodo per disegnarla, il metodo update per incrementare l'indice di animazione,
  * il metodo reset per settare lo stato di attivo, l'indice animazione, i tick di questa a 0 quando il livello viene resettatoù
  * Getters e Setters per le variabili
+ * 
  */
+
 public abstract class AbstractObject {
     
     protected int x, y, objType;
