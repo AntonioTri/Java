@@ -9,7 +9,7 @@ public class FactoryPatternTest {
         EnemyShipFactory enemyFactory = new EnemyShipFactory();
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("What ship do u want? ( U / F / B / Y )");
+        System.out.println("What ship do u want? ( U / F / B )");
 
         if (scanner.hasNextLine()) {
             
