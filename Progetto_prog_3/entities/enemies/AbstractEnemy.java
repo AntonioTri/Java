@@ -1,7 +1,6 @@
-package Progetto_prog_3.entities;
+package Progetto_prog_3.entities.enemies;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
@@ -11,6 +10,8 @@ import static Progetto_prog_3.utils.Constants.GRAVITY;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
+import Progetto_prog_3.entities.Entity;
+import Progetto_prog_3.entities.Player;
 
 public abstract class AbstractEnemy extends Entity{
 
@@ -44,7 +45,7 @@ public abstract class AbstractEnemy extends Entity{
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
     protected void turnTowardsPlayer(Player player){
 
-        if (player.hitbox.x > hitbox.x) {
+        if (player.getHitbox().x > hitbox.x) {
             wlakDir = RIGHT;
         } else {
             wlakDir = LEFT;
@@ -63,7 +64,7 @@ public abstract class AbstractEnemy extends Entity{
 
         if (playerYPos == enemyTileY) {
             //Se è così controlliamo che il player sia in range di visione e che il percorso verso il player sia percorribile
-            if (isPlayerInRangeOfVision(player) && isPathClear(levelData, hitbox, player.hitbox, enemyTileY)) {
+            if (isPlayerInRangeOfVision(player) && isPathClear(levelData, hitbox, player.getHitbox(), enemyTileY)) {
                 //Se tutte le condizioni sono vere ritorniamo vero ed il nemico può vedere il player e raggiungerlo
                 return true; 
             }
@@ -141,7 +142,7 @@ public abstract class AbstractEnemy extends Entity{
 
     //questo metodo invece ci permette di applicare danno al player se il nemico lo colpisce
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.hitbox)) {
+        if (attackBox.intersects(player.getHitbox())) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
             attackChecked = true;

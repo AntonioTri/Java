@@ -28,7 +28,7 @@ public class Player extends Entity{
 
     //Variabili per le hitbox
     private float XOffset = 13 * Game.SCALE;
-    private float YOffset = 26 * Game.SCALE;
+    private float YOffset = 28 * Game.SCALE;
 
     //Variabili per il salto
     private float jumpSpeed = -2.25f * Game.SCALE;
