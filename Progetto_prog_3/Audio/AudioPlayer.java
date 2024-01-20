@@ -252,7 +252,6 @@ public class AudioPlayer {
         stopSong();
 
         currentSongId = SONG;
-        System.out.println(currentSongId);
         updateSongVolume();
         songs[currentSongId].setMicrosecondPosition(0);
         songs[currentSongId].loop(Clip.LOOP_CONTINUOUSLY);

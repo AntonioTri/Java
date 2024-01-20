@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Random;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
-import Progetto_prog_3.entities.AbstractEnemy;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.utils.Constants.EnemtConstants;
 import static Progetto_prog_3.utils.HelpMetods.isTileSolid;

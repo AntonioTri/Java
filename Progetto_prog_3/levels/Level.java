@@ -4,8 +4,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import Progetto_prog_3.Game;
-import Progetto_prog_3.entities.NightBorne;
 import Progetto_prog_3.entities.enemies.HellBound;
+import Progetto_prog_3.entities.enemies.NightBorne;
 import Progetto_prog_3.entities.enemies.Ghost;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
