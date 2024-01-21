@@ -413,6 +413,12 @@ public class Constants {
         public static final int DIE = 9;
         public static final int USING_ULTIMATE = 10;
 
+        public static final int PLAYER_DEFAULT_WIDTH = 128;
+        public static final int PLAYER_DEFAULT_HEIGHT = 128;
+
+        public static final int PLAYER_WIDTH = (int)(PLAYER_DEFAULT_WIDTH * Game.SCALE);
+        public static final int PLAYER_HEIGHT = (int)(PLAYER_DEFAULT_HEIGHT * Game.SCALE);
+
         public static final int PLAYER_EXPLOSION_DEFAULT_WIDTH = 262;
         public static final int PLAYER_EXPLOSION_DEFAULT_HEIGHT = 252;
         public static final int PLAYER_EXPLOSION_HEIGHT = (int)(PLAYER_EXPLOSION_DEFAULT_HEIGHT * Game.SCALE);
