@@ -27,6 +27,7 @@ public abstract class State {
             case PLAYING -> game.getAudioPlayer().playSong(1);
             
         }
+        
         GameState.state = state;
     }
 
