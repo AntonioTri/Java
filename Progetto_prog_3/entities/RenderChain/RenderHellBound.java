@@ -1,11 +1,11 @@
 package Progetto_prog_3.entities.RenderChain;
 
-import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import java.awt.Graphics;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.entities.enemies.AbstractEnemy;
 
-public class RenderNightBorne implements RenderInterface {
+public class RenderHellBound implements RenderInterface{
 
     RenderInterface nextHandler;
 
@@ -16,26 +16,27 @@ public class RenderNightBorne implements RenderInterface {
 
     @Override
     public void renderEntity(Graphics g, Player player, RenderingRequest[] requests, AbstractEnemy enemy, int xLevelOffset, int yLevelOffset) {
-        if (enemy.getEnemyType() == NIGHT_BORNE) {
-            
+        if (enemy.getEnemyType() == HELL_BOUND) {
+
             g.drawImage(requests[enemy.getEnemyType()].getSprites()[enemy.getState()][enemy.getAniIndex()],
-                            (int)enemy.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + enemy.flipX(), 
-                            ((int)enemy.getHitbox().y - yLevelOffset - NIGHT_BORNE_DROW_OFFSET_Y),
-                            (NIGHT_BORNE_WIDHT + 25) * enemy.flipW(),
-                             NIGHT_BORNE_HEIGHT + 25, null);
+                            (int)enemy.getHitbox().x - xLevelOffset - HELL_BOUND_DROW_OFFSET_X + enemy.flipX(),
+                            ((int) enemy.getHitbox().y - yLevelOffset - HELL_BOUND_DROW_OFFSET_Y),
+                            HELL_BOUND_WIDTH * enemy.flipW(),
+                            HELL_BOUND_HEIGHT, null);
 
             enemy.drawHitbox(g, xLevelOffset, yLevelOffset);
             enemy.drowAttackBox(g, xLevelOffset, yLevelOffset);
 
-            if (enemy.getState() == NIGHT_BORNE_DIE) {
+            if (enemy.getState() == HELL_BOUND_DIE) {
                 enemy.setAniSpeed(20);
                 enemy.setInvulnerability(true);
-                    
             }
-
+            
         } else {
             nextHandler.renderEntity(g, player, requests, enemy, xLevelOffset, yLevelOffset);
         }
     }
+    
+
 
 }
