@@ -28,6 +28,7 @@ public class EnemyManager {
     private ArrayList<HellBound> hellBounds = new ArrayList<>();
     private ArrayList<Ghost> ghosts = new ArrayList<>();
 
+    private ArrayList<AbstractEnemy> enemyList;
 
     public EnemyManager(Playing playing){
         this.playing = playing;
@@ -35,33 +36,16 @@ public class EnemyManager {
     }
 
     public void addEnemies(Level level) {
-        nightBornes = level.getnNightBornes();
-        hellBounds = level.getHellBounds();
-        ghosts = level.getGhosts();
+        enemyList = level.getEnemies();
     }
 
     public void update(int[][] levelData, Player player){
 
         boolean isAnyActive = false;
 
-        for(NightBorne nb : nightBornes){
-            //Se il nemico è attivo allora viene fatto un update
-            if (nb.getActive()) {
-                nb.update(levelData, player);
-                isAnyActive = true;
-            }
-        }
-
-        for (HellBound hb : hellBounds) {
-            if (hb.getActive()) {
-                hb.update(levelData, player);
-                isAnyActive = true;
-            }
-        }
-
-        for (Ghost gh : ghosts) {
-            if (gh.getActive()) {
-                gh.update(levelData, player);
+        for(AbstractEnemy ab : enemyList){
+            if (ab.getActive()) {
+                ab.update(levelData, player);
                 isAnyActive = true;
             }
         }
@@ -159,12 +143,11 @@ public class EnemyManager {
 
     //Se il player attacca il nemico a questo viene applicato il danno del player
     public void checkPlayerHitEnemy(RectangularShape attackBox, int areaAttack){
-        for (NightBorne nb : nightBornes) {
+        for (AbstractEnemy ab : enemyList) {
             //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, VIENE APPLICATO IL DANNO DEL PLAYER
-            if (nb.getActive() && attackBox.intersects(nb.getHitbox()) && nb.getCurrentHealth() > 0 && !nb.getInvulnerability()) {
+            if (ab.getActive() && attackBox.intersects(ab.getHitbox()) && ab.getCurrentHealth() > 0 && !ab.getInvulnerability()) {
 
-                nb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
-                playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.NIGHTBORNE_HURT);
+                ab.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
                 
                 //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti i nemici
                 //invece che fermarsi al primo nemico colpito
@@ -173,34 +156,13 @@ public class EnemyManager {
             }
         }
 
-        for (HellBound hb : hellBounds) {
-            if (hb.getActive() && attackBox.intersects(hb.getHitbox()) && hb.getCurrentHealth() > 0 && !hb.getInvulnerability()) {
-                hb.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
-                if (areaAttack == 0) return;
-            }
-        }
-
-        for (Ghost gh : ghosts) {
-            if (gh.getActive() && attackBox.intersects(gh.getHitbox()) && gh.getCurrentHealth() > 0 && !gh.getInvulnerability()) {
-                gh.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
-                if (areaAttack == 0) return;
-            }
-        }
 
     }
 
     public void resetAllEnemyes(){
 
-        for (AbstractEnemy nb : nightBornes) {
-            nb.resetEnemy();
-        }
-
-        for (AbstractEnemy hb : hellBounds) {
-            hb.resetEnemy();
-        }
-
-        for (AbstractEnemy gh : ghosts) {
-            gh.resetEnemy();
+        for (AbstractEnemy ab : enemyList){
+            ab.resetEnemy();
         }
 
     }
