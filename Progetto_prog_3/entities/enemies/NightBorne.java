@@ -1,9 +1,10 @@
-package Progetto_prog_3.entities;
+package Progetto_prog_3.entities.enemies;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.entities.Player;
 
 public class NightBorne extends AbstractEnemy{
 
@@ -25,7 +26,7 @@ public class NightBorne extends AbstractEnemy{
 
     @Override
     public void update(int[][] levelData, Player player){
-            
+
         if(active){
             updateMove(levelData, player);
             updateAttackBoxDirection();
