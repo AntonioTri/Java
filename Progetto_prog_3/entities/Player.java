@@ -27,8 +27,8 @@ public class Player extends Entity{
     private int[][] levelData;
 
     //Variabili per le hitbox
-    private float XOffset = 13 * Game.SCALE;
-    private float YOffset = 28 * Game.SCALE;
+    private float XOffset = 12 * Game.SCALE;
+    private float YOffset = 25 * Game.SCALE;
 
     //Variabili per il salto
     private float jumpSpeed = -2.25f * Game.SCALE;
@@ -218,7 +218,7 @@ public class Player extends Entity{
         g.drawImage(animations[state][aniIndex], 
                         (int)(hitbox.x - XOffset) - xLevelOffset + flipX, 
                         (int)(hitbox.y - YOffset) - yLevelOffset, 
-                        hitBoxWidth * flipW, hitBoxHeight, null);
+                        hitBoxWidth * flipW, hitBoxHeight - (int)(3 * Game.SCALE), null);
         
 
     
@@ -428,13 +428,13 @@ public class Player extends Entity{
         //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto 
 		if (left && !right){
 			xSpeed -= walkSpeed;
-            flipX = hitBoxWidth - 45;
+            flipX = hitBoxWidth - (int)(22.5f * Game.SCALE);
             flipW = -1;
         }
         
         if (right && !left){
 			xSpeed += walkSpeed;
-            flipX = 18;
+            flipX = (int)(8 * Game.SCALE);
             flipW = 1;
         }
 

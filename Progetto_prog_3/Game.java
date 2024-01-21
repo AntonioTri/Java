@@ -32,8 +32,8 @@ public class Game implements Runnable{
     //Game States
     private Playing playing;
     private Menu menu;
-    private AudioOptions audioOptions;
     private GameOptions gameOptions;
+    private AudioOptions audioOptions;
     private AudioPlayer audioPlayer;
 
     public Game(){

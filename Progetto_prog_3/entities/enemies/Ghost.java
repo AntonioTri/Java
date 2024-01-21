@@ -56,8 +56,8 @@ public class Ghost extends AbstractEnemy {
         if (active) {
             act(levelData, player);
             updateAttackBox();
-            flipX(player);
-            flipW(player);
+            flipXP(player);
+            flipWP(player);
         }
 
         updateAnimationTick();
@@ -312,16 +312,27 @@ public class Ghost extends AbstractEnemy {
 
     //Anche le funzioni di flip per il rendering sono peculiari, il ghost non si muove, si teletrasporta, quindi viene
     //Semlicemente generato un offset per la flipX ed un moltiplicatore per la flipW in base alla posizione in x del player
-    public int flipX(Player player) {
+    @Override
+    public int flipXP(Player player) {
         if (player.getHitbox().x + player.getHitbox().width/2 > hitbox.x + hitbox.width/2) {
             return (int)(GHOST_WIDTH + 5 * Game.SCALE);
         } else return 0;
     }
-
-    public int flipW(Player player) {
+    @Override
+    public int flipWP(Player player) {
         if (player.getHitbox().x + player.getHitbox().width/2 > hitbox.x + hitbox.width/2) {
             return -1;
         } else return 1;
+    }
+
+    @Override
+    public int flipX() {
+       return 0;
+    }
+
+    @Override
+    public int flipW() {
+        return 0;
     }
 
 

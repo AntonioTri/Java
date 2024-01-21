@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 
 //Interfaccia per metodi statici
 public interface StateMethods {
+    
     public void update();
     public void draw(Graphics g);
     public void mouseClicked(MouseEvent e);

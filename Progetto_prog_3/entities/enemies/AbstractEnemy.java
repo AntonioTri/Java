@@ -41,6 +41,10 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     public abstract void update(int[][] levelData, Player player);
+    public abstract int flipX();
+    public abstract int flipW();
+    public abstract int flipXP(Player player);
+    public abstract int flipWP(Player player);
 
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
     protected void turnTowardsPlayer(Player player){
@@ -232,6 +236,10 @@ public abstract class AbstractEnemy extends Entity{
 
     public boolean getActive(){
         return active;
+    }
+
+    public int getEnemyType(){
+        return enemyType;
     }
 
     public int getAniIndex(){

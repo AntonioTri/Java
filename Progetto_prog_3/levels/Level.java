@@ -1,11 +1,14 @@
 package Progetto_prog_3.levels;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.enemies.HellBound;
 import Progetto_prog_3.entities.enemies.NightBorne;
+import Progetto_prog_3.entities.EnemyFactory;
+import Progetto_prog_3.entities.enemies.AbstractEnemy;
 import Progetto_prog_3.entities.enemies.Ghost;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
@@ -14,6 +17,9 @@ import Progetto_prog_3.objects.Spike;
 import Progetto_prog_3.utils.HelpMetods;
 import static Progetto_prog_3.utils.HelpMetods.getLevelData;
 import static Progetto_prog_3.utils.HelpMetods.getNightBornes;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.GHOST;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.HELL_BOUND;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.NIGHT_BORNE;
 import static Progetto_prog_3.utils.HelpMetods.GetPlayerSpawnPoint;
 import static Progetto_prog_3.utils.HelpMetods.gettHellBounds;
 
@@ -22,12 +28,12 @@ import java.util.ArrayList;
 //Classe Level, memorizza le informazioni utili per la creazione di un livello e la gestione di alcuen sue caratteristiche
 public class Level {
 
+    //Istanza della enemyFacttoory
+    private EnemyFactory enemyFactory;
     //Làimmagine conserva il level data
     private BufferedImage image;
     //Il seguente array, conserva i nemici
-    private ArrayList<NightBorne> nightBornes;
-    private ArrayList<HellBound> hellBounds;
-    private ArrayList<Ghost> ghosts;
+    private ArrayList<AbstractEnemy> enemyList;
     //I seguenti 2 le pozioni e le loot box
     private ArrayList<Potion> potions;
     private ArrayList<LootBox> lootBoxes;
@@ -52,8 +58,9 @@ public class Level {
     
     public Level(BufferedImage image){
         this.image = image;
+        this.enemyFactory = new EnemyFactory();
         createLevelData();
-        createEnemyes();
+        createEnemies(image);
         createPotions();
         createLootBoxes();
         createSpikes();
@@ -94,11 +101,23 @@ public class Level {
     }
     
     //Funzione per creare i nemici, ogni array viene associato ad una specifica funzione che genera quel tipo di nemico
-    //!!!!! QUA PUò ESSERE IMPLEMENTATA UNA FACTORY AL 100%
-    private void createEnemyes() {
-        nightBornes = getNightBornes(image);
-        hellBounds = gettHellBounds(image);
-        ghosts = HelpMetods.getGhosts(image);
+    //Utilizza la factory per creare i nemici
+
+    private void createEnemies(BufferedImage img){
+
+        enemyList = new ArrayList<>();
+
+        for( int j = 0; j<img.getHeight(); j++){
+            for (int i = 0; i < img.getWidth(); i++) {
+
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                
+                if(value == NIGHT_BORNE || value == HELL_BOUND || value == GHOST){
+                    enemyList.add(enemyFactory.MakeEnemy(value, i * Game.TILES_SIZE, j * Game.TILES_SIZE, levelData));
+                }
+            }
+        }
     }
 
     //Metodo che sposta la camera dipendentemente dalla posiizone del player
@@ -131,16 +150,8 @@ public class Level {
         return maxLevelOffsetY;
     }
 
-    public ArrayList<NightBorne> getnNightBornes(){
-        return nightBornes;
-    }
-    
-    public ArrayList<HellBound> getHellBounds() {
-        return hellBounds;
-    }
-
-    public ArrayList<Ghost> getGhosts(){
-        return ghosts;
+    public ArrayList<AbstractEnemy> getEnemies(){
+        return enemyList;
     }
 
     public ArrayList<Potion> getPotions(){
