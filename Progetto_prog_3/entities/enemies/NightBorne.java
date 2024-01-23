@@ -6,7 +6,7 @@ import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.Player;
 
-public class NightBorne extends AbstractEnemy{
+public class NightBorne extends AbstractEnemy {
 
     private int attackBoxOffsetX;
 

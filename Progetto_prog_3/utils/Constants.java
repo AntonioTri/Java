@@ -325,7 +325,7 @@ public class Constants {
                     return CANNON_BALL_SPEED;
             
                 default:
-                    return 10;
+                    return 2;
             }
         }
     }

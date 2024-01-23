@@ -9,8 +9,11 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.Level;
+import Progetto_prog_3.objects.Prototype.Cloningfactory;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
+import static Progetto_prog_3.utils.Constants.Projectiles.CANNON_BALL;
+import static Progetto_prog_3.utils.Constants.Projectiles.getProjectileSpeed;
 import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_HEIGHT;
 import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_WIDTH;
 import static Progetto_prog_3.utils.HelpMetods.canCannonSeePlayer;
@@ -28,8 +31,9 @@ public class ObjectManager {
     private ArrayList<LootBox> lootBoxes;
     private ArrayList<Spike> spikes;
     private ArrayList<Cannon> cannons;
-    private ArrayList<CannonBall> cannonBalls = new ArrayList<>();;
-
+    private ArrayList<CannonBall> cannonBalls = new ArrayList<>();
+    //Cloning factory per il prototype pattern
+    private Cloningfactory cloningfactory = new Cloningfactory();
 
     public ObjectManager(Playing playing){
         this.playing = playing;
@@ -210,23 +214,24 @@ public class ObjectManager {
                 shootCannon(c);
             }
         }
-
     }
 
     private void shootCannon(Cannon c) {
-        c.setAnimation(true);
         
-        int direction = 1;
+        c.setAnimation(true);
 
-        if (c.getObjType() == CANNON_LEFT) {
-            direction = -1;
-        }
-
-        cannonBalls.add(new CannonBall((int)c.getHitbox().x, (int)c.getHitbox().y, direction));
-
+        CannonBall cannonBall = (CannonBall)cloningfactory.getClone(c.getCannonBall());
+        //adjustCannonBall(cannonBall, c);
+        //!!QUA PROVIAMO AD AGGIUNGERE UN PROTOTYPE
+        cannonBalls.add(cannonBall);
 
     }
 
+    // private void adjustCannonBall(CannonBall cb, Cannon c){
+    //     cb.getHitbox().x = c.getHitbox().x;
+    //     cb.getHitbox().y = c.getHitbox().y;
+    //     cb.setProjectileSpeed(getProjectileSpeed(CANNON_BALL));
+    // }
 
     //Questo metodo esegue i controlli sulla palla di cannone, se questa è attiva si esegue l'update dlla sua posizione
     //Si controlla successivamente se sta colpeendo il player, in tal caso gli si applica il danno
@@ -242,16 +247,17 @@ public class ObjectManager {
                 player.changeHealth(0);
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
+                //POSSIBILE IMPLEMENTAZIONE DEL POOL DESIGNPATTERN
+
             //Controllo della collisione con un muro
             } else if (projectileHittingWall(cb, levelData)) {
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
+                //POSSIBILE IMPLEMENTAZIONE DEL POOL DESIGNPATTERN
+
             }
         }
     }
-
-    
-
 
     //Classico metodo draw che richiama tutti i metodi draw per disegnare i singoli oggetti
     public void draw(Graphics g, int xLevelOffset, int yLevelOffset){
@@ -262,8 +268,6 @@ public class ObjectManager {
         drawCannonBall(g, xLevelOffset, yLevelOffset);
     }
 
-
-   
     //Metodo per disegnare i cannoni
     private void drawCannons(Graphics g, int xLevelOffset, int yLevelOffset) {
         for (Cannon c : cannons) {

@@ -26,10 +26,6 @@ public class EnemyManager {
     private Playing playing;
     private BufferedImage[][] nightBorneImages, hellBoundsImage, ghostImage;
     private BufferedImage[] ghostAttack;
-    private ArrayList<NightBorne> nightBornes = new ArrayList<>();
-    private ArrayList<HellBound> hellBounds = new ArrayList<>();
-    private ArrayList<Ghost> ghosts = new ArrayList<>();
-
     private ArrayList<AbstractEnemy> enemyList;
     
     //Istannze dei renderer
@@ -85,78 +81,6 @@ public class EnemyManager {
                 nightborneRendered.renderEntity(g, playing.getPlayer(), requests, ab, xLevelOffset, yLevelOffset);
             }
         }
-
-
-        // for(NightBorne nb : nightBornes){
-        //     //Se il nemico è attivo allora viene fatto un repaint
-        //     if (nb.getActive()){
-        //         //QUA DENTRO, VA AGGIUNTO L'OFFSET PER IL DISEGNO PORCA LA MAZZONNA
-        //         g.drawImage(nightBorneImages[nb.getState()][nb.getAniIndex()], 
-        //                     (int)nb.getHitbox().x - xLevelOffset - NIGHT_BORNE_DROW_OFFSET_X + nb.flipX(), 
-        //                     ((int)nb.getHitbox().y - yLevelOffset - NIGHT_BORNE_DROW_OFFSET_Y),
-        //                     (NIGHT_BORNE_WIDHT + 25) * nb.flipW(),
-        //                      NIGHT_BORNE_HEIGHT + 25, null);
-
-        //         nb.drawHitbox(g, xLevelOffset, yLevelOffset);
-        //         nb.drowAttackBox(g, xLevelOffset, yLevelOffset);
-
-        //         if (nb.getState() == NIGHT_BORNE_DIE) {
-        //             nb.setAniSpeed(20);
-        //             nb.setInvulnerability(true);
-                    
-        //         }
-        //     }
-        // }
-
-        // for (HellBound hb : hellBounds) {
-            
-        //     if (hb.getActive()) {
-                
-        //         g.drawImage(hellBoundsImage[hb.getState()][hb.getAniIndex()],
-        //                     (int)hb.getHitbox().x - xLevelOffset - HELL_BOUND_DROW_OFFSET_X + hb.flipX(),
-        //                     ((int) hb.getHitbox().y - yLevelOffset - HELL_BOUND_DROW_OFFSET_Y),
-        //                     HELL_BOUND_WIDTH * hb.flipW(),
-        //                     HELL_BOUND_HEIGHT, null);
-
-        //         hb.drawHitbox(g, xLevelOffset, yLevelOffset);
-        //         hb.drowAttackBox(g, xLevelOffset, yLevelOffset);
-
-        //         if (hb.getState() == HELL_BOUND_DIE) {
-        //             hb.setAniSpeed(20);
-        //             hb.setInvulnerability(true);
-        //         }
-        //     }
-        // }
-
-        // for (Ghost gh : ghosts) {
-            
-        //     if (gh.getActive()) {
-                
-        //         g.drawImage(ghostImage[gh.getState()][gh.getAniIndex()],
-        //                     (int)gh.getHitbox().x - xLevelOffset - GHOST_DRAW_OFFSET_X + gh.flipXP(playing.getPlayer()), 
-        //                     ((int) gh.getHitbox().y - yLevelOffset - GHOST_DRAW_OFFSET_Y), 
-        //                     GHOST_WIDTH * gh.flipWP(playing.getPlayer()),
-        //                     GHOST_HEIGHT, null);
-
-        //         gh.drawHitbox(g, xLevelOffset, yLevelOffset);
-        //         gh.drowCircularAttackBox(g, xLevelOffset, yLevelOffset);
-
-        //         if (gh.getState() == GHOST_ATTACK) {
-        //             g.drawImage(ghostAttack[gh.getAniIndex()],
-        //                         (int)(gh.getHitbox().x - (113 * Game.SCALE) - xLevelOffset), 
-        //                         (int)(gh.getHitbox().y - (100 * Game.SCALE) - yLevelOffset), 
-        //                         GHOST_ELECTRIC_BALL_LENGHT, 
-        //                         GHOST_ELECTRIC_BALL_LENGHT, null);
-        //         }
-
-        //         if (gh.getState() == GHOST_DIE) {
-        //             gh.setAniSpeed(20);
-        //             gh.setInvulnerability(true);
-                    
-        //         }
-        //     }
-        // }
-
 
     }
 

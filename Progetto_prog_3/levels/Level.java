@@ -5,23 +5,18 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import Progetto_prog_3.Game;
-import Progetto_prog_3.entities.enemies.HellBound;
-import Progetto_prog_3.entities.enemies.NightBorne;
 import Progetto_prog_3.entities.EnemyFactory;
 import Progetto_prog_3.entities.enemies.AbstractEnemy;
-import Progetto_prog_3.entities.enemies.Ghost;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
 import Progetto_prog_3.objects.Spike;
 import Progetto_prog_3.utils.HelpMetods;
 import static Progetto_prog_3.utils.HelpMetods.getLevelData;
-import static Progetto_prog_3.utils.HelpMetods.getNightBornes;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.GHOST;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.HELL_BOUND;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.NIGHT_BORNE;
 import static Progetto_prog_3.utils.HelpMetods.GetPlayerSpawnPoint;
-import static Progetto_prog_3.utils.HelpMetods.gettHellBounds;
 
 import java.util.ArrayList;
 
