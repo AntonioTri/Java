@@ -161,6 +161,21 @@ public class EnemyManager {
         for (AbstractEnemy ab : enemyList){
             ab.resetEnemy();
         }
-    
+            
+    }
+
+    public ArrayList<AbstractEnemy> getClonedEnemyList(){
+
+        ArrayList<AbstractEnemy> clonedList = new ArrayList<>();
+
+        for(AbstractEnemy ab : enemyList) {
+            clonedList.add(ab.getClone());
+        }
+
+        return clonedList;
+    }
+
+    public void setEnemyList(ArrayList<AbstractEnemy> enemyList){
+        this.enemyList = enemyList;
     }
 }

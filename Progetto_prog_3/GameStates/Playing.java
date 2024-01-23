@@ -6,7 +6,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+
+import Progetto_prog_3.GameStates.Savings.Originator;
 import Progetto_prog_3.Game;
+import Progetto_prog_3.GameStates.Savings.Manager;
 import Progetto_prog_3.UI.GameOverOverlay;
 import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
@@ -55,6 +58,10 @@ public class Playing extends State implements StateMethods{
     //level complited
     private boolean levelCompleted;
 
+    //Variabili per il Memento
+    private Manager manager;
+    private Originator originator;
+
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -65,17 +72,22 @@ public class Playing extends State implements StateMethods{
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
 
+        manager = new Manager();
+        originator = new Originator();
+        
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
+        objectManager = new ObjectManager(this);
 
         player = new Player(200, 400, (int) (64*Game.SCALE), (int)(64*Game.SCALE), this); 
         player.loadLevelData(levelManager.getCurrentLevel().getLD());
         player.setSpawnPoint(levelManager.getCurrentLevel().getPlayerSpawnPoint());
-        
+
+        //Salvo lo stato iniziale del livello del player
+
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
         levelCompletedOverlay = new LevelCompletedOverlay(this);
-        objectManager = new ObjectManager(this);
         
         loadBackground();
 
@@ -113,6 +125,7 @@ public class Playing extends State implements StateMethods{
         
         //Se il livello è stato completato si esegue l'update del level completed overlay
         } else if (levelCompleted) {
+            System.out.println("Vita al coompletamento del livello = " +player.getCurrentHealth());
             levelCompletedOverlay.update();
 
         } else if (gameOver) {
@@ -123,8 +136,9 @@ public class Playing extends State implements StateMethods{
 
         //Altrimenti viene fatto l'update del player e del livello, e di tutti gli oggetti all'interrno di esso
         } else if (!gameOver){
-            enemyManager.update(levelManager.getCurrentLevel().getLD(), player);
+
             levelManager.update();
+            enemyManager.update(levelManager.getCurrentLevel().getLD(), player);
             objectManager.update(levelManager.getCurrentLevel().getLD(), player);
             player.update();
             checkCloseToBorder();
@@ -375,13 +389,26 @@ public class Playing extends State implements StateMethods{
 
     //Getters e Setters
     public void resetAll(){
+        
+        System.out.println("Ho resettato tutto quanto");
+        resetBools();
+        
+        //Si utilizza il Memento design pattern per resettare il livello al suo stato di partenza/Di crezione
+        //All'interno di ogni reset dedicato ai singoli manager
+        player.resetAll();
+        enemyManager.resetAllEnemyes();
+        objectManager.resetAllObjects();
+
+    }
+
+    //Funzione per resettare tutti i valori booleani
+    public void resetBools(){
+
         gameOver = false;
         paused = false;
         levelCompleted = false;
         playerDying = false;
-        player.resetAll();
-        enemyManager.resetAllEnemyes();
-        objectManager.resetAllObjects();
+
     }
 
     private void calculateLevelOffset() {
@@ -393,9 +420,9 @@ public class Playing extends State implements StateMethods{
 
 
     public void loadNextLevel(){
-        resetAll();
+        resetBools();
         levelManager.loadNextLevel();
-        player.setSpawnPoint(levelManager.getCurrentLevel().getPlayerSpawnPoint());
+        
     }
 
     public void setMaxLevelOffsetX(int levelOffset){
@@ -453,7 +480,13 @@ public class Playing extends State implements StateMethods{
         return playerDying;
     }
 
+    public Originator getOriginator(){
+        return originator;
+    }
 
+    public Manager getManager(){
+        return manager;
+    }
     
 
     

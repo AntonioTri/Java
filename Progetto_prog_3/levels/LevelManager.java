@@ -15,6 +15,7 @@ public class LevelManager {
     BufferedImage[] levelSprite;
     private ArrayList<Level> levels;
     private int levelIndex = 0;
+    private boolean gameStarted = true;
 
     public LevelManager(Game game){
         this.game = game;
@@ -79,12 +80,26 @@ public class LevelManager {
             GameState.state = GameState.MENU;
         }
         
+        //Si passa al livello successivo
         Level newLevel = levels.get(levelIndex);
-        game.getPlaying().getEnemyManager().addEnemies(newLevel);
-        game.getPlaying().getPlayer().loadLevelData(newLevel.getLD());
+
+        //Si caricano gli offset per la telecamera
         game.getPlaying().setMaxLevelOffsetX(newLevel.getLevelOffset());
         game.getPlaying().setMaxLevelOffsetY(newLevel.getLevelOffsetY());
+
+        //Si caricano le informazioni nel player
+        game.getPlaying().getPlayer().loadLevelData(newLevel.getLD());
+        game.getPlaying().getPlayer().setSpawnPoint(getCurrentLevel().getPlayerSpawnPoint());
+
+        //si aggiungoono nemici e lootboxes
+        game.getPlaying().getEnemyManager().addEnemies(newLevel);
         game.getPlaying().getObjectManager().loadObjects(newLevel);
+
+        createSavingPoint();
+
+        System.out.println("Vita del giocatore ad inizio livello: " + game.getPlaying().getManager().getMemento(levelIndex).getPlayer().getCurrentHealth());
+        
+
     }
 
 
@@ -94,6 +109,25 @@ public class LevelManager {
     }
 
     public void update(){
+
+        //Questa funzione viene eseguita una sola volta in tutto il gioco. 
+        //Crea un punto di salvataggio nel memento con lo stato iniziale di tutte le entità per il primo livello
+        if (gameStarted) {
+            createSavingPoint();
+            gameStarted = false;
+        }
+
+    }
+
+    //La funzione che crea un punto di salvataggio
+    public void createSavingPoint(){
+
+        System.out.println("Creating a saving point");
+
+        //Si impacchettano le risorse nell'originator
+        game.getPlaying().getOriginator().setPlayer(game.getPlaying().getPlayer().getClone());
+        //E si mandano nel memento
+        game.getPlaying().getManager().addMemento(game.getPlaying().getOriginator().storeInMemento());
 
     }
 

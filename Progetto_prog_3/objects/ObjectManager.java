@@ -12,8 +12,6 @@ import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.objects.Prototype.Cloningfactory;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
-import static Progetto_prog_3.utils.Constants.Projectiles.CANNON_BALL;
-import static Progetto_prog_3.utils.Constants.Projectiles.getProjectileSpeed;
 import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_HEIGHT;
 import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_WIDTH;
 import static Progetto_prog_3.utils.HelpMetods.canCannonSeePlayer;
@@ -117,7 +115,6 @@ public class ObjectManager {
                                             (int)(box.getHitbox().y - offset),
                                             type));
                     box.setCanSpawnPotion(false);
-                    System.out.println("Spawned a Potion");
                 }
 
                 //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti gli oggetti
@@ -185,10 +182,6 @@ public class ObjectManager {
         updateProjectiles(levelData, player);
     }
 
-    
-
-    
-
     /*
      * Se il cannone non sta faceendo l'animazione
      * Controlliamo se la y è la stessa
@@ -217,7 +210,7 @@ public class ObjectManager {
     }
 
     private void shootCannon(Cannon c) {
-        
+
         c.setAnimation(true);
 
         CannonBall cannonBall = (CannonBall)cloningfactory.getClone(c.getCannonBall());
@@ -226,12 +219,6 @@ public class ObjectManager {
         cannonBalls.add(cannonBall);
 
     }
-
-    // private void adjustCannonBall(CannonBall cb, Cannon c){
-    //     cb.getHitbox().x = c.getHitbox().x;
-    //     cb.getHitbox().y = c.getHitbox().y;
-    //     cb.setProjectileSpeed(getProjectileSpeed(CANNON_BALL));
-    // }
 
     //Questo metodo esegue i controlli sulla palla di cannone, se questa è attiva si esegue l'update dlla sua posizione
     //Si controlla successivamente se sta colpeendo il player, in tal caso gli si applica il danno
@@ -371,7 +358,13 @@ public class ObjectManager {
 
     }
 
+    public ArrayList<LootBox> getLootBoxs(){
+        return lootBoxes;
+    }
 
+    public void setLootBoxs(ArrayList<LootBox> lootBoxes){
+        this.lootBoxes = lootBoxes;
+    }
     
 
 }

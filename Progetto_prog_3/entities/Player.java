@@ -13,7 +13,7 @@ import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.utils.LoadSave;
 
-public class Player extends Entity{
+public class Player extends Entity implements Cloneable{
 
     //Variabili per la gestione dei frame
     private int aniSpeed = 15;
@@ -510,6 +510,8 @@ public class Player extends Entity{
             currentHealth = maxHealth;
         }
 
+        System.out.println(currentHealth);
+
     } 
 
     public void changePower(int value) {
@@ -532,11 +534,13 @@ public class Player extends Entity{
         attacking = false;
         moving = false;
         state = IDLE;
-        currentHealth = maxHealth;
 
         //Resetta la posizione del personaggio nelle variabili x ed y memorizate e mai usate
         hitbox.x = x;
         hitbox.y = y;
+
+        this.currentHealth = playing.getManager().getMemento(playing.getLevelManager().getLevelIndex()).getPlayer().getCurrentHealth();
+        System.out.println("Resetted the level, setting current health to: " + currentHealth);
 
         if (!isEntityOnFloor(hitbox, levelData)) {
             inAir = true;
@@ -613,6 +617,21 @@ public class Player extends Entity{
         jump = false;
     }
 
+    //Questo metodo serve al patter del memento per avere una istanza in un certo momento anzicchè un reference
+    public Player getClone(){
+
+        Player playerClone = null;
+
+        try {
+            playerClone = (Player) super.clone();
+        } catch (CloneNotSupportedException e) {
+            System.out.println("Cloning not supported for Player class");
+        }
+
+        return playerClone;
+
+    }
+
     public boolean getLeft() {
         return left;
     }
@@ -672,11 +691,5 @@ public class Player extends Entity{
     public int getMaxHealth(){
         return maxHealth;
     }
-
-    
-
-    
-
-    
 
 }

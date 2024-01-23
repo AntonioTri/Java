@@ -7,13 +7,15 @@ import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
+
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Entity;
 import Progetto_prog_3.entities.Player;
 
-public abstract class AbstractEnemy extends Entity{
+public abstract class AbstractEnemy extends Entity implements Cloneable{
 
     //Variabili di ambiente
     protected int enemyType;
@@ -221,6 +223,21 @@ public abstract class AbstractEnemy extends Entity{
         }
     }
 
+    public AbstractEnemy getClone(){
+
+        AbstractEnemy clonedEnemy = null;
+
+        try {
+            clonedEnemy = (AbstractEnemy) super.clone(); 
+            clonedEnemy.hitbox = new Rectangle2D.Float(this.hitbox.x, this.hitbox.y, this.hitbox.width, this.hitbox.height);
+        } catch (CloneNotSupportedException e) {
+            System.out.println("Abstract enemy nt clonable");
+        }
+
+        return clonedEnemy;
+
+    }
+
     //Questo metodo ci permette di resettare i valori del nemico in questione ai valori di partenza del livello quando ne si trova bisogno
     public void resetEnemy(){
 
@@ -231,7 +248,7 @@ public abstract class AbstractEnemy extends Entity{
         firstUpdate = true;
         invulnerability = false;
         currentHealth = maxHealth;
-        newState(NIGHT_BORNE_IDLE);
+       // newState(NIGHT_BORNE_IDLE);
     }
 
     public boolean getActive(){

@@ -80,7 +80,7 @@ public class HellBound extends AbstractEnemy{
         if (inAir) {
             updateInAir(levelData);
         } else {
-            
+              
             switch (state) {
                     
                 case HELL_BOUND_WALK:
