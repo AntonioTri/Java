@@ -38,7 +38,7 @@ public class HellBound extends AbstractEnemy{
     public void update(int[][] levelData, Player player) {
         
         if (active) {
-            updateMove(levelData, player);
+            act(levelData, player);
             updateAttackBoxDirection();
 
             if (jumping && aniIndex == 4 && state != HELL_BOUND_DIE) {
@@ -61,80 +61,65 @@ public class HellBound extends AbstractEnemy{
         }
     }
 
-    private void updateAttackBoxDirection() {
-        if (wlakDir == LEFT) {
-            attackBox.x = hitbox.x;
-            attackBox.y = hitbox.y; 
-        } else {
-            attackBox.x = hitbox.x + (int)(hitbox.width - attackBox.width);
-            attackBox.y = hitbox.y;
-        }
-    }
-    
-    private void updateMove(int[][] levelData, Player player) {
 
-        if (firstUpdate) {
-            firstUpdateCheck(levelData);
-        }
+    //Implementazione del metodo makeMovement utilizzato nel template pattern
+    @Override
+    public void makeMovement(int[][] levelData, Player player) {
 
-        if (inAir) {
-            updateInAir(levelData);
-        } else {
-              
-            switch (state) {
+        switch (state) {
                     
-                case HELL_BOUND_WALK:
-                    attackChecked = false;    
-                    this.walkSpeed = 0.4f;
-                    aniSpeed = 17;
+            case HELL_BOUND_WALK:
+                attackChecked = false;    
+                this.walkSpeed = 0.4f;
+                aniSpeed = 17;
 
-                    if (canSeePlayer(levelData, player)) {
-                        turnTowardsPlayer(player);
-                        newState(HELL_BOUND_RUN);
-                    }
-                    
-                    move(levelData);
-                    break;
-
-                case HELL_BOUND_RUN:
-                    this.walkSpeed = 1.8f;
-                    aniSpeed = 17;
-                    
-                    if (isPlayerCloseForAttack(player)) {
-                        newState(HELL_BOUND_JUMP);
-                    }
-                    
-                    move(levelData);
-                    break;
-
-                case HELL_BOUND_JUMP:
-                    aniSpeed = 15; 
-                    jumping = true;
-                    if(jumping)jumpAttack(levelData);
-
-                    //La variabile attackChecked identifica se l'attacco è stato eseguito
-                    //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
-                    //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
-                    //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
-                    if(!attackChecked) checkEnemyHit(attackBox, player);    
-                    break;
+                if (canSeePlayer(levelData, player)) {
+                    turnTowardsPlayer(player);
+                    newState(HELL_BOUND_RUN);
+                }
                 
-                case HELL_BOUND_SLIDE:
-                    slide(levelData);
-                    break;
+                move(levelData);
+                break;
 
-                case HELL_BOUND_HIT:
-                    
-                    if (jumping) {
-                        updateInAir(levelData);
-                        jumping = false;
-                    }
-                    break;
-                case HELL_BOUND_DIE: 
-                    aniSpeed = 20;
+            case HELL_BOUND_RUN:
+                this.walkSpeed = 1.8f;
+                aniSpeed = 17;
+                
+                if (isPlayerCloseForAttack(player)) {
+                    newState(HELL_BOUND_JUMP);
+                }
+                
+                move(levelData);
+                break;
 
-            }
+            case HELL_BOUND_JUMP:
+                aniSpeed = 15; 
+                jumping = true;
+                if(jumping)jumpAttack(levelData);
+
+                //La variabile attackChecked identifica se l'attacco è stato eseguito
+                //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
+                //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
+                //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
+                if(!attackChecked) checkEnemyHit(attackBox, player);    
+                break;
+            
+            case HELL_BOUND_SLIDE:
+                slide(levelData);
+                break;
+
+            case HELL_BOUND_HIT:
+                
+                if (jumping) {
+                    updateInAir(levelData);
+                    jumping = false;
+                }
+                break;
+            case HELL_BOUND_DIE: 
+                aniSpeed = 20;
+
         }
+        
     }
 
     /*
@@ -232,6 +217,17 @@ public class HellBound extends AbstractEnemy{
         return false;
     }
 
+    //Funzione per modificare la direzione della attackbox in base alla dierzione del movimento
+    private void updateAttackBoxDirection() {
+        if (wlakDir == LEFT) {
+            attackBox.x = hitbox.x;
+            attackBox.y = hitbox.y; 
+        } else {
+            attackBox.x = hitbox.x + (int)(hitbox.width - attackBox.width);
+            attackBox.y = hitbox.y;
+        }
+    }
+
     //Questo metodo ci poermette di causare danno ad un nemico se questo viene colpito dal player
     @Override
     public void hurt(int amount, AudioPlayer ap){
@@ -273,6 +269,8 @@ public class HellBound extends AbstractEnemy{
     public int flipWP(Player player) {
         return 0;
     }
+
+    
 
 
 }

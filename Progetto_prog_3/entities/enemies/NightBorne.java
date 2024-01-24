@@ -28,7 +28,7 @@ public class NightBorne extends AbstractEnemy {
     public void update(int[][] levelData, Player player){
 
         if(active){
-            updateMove(levelData, player);
+            act(levelData, player);
             updateAttackBoxDirection();
         }
         updateAnimationTick();
@@ -38,8 +38,54 @@ public class NightBorne extends AbstractEnemy {
         } else {
             this.invulnerability = false;
         }
+    }
 
-     
+    //Implementazione del metodo astratto della classe madre per il template method pattern
+    @Override
+    public void makeMovement(int[][] levelData, Player player) {
+        
+        switch (state) {
+            //Lo stato del Nightborne viene impostato a running da subito
+            case NIGHT_BORNE_IDLE:
+                state = NIGHT_BORNE_RUN;
+                break;
+            //Se lo stato è quello del running vengono fatti dei controlli
+            case NIGHT_BORNE_RUN:
+                aniSpeed = 20;
+                //Se il nightboren può vedere il player si gira verso di esso
+                if (canSeePlayer(levelData, player)) {
+                    turnTowardsPlayer(player);
+
+                    //Se il player è abbastanza vicino al nemico, questo farà un attacco
+                    //Dopo aver fatto tutto, il nemico torna a muversi nel livello
+                    if (isPlayerCloseForAttack(player)) {
+                        //Viene sewttato lo stato ad attacco
+                        newState(NIGHT_BORNE_ATTACK);
+                    }
+
+                }
+                
+                move(levelData);
+                break;
+                
+            case NIGHT_BORNE_ATTACK:
+
+                aniSpeed = 13;
+
+                //La variabile attackChecked identifica se l'attacco è stato eseguito
+                //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
+                //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
+                //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
+                if (aniIndex == 0) {
+                    attackChecked = false;
+                }
+                if (aniIndex == 10 && !attackChecked) {
+                    checkEnemyHit(attackBox, player);
+                }
+                break;
+            
+        }
+
 
     }
 
@@ -52,63 +98,7 @@ public class NightBorne extends AbstractEnemy {
             attackBox.x = hitbox.x + 5;
             attackBox.y = hitbox.y - 45;
         }
-
-    }
-
-    private void updateMove(int[][] levelData, Player player){
-
-        if (firstUpdate)
-            firstUpdateCheck(levelData);
-
-        if (inAir) {
-            updateInAir(levelData);
-            
-
-        } else{
-            //!!!!! QUESTA PROBABILMENTE DEVE ESSERE TRASFORMATA IN UNA FUNZIONE A MOMENTO IN UI CI SARANNO TANTI NEMICI !!!!!!!
-            switch (state) {
-                //Lo stato del Nightborne viene impostato a running da subito
-                case NIGHT_BORNE_IDLE:
-                    state = NIGHT_BORNE_RUN;
-                    break;
-                //Se lo stato è quello del running vengono fatti dei controlli
-                case NIGHT_BORNE_RUN:
-                    aniSpeed = 20;
-                    //Se il nightboren può vedere il player si gira verso di esso
-                    if (canSeePlayer(levelData, player)) {
-                        turnTowardsPlayer(player);
-
-                        //Se il player è abbastanza vicino al nemico, questo farà un attacco
-                        //Dopo aver fatto tutto, il nemico torna a muversi nel livello
-                        if (isPlayerCloseForAttack(player)) {
-                            //Viene sewttato lo stato ad attacco
-                            newState(NIGHT_BORNE_ATTACK);
-                        }
-
-                    }
-                    
-                    move(levelData);
-                    break;
-                    
-                case NIGHT_BORNE_ATTACK:
-
-                    aniSpeed = 13;
-
-                    //La variabile attackChecked identifica se l'attacco è stato eseguito
-                    //Nel primo momento in cui la attackbox del nemico collide con la hitbox del player
-                    //A questo viene applicato il danno e viene sambiato lo stato della flag di attavvo a true
-                    //Segnalango che l'attacco è stato eseguito, non ne verranno fatti altri ad ogni tick di agiornamento 
-                    if (aniIndex == 0) {
-                        attackChecked = false;
-                    }
-                    if (aniIndex == 10 && !attackChecked) {
-                        checkEnemyHit(attackBox, player);
-                    }
-                    break;
-                    
-            
-            }
-        }
+    
     }
 
     //I successivi due metodi ci permettono di modificare la direzione del movimento o per 
@@ -140,5 +130,7 @@ public class NightBorne extends AbstractEnemy {
     public int flipWP(Player player) {
         return 0;
     }
+
+    
 
 }

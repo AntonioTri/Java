@@ -43,10 +43,22 @@ public abstract class AbstractEnemy extends Entity implements Cloneable{
     }
 
     public abstract void update(int[][] levelData, Player player);
+    //Funzione ereditaria da implementare nelle sottoclassi per far funzionare il template metod
+    public abstract void makeMovement(int[][] levelData, Player player);
     public abstract int flipX();
     public abstract int flipW();
     public abstract int flipXP(Player player);
     public abstract int flipWP(Player player);
+
+    //Template method design pattern
+    protected final void act(int[][] levelData, Player player){
+        if (firstUpdate) firstUpdateCheck(levelData);
+        if (inAir) {
+            updateInAir(levelData);
+        } else {
+            makeMovement(levelData, player);
+        }
+    } 
 
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
     protected void turnTowardsPlayer(Player player){
@@ -248,6 +260,7 @@ public abstract class AbstractEnemy extends Entity implements Cloneable{
         firstUpdate = true;
         invulnerability = false;
         currentHealth = maxHealth;
+        System.out.println("Nemico Resettato");
        // newState(NIGHT_BORNE_IDLE);
     }
 
