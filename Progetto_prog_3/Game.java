@@ -6,6 +6,7 @@ import Progetto_prog_3.GameStates.GameOptions;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Menu;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.GameStates.StateMethods;
 import Progetto_prog_3.UI.AudioOptions;
 
 public class Game implements Runnable{
@@ -29,12 +30,17 @@ public class Game implements Runnable{
     public final static int GAME_WIDTH = (TILES_SIZE * TILES_IN_WIDTH);
     public final static int GAME_HEIGHT = (TILES_SIZE * TILES_IN_HEIGHT);
 
+    private AudioOptions audioOptions;
+    private AudioPlayer audioPlayer;
+    
+    //State design pattern
+    private StateMethods stateToUpdate;
+    private GameState currentGameState;
+    
     //Game States
     private Playing playing;
     private Menu menu;
     private GameOptions gameOptions;
-    private AudioOptions audioOptions;
-    private AudioPlayer audioPlayer;
 
     public Game(){
 
@@ -61,35 +67,56 @@ public class Game implements Runnable{
         gameOptions = new GameOptions(this);
         menu = new Menu(this);
         playing = new Playing(this);
+        
     }
 
     //Funzione per updatare lo stato degli elementi inizializzati correnti
     private void update() { 
+
+        checkGameStateChanged();
+
         //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
         //Specifici stati come il menù di pausa, di inizio oppure il gioco stesso
-        switch (GameState.state) {
-            case MENU:
-                menu.update();
-                break;
 
-            case PLAYING:
-                playing.update();
-                break;
+        stateToUpdate.update();
 
-            case OPTION:
-                gameOptions.update();
-                break;
+    }
 
-            case QUIT:
-                System.exit(0);
-                break;
+    //Implementazione dello State pattern, una interfaccia polimorfa prende le sembianze di uno di tre macro stati
+    //Playing, in cui si vede il player i nemici ed il gioco effettivo
+    //Menu, dove l'utente può interfacciarsi con i bottoni per iniziare a giocare, le impostazioni ed il quit
+    //Options, è il menù delle opzioni da cui làutente cambia principalmente i volumi
+    private void checkGameStateChanged() {
 
-            default:
-                //Esce dal programma, lo termina
-                System.exit(0);
-                break;
+        if (currentGameState != GameState.state) {
+            currentGameState = GameState.state;
+
+            switch (GameState.state) {
+                case MENU:
+                    stateToUpdate = this.menu;
+                    break;
+    
+                case PLAYING:
+                    stateToUpdate = this.playing;
+                    break;
+    
+                case OPTION:
+                    stateToUpdate = this.gameOptions;
+                    break;
+
+                case QUIT:
+                    System.exit(0);
+                    break;
+    
+                default:
+                    //Esce dal programma, lo termina
+                    System.exit(0);
+                    break;
+
+            }
         }
     }
+
     //Funzione per fare la paint degli elementi correnti
     public void render(Graphics g){ 
         //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
