@@ -74,11 +74,18 @@ public class Game implements Runnable{
     private void update() { 
 
         checkGameStateChanged();
-
         //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
         //Specifici stati come il menù di pausa, di inizio oppure il gioco stesso
-
         stateToUpdate.update();
+
+    }
+
+    //Funzione per fare la paint degli elementi correnti
+    public void render(Graphics g){ 
+        
+        try {
+            stateToUpdate.draw(g);
+        } catch (Exception e) { }
 
     }
 
@@ -117,27 +124,7 @@ public class Game implements Runnable{
         }
     }
 
-    //Funzione per fare la paint degli elementi correnti
-    public void render(Graphics g){ 
-        //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
-        //Specifici stati come il menù di pausa, di inizio oppure il gioco stesso
-        switch (GameState.state) {
-            case MENU:
-                menu.draw(g);
-                break;
-            
-            case PLAYING:
-                playing.draw(g);
-                break;
 
-            case OPTION:
-                gameOptions.draw(g);
-                break;
-
-            default:
-                break;
-        }
-    }
     
     //Funzione per gestire la perdita del focus dalla finestra di gioco
     public void windowFocusLost() { 
