@@ -247,15 +247,11 @@ public class Playing extends State implements StateMethods{
             yLevelOffset += differenceY - upperBorder;
         }
 
-
-        if (yLevelOffset > maxLevelOffsetY) {
+        if (yLevelOffset >= maxLevelOffsetY) {
             yLevelOffset = maxLevelOffsetY;
-        } else if (yLevelOffset < 0) {
+        } else if (yLevelOffset <= 0) {
             yLevelOffset = 0;
         }
-
-
-
     }
 
     //I seguenti metodi in override servono a passare le keyevent, i tasti premuti della tastiera e del mouse
@@ -413,11 +409,9 @@ public class Playing extends State implements StateMethods{
         System.out.println(maxLevelOffsetY);
     }
 
-
     public void loadNextLevel(){
         resetBools();
         levelManager.loadNextLevel();
-        
     }
 
     public void setMaxLevelOffsetX(int levelOffset){
@@ -425,7 +419,7 @@ public class Playing extends State implements StateMethods{
     }
 
     public void setMaxLevelOffsetY(int yLevelOffset){
-        this.yLevelOffset = yLevelOffset;
+        this.maxLevelOffsetY = yLevelOffset;
     }
 
     public void unpauseGame(){
