@@ -1,5 +1,12 @@
 package Progetto_prog_3.entities.enemies;
 
+import java.awt.geom.Rectangle2D;
+import Progetto_prog_3.Game;
+import Progetto_prog_3.Audio.AudioPlayer;
+import Progetto_prog_3.entities.Entity;
+import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
+
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
@@ -8,14 +15,7 @@ import static Progetto_prog_3.utils.HelpMetods.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 
-import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
-import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
-import Progetto_prog_3.entities.Entity;
-import Progetto_prog_3.entities.Player;
-
-public abstract class AbstractEnemy extends Entity implements Cloneable{
+public abstract class AbstractEnemy extends Entity{
 
     //Variabili di ambiente
     protected int enemyType;
@@ -50,7 +50,10 @@ public abstract class AbstractEnemy extends Entity implements Cloneable{
     public abstract int flipXP(Player player);
     public abstract int flipWP(Player player);
 
-    //Template method design pattern
+    //Template method design pattern che implementa la logica del movimento base
+    //Un nemico si trova in aria inizialmente, ed ha bisogno del check sul primo update
+    //Successivamente il nemico si muoverà secondo le sue regole, che il template method implemenerà
+    //nelle soottoclassi
     protected final void act(int[][] levelData, Player player){
         if (firstUpdate) firstUpdateCheck(levelData);
         if (inAir) {
@@ -235,33 +238,19 @@ public abstract class AbstractEnemy extends Entity implements Cloneable{
         }
     }
 
-    public AbstractEnemy getClone(){
-
-        AbstractEnemy clonedEnemy = null;
-
-        try {
-            clonedEnemy = (AbstractEnemy) super.clone(); 
-            clonedEnemy.hitbox = new Rectangle2D.Float(this.hitbox.x, this.hitbox.y, this.hitbox.width, this.hitbox.height);
-        } catch (CloneNotSupportedException e) {
-            System.out.println("Abstract enemy nt clonable");
-        }
-
-        return clonedEnemy;
-
-    }
-
     //Questo metodo ci permette di resettare i valori del nemico in questione ai valori di partenza del livello quando ne si trova bisogno
-    public void resetEnemy(){
+    //Sfruttando il memento design pattern
+    public void restoreState(EnemyMemento memento){
 
-        hitbox.x = x;
-        hitbox.y = y;
-        airSpeed = 0;
-        active = true;
-        firstUpdate = true;
-        invulnerability = false;
-        currentHealth = maxHealth;
-        System.out.println("Nemico Resettato");
-       // newState(NIGHT_BORNE_IDLE);
+        hitbox.x = memento.getHitboxX();
+        hitbox.y = memento.getHitboxY();
+        airSpeed = memento.getAirSpeed();
+        active = memento.getActive();
+        firstUpdate = memento.getFirstUpdate();
+        invulnerability = memento.getFirstUpdate();
+        currentHealth = memento.getCurrentHealth();
+        newState(memento.getState());
+
     }
 
     public boolean getActive(){
@@ -290,6 +279,14 @@ public abstract class AbstractEnemy extends Entity implements Cloneable{
 
     public boolean getInvulnerability(){
         return invulnerability;
+    }
+
+    public float getAirSpeed() {
+        return airSpeed;
+    }
+
+    public boolean getFirstUpdate() {
+        return firstUpdate;
     }
 
     

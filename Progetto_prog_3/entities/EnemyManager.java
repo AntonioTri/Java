@@ -5,6 +5,7 @@ import java.awt.geom.RectangularShape;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
 import Progetto_prog_3.entities.RenderChain.RenderGhost;
 import Progetto_prog_3.entities.RenderChain.RenderHellBound;
 import Progetto_prog_3.entities.RenderChain.RenderInterface;
@@ -153,25 +154,22 @@ public class EnemyManager {
     }
     
     public void resetAllEnemyes(){
-    
-        for (AbstractEnemy ab : enemyList){
-            ab.resetEnemy();
+
+        for (int i = 0; i < enemyList.size(); i++) {
+
+            int currentLevelIndex = playing.getLevelManager().getLevelIndex();
+            EnemyMemento currentEnemyMemento = playing.getMementoManager().getenemyMementoes(currentLevelIndex).get(i);
+            enemyList.get(i).restoreState(currentEnemyMemento);
+
         }
             
     }
 
-    public ArrayList<AbstractEnemy> getClonedEnemyList(){
-
-        ArrayList<AbstractEnemy> clonedList = new ArrayList<>();
-
-        for(AbstractEnemy ab : enemyList) {
-            clonedList.add(ab.getClone());
-        }
-
-        return clonedList;
-    }
-
     public void setEnemyList(ArrayList<AbstractEnemy> enemyList){
         this.enemyList = enemyList;
+    }
+
+    public ArrayList<AbstractEnemy> getEnemyList(){
+        return enemyList;
     }
 }

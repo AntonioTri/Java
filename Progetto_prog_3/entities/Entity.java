@@ -6,7 +6,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.Status.StatusManager;
 
 //Classe madre per tutte le entità che dovranno essere create, come i nemici o gli oggetti raccoglibili, 
@@ -42,10 +41,6 @@ public abstract class Entity {
     //Status manager per applicare gli effetti di buff e di debuff, dal player al player, da nemico a player, da player a nemico, eccetera
     protected StatusManager statusManager;
 
-    //Istanza dela classe audio player per ottenere i suoni
-    protected AudioPlayer audioPlayer;
-
-
     public Entity(float x, float y, int hitBoxWidth, int hitBoxHeight){
 
         this.x = x;
@@ -53,7 +48,6 @@ public abstract class Entity {
         this.hitBoxWidth = hitBoxWidth;
         this.hitBoxHeight = hitBoxHeight;
         statusManager = new StatusManager();
-        audioPlayer = new AudioPlayer();
 
     }
 
@@ -80,6 +74,10 @@ public abstract class Entity {
 
     public Rectangle2D.Float getHitbox(){
         return hitbox;
+    }
+
+    public Rectangle2D.Float getAttackBox(){
+        return attackBox;
     }
 
     public int getState(){

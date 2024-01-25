@@ -6,15 +6,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
-import Progetto_prog_3.GameStates.Savings.Originator;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.GameStates.Savings.Manager;
 import Progetto_prog_3.UI.GameOverOverlay;
 import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.EnemyManager;
 import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.MementoSavings.MementoManager;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.objects.ObjectManager;
 import Progetto_prog_3.utils.LoadSave;
@@ -59,8 +57,7 @@ public class Playing extends State implements StateMethods{
     private boolean levelCompleted;
 
     //Variabili per il Memento
-    private Manager manager;
-    private Originator originator;
+    private MementoManager mementoManager;
 
     public Playing(Game game) {
         super(game);
@@ -72,8 +69,7 @@ public class Playing extends State implements StateMethods{
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
 
-        manager = new Manager();
-        originator = new Originator();
+        mementoManager = new MementoManager();
         
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
@@ -390,7 +386,6 @@ public class Playing extends State implements StateMethods{
     //Getters e Setters
     public void resetAll(){
         
-        System.out.println("Ho resettato tutto quanto");
         resetBools();
         
         //Si utilizza il Memento design pattern per resettare il livello al suo stato di partenza/Di crezione
@@ -480,12 +475,8 @@ public class Playing extends State implements StateMethods{
         return playerDying;
     }
 
-    public Originator getOriginator(){
-        return originator;
-    }
-
-    public Manager getManager(){
-        return manager;
+    public MementoManager getMementoManager(){
+        return mementoManager;
     }
     
 

@@ -3,7 +3,6 @@ package Progetto_prog_3.entities.enemies;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Player;
-
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 import static Progetto_prog_3.utils.Constants.Directions.LEFT;
 import static Progetto_prog_3.utils.Constants.Directions.RIGHT;
@@ -19,7 +18,6 @@ public class HellBound extends AbstractEnemy{
     private float orizzontalSpeed = 2f * Game.SCALE, slidingSpeed = 1.5f * Game.SCALE;
     private float slideDistanceTravelled = 0;
     private boolean jumping = false;
-
 
     public HellBound(float x, float y) {
         super(x, y, HELL_BOUND_WIDTH, HELL_BOUND_HEIGHT, HELL_BOUND);
@@ -235,6 +233,7 @@ public class HellBound extends AbstractEnemy{
         currentHealth -= amount;
 
         if (currentHealth <= 0) {
+            jumping = false;
             newState(HELL_BOUND_DIE);
         } else {
             newState(HELL_BOUND_HIT);

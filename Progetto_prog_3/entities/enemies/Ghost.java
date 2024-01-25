@@ -101,7 +101,6 @@ public class Ghost extends AbstractEnemy {
                 //Se è passato abbastanza tempo viene eseguito l'attacco
                 if(attackTimer >= 300 && isPlayerCloseForAttack(player)){
                     attackTimer = 0;
-                    audioPlayer.playEffect(AudioPlayer.GHOST_ATTACK_1);
                     newState(GHOST_ATTACK);
                 }
                 break;

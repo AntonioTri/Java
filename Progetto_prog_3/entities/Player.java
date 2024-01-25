@@ -11,9 +11,11 @@ import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.entities.MementoSavings.Memento;
+import Progetto_prog_3.entities.MementoSavings.PlayerMemento;
 import Progetto_prog_3.utils.LoadSave;
 
-public class Player extends Entity implements Cloneable{
+public class Player extends Entity {
 
     //Variabili per la gestione dei frame
     private int aniSpeed = 15;
@@ -525,7 +527,6 @@ public class Player extends Entity implements Cloneable{
 
     }
 
-
     //Questo metodo ci serve a resettare tutte le caratteristiche del giocatore se ne si trova il bisogno
     public void resetAll() {
 
@@ -535,16 +536,23 @@ public class Player extends Entity implements Cloneable{
         moving = false;
         state = IDLE;
 
-        //Resetta la posizione del personaggio nelle variabili x ed y memorizate e mai usate
-        hitbox.x = x;
-        hitbox.y = y;
-
-        this.currentHealth = playing.getManager().getMemento(playing.getLevelManager().getLevelIndex()).getPlayer().getCurrentHealth();
-        System.out.println("Resetted the level, setting current health to: " + currentHealth);
+        //Tramite il pattern del memento vengono resettate le posizioni e la vita di partenza del livello
+        int levelIndex = playing.getLevelManager().getLevelIndex();
+        restoreState(playing.getMementoManager().getPlayerMemento(levelIndex));
 
         if (!isEntityOnFloor(hitbox, levelData)) {
             inAir = true;
         }
+
+    }
+    
+    public void restoreState(PlayerMemento playerMemento){
+
+        this.hitbox.x = playerMemento.getHitboxX();
+        this.hitbox.y = playerMemento.getHitboxY();
+        this.attackBox.x = playerMemento.getAttackBoxX();
+        this.attackBox.y = playerMemento.getAttackBoxY();
+        this.currentHealth = playerMemento.getCurrentHealth();
 
     }
 
@@ -617,19 +625,8 @@ public class Player extends Entity implements Cloneable{
         jump = false;
     }
 
-    //Questo metodo serve al patter del memento per avere una istanza in un certo momento anzicchè un reference
-    public Player getClone(){
-
-        Player playerClone = null;
-
-        try {
-            playerClone = (Player) super.clone();
-        } catch (CloneNotSupportedException e) {
-            System.out.println("Cloning not supported for Player class");
-        }
-
-        return playerClone;
-
+    public Memento saveState(){
+        return new PlayerMemento(this);
     }
 
     public boolean getLeft() {

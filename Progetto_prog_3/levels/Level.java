@@ -1,31 +1,29 @@
 package Progetto_prog_3.levels;
 
-import java.awt.Color;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-
+import java.awt.Color;
+import java.util.ArrayList;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.entities.EnemyFactory;
-import Progetto_prog_3.entities.enemies.AbstractEnemy;
+import java.awt.image.BufferedImage;
+import Progetto_prog_3.objects.Spike;
+import Progetto_prog_3.objects.Potion;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
-import Progetto_prog_3.objects.Potion;
-import Progetto_prog_3.objects.Spike;
 import Progetto_prog_3.utils.HelpMetods;
+import Progetto_prog_3.entities.EnemyFactory;
+import Progetto_prog_3.entities.enemies.AbstractEnemy;
 import static Progetto_prog_3.utils.HelpMetods.getLevelData;
+import static Progetto_prog_3.utils.HelpMetods.GetPlayerSpawnPoint;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.GHOST;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.HELL_BOUND;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.NIGHT_BORNE;
-import static Progetto_prog_3.utils.HelpMetods.GetPlayerSpawnPoint;
-
-import java.util.ArrayList;
 
 //Classe Level, memorizza le informazioni utili per la creazione di un livello e la gestione di alcuen sue caratteristiche
 public class Level {
 
     //Istanza della enemyFacttoory
     private EnemyFactory enemyFactory;
-    //Làimmagine conserva il level data
+    //L'immagine conserva il level data
     private BufferedImage image;
     //Il seguente array, conserva i nemici
     private ArrayList<AbstractEnemy> enemyList;
@@ -97,7 +95,6 @@ public class Level {
     
     //Funzione per creare i nemici, ogni array viene associato ad una specifica funzione che genera quel tipo di nemico
     //Utilizza la factory per creare i nemici
-
     private void createEnemies(BufferedImage img){
 
         enemyList = new ArrayList<>();
@@ -124,6 +121,9 @@ public class Level {
         levelTileHeight = image.getHeight();
         maxTileOffsetY = levelTileHeight - Game.TILES_IN_HEIGHT;
         maxLevelOffsetY = Game.TILES_SIZE * maxTileOffsetY;
+
+        System.out.println("Image width: " + levelTileWide + ", height: " + levelTileHeight);
+        System.out.println("MaxLevelOffset. X: " + maxLevelOffsetX + ". Y: " + maxLevelOffsetY);
     }
 
     //Funzione che ritorna il valore RGB riconosciuto durante l'estrazione delle informazioni dalle immagini levelData

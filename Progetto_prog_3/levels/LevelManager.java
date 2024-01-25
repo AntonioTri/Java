@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.GameState;
+import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
+import Progetto_prog_3.entities.MementoSavings.PlayerMemento;
+import Progetto_prog_3.entities.enemies.AbstractEnemy;
 import Progetto_prog_3.utils.LoadSave;
 
 public class LevelManager {
@@ -60,6 +63,15 @@ public class LevelManager {
         }
     }
 
+    //Questa funzione viene eseguita una sola volta in tutto il gioco. 
+    //Crea un punto di salvataggio nel memento con lo stato iniziale di tutte le entità per il primo livello
+    public void update(){
+        if (gameStarted) {
+            createSavingPoint();
+            gameStarted = false;
+        }
+    }
+
     /*
      * Il seguente metodo quando chiamato carica il prossimo livello
      * Esegue diversi passaggi, aumenta l'indice del livello, così da poter scorrere al successivo
@@ -97,38 +109,35 @@ public class LevelManager {
 
         createSavingPoint();
 
-        System.out.println("Vita del giocatore ad inizio livello: " + game.getPlaying().getManager().getMemento(levelIndex).getPlayer().getCurrentHealth());
         
-
-    }
-
-
-    //Getters e Setters
-    public Level getCurrentLevel(){
-        return levels.get(levelIndex);
-    }
-
-    public void update(){
-
-        //Questa funzione viene eseguita una sola volta in tutto il gioco. 
-        //Crea un punto di salvataggio nel memento con lo stato iniziale di tutte le entità per il primo livello
-        if (gameStarted) {
-            createSavingPoint();
-            gameStarted = false;
-        }
 
     }
 
     //La funzione che crea un punto di salvataggio
     public void createSavingPoint(){
+        
+        //Con il seguente codice andiamo a salvare lo stato di tutti i nemici ad inizio di un livello
+        //Conserviamo lo stato uno ad uno dei nemici in un nuvo memento che aggiungiamo ad una array list di memento 
+        AbstractEnemy currentEnemy;
+        ArrayList<EnemyMemento> enemyMemento = new ArrayList<>();
+        int numberOfCurrentEnemyes = game.getPlaying().getEnemyManager().getEnemyList().size();
+        
+        for (int i = 0; i < numberOfCurrentEnemyes; i++) {
+            
+            currentEnemy = game.getPlaying().getEnemyManager().getEnemyList().get(i);
+            enemyMemento.add(new EnemyMemento(currentEnemy));
+            
+        }
+        
+        //Creiamo poi il memento del player e dei nemici presenti all'inizio del livello
+        game.getPlaying().getMementoManager().addPlayerMemento(new PlayerMemento(game.getPlaying().getPlayer()));
+        game.getPlaying().getMementoManager().addEnemyMemento(enemyMemento);
 
-        System.out.println("Creating a saving point");
+    }
 
-        //Si impacchettano le risorse nell'originator
-        game.getPlaying().getOriginator().setPlayer(game.getPlaying().getPlayer().getClone());
-        //E si mandano nel memento
-        game.getPlaying().getManager().addMemento(game.getPlaying().getOriginator().storeInMemento());
-
+    //Getters e Setters
+    public Level getCurrentLevel(){
+        return levels.get(levelIndex);
     }
 
     public int getAmountOfLevels(){
