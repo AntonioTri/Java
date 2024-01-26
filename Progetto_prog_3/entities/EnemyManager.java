@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.geom.RectangularShape;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
 import Progetto_prog_3.entities.RenderChain.RenderGhost;
@@ -12,6 +14,7 @@ import Progetto_prog_3.entities.RenderChain.RenderInterface;
 import Progetto_prog_3.entities.RenderChain.RenderNightBorne;
 import Progetto_prog_3.entities.RenderChain.RenderingRequest;
 import Progetto_prog_3.entities.enemies.AbstractEnemy;
+import Progetto_prog_3.entities.enemies.NightBorne;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
@@ -84,18 +87,57 @@ public class EnemyManager {
     //Se il player attacca il nemico a questo viene applicato il danno del player
     public void checkPlayerHitEnemy(RectangularShape attackBox, int areaAttack){
         for (AbstractEnemy ab : enemyList) {
-            //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, VIENE APPLICATO IL DANNO DEL PLAYER
+            //Se il nemico è: ATTIVO, NON MORTO E NON è INVULNERABILE, viene applicato il danno del player
             if (ab.getActive() && attackBox.intersects(ab.getHitbox()) && ab.getCurrentHealth() > 0 && !ab.getInvulnerability()) {
-
-                ab.hurt(playing.getPlayer().getDamage(), playing.getGame().getAudioPlayer());
-
-                //!!!QUA CI METTOOO UNA FUNZIONE CHE GESTISCE I SUONI IN BAASE AL TIPO DI NEMICO
-
+                //Applicazione del danno
+                ab.hurt(playing.getPlayer().getDamage());
+                //Viene eseguito il sound Effect che serve alla situazione
+                playSFX(ab);
                 //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti i nemici
-                //invece che fermarsi al primo nemico colpito
+                //invece che fermarsi al primo nemico colpito con il return della funzione
                 if (areaAttack == 0) return;
             
             }
+        }
+    }
+
+    //funzione per eseguire il suono coerente con lo stato del nemico
+    private void playSFX(AbstractEnemy ab){
+        //Se la vita del nemico è maggiore di zero, viene settata una invulnerabilità di 1.2 secondi, per dare respiro al nemico
+        //E viene eseguito il suono corrispondente suono del danno
+        if (ab.getCurrentHealth() > 0) {
+            ab.getStatusManager().giveInvulnerability(ab, 1.2f);
+            playHurtEffect(ab.getEnemyType(), playing.getGame().getAudioPlayer());
+        //Se la vita risulta minore di 0, significa che sta morendo e viene eseguito il suono della morte corispondente
+        } else {
+            playDeathEffect(ab.getEnemyType(), playing.getGame().getAudioPlayer());
+        }
+
+    }
+
+    //Funzione per eseguire il play di un HURT SOUND del corrispondente nemico
+    private void playHurtEffect(int enemyType, AudioPlayer audioPlayer) {
+        
+        switch (enemyType) {
+            case NIGHT_BORNE:
+                audioPlayer.playSetOfEffect(AudioPlayer.NIGHTBORNE_HURT);
+                break;
+        
+            default:
+                break;
+        }
+
+    }
+
+    //Funzione per eseguire il DEATH SOUND del corrispondente nemico
+    private void playDeathEffect(int enemyType, AudioPlayer audioPlayer) {
+        switch (enemyType) {
+            case NIGHT_BORNE:
+                audioPlayer.playEffect(AudioPlayer.NIGHTBORRNE_DIE);
+                break;
+        
+            default:
+                break;
         }
     }
 
@@ -133,6 +175,7 @@ public class EnemyManager {
 
     }
     
+    //Funzione che definisce la rendering chain del Chain of responsability pattern
     private void initRenderers(){
 
         nightborneRendered = new RenderNightBorne();
@@ -144,6 +187,7 @@ public class EnemyManager {
 
     }
 
+    //Funzione che inzializza Le richieste di rendering, impacchettando le immagini con il tipoo di nemico in classi
     private void initRenderRequests() {
 
         requests = new RenderingRequest[3];

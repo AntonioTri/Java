@@ -10,9 +10,8 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.text.PlainDocument;
 
-import Progetto_prog_3.Game;
+import Progetto_prog_3.entities.Player;
 
 import static Progetto_prog_3.utils.Constants.PlayerConstants.JUMPING_UP;
 
@@ -216,6 +215,14 @@ public class AudioPlayer {
 
     }
 
+    public void resetPlayerSoundBools(Player player){
+
+        if (!effects[PLAYER_ATTACK].isActive() && !effects[PLAYER_ATTACK + 1].isActive() && !effects[PLAYER_ATTACK + 2].isActive()) {
+            player.setCanPlayAtacksooound(true);
+        }
+
+    }
+
     public void playWalkingSound(boolean moving, boolean inAir, int currentHealth){
 
         if (inAir || !moving || currentHealth <= 0) {
@@ -237,11 +244,7 @@ public class AudioPlayer {
 
 
     public void playEffect(int EFFECT) {
-
-        if (EFFECT >= 21) {
-            System.out.println("Playing ghost attack effect number" + (EFFECT - 20));
-        }
-
+        
         effects[EFFECT].setMicrosecondPosition(0);
         effects[EFFECT].start();
 

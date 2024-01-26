@@ -72,7 +72,7 @@ public class Player extends Entity {
     private boolean powerAttackActive, ultimateActive;
     private int powerAttackTick, powerGrowSpeed = 15, powerGrowTick;
     // private int ultimateTick, ultimateGrowSpeed = 15, ultimateGrowTick;
-	private boolean attackChecked;
+	private boolean attackChecked, canPlayAttackSound, hurted = false;
     
     private Rectangle2D.Float ultimateAttackBox;
     private int damage = 5;
@@ -83,6 +83,7 @@ public class Player extends Entity {
     public Player(float x, float y, int width, int height, Playing playing){
         super(x, y, width, height);
         this.playing = playing;
+        this.invulnerability = false;
         initStates();
         loadAnimations();
         initHitbox(x, y, 25 * Game.SCALE, 31 * Game.SCALE);
@@ -185,6 +186,7 @@ public class Player extends Entity {
                 attacking = false;
                 attackChecked = false;
                 ultimateActive = false;
+                hurted = false;
             }
         }
     }
@@ -365,6 +367,11 @@ public class Player extends Entity {
             state = IDLE;
         }
 
+        if (hurted) {
+            aniSpeed = 20;
+            state = HURT;
+        }
+
         if (inAir) {
             if (airSpeed<0) {
                 state = JUMPING_UP;
@@ -389,7 +396,17 @@ public class Player extends Entity {
         
         if (attacking) {
             state = LIGHT_ATTACK;
-            playing.getGame().getAudioPlayer().playattack();
+
+            //Per evitare che venga eseguito ad ogni tick dell'animazione dell'attacco il sound effect di questo
+            //c'è una flg che funge da switch che blocca l'ingresso alla funzione, dentro di questa viene passato player
+            //In modo che quando il suono sia finito, la flag venga riportata a true
+            if (canPlayAttackSound) {
+                canPlayAttackSound = false;
+                playing.getGame().getAudioPlayer().playattack();
+            } else {
+                playing.getGame().getAudioPlayer().resetPlayerSoundBools(this);
+            }
+
         }
 
         /*Se la animazione di arrivo e' diversa dalla animazione di fine funzione
@@ -498,10 +515,12 @@ public class Player extends Entity {
     public void changeHealth(int value){
 
         currentHealth += value;
-
-        if (value < 0) {
-            //Effetto del danno
+        //Vengono dati dei frame di invulnerabilità dopo essere stati colpiti
+        //Viene eseguito il suono del danno del player
+        if (value <= 0) {
+            hurted = true;
             playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_HURT);
+            getStatusManager().giveInvulnerability(this, 3f);
         }
 
         if (currentHealth <= 0) {
@@ -511,8 +530,6 @@ public class Player extends Entity {
         } else if (currentHealth >= maxHealth){
             currentHealth = maxHealth;
         }
-
-        System.out.println(currentHealth);
 
     } 
 
@@ -633,6 +650,10 @@ public class Player extends Entity {
         return left;
     }
 
+    public Playing getPlaying() {
+        return playing;
+    }
+
     public void setLeft(boolean left) {
         this.left = left;
     }
@@ -687,6 +708,10 @@ public class Player extends Entity {
 
     public int getMaxHealth(){
         return maxHealth;
+    }
+
+    public void setCanPlayAtacksooound(boolean canPlayAttackSound) {
+        this.canPlayAttackSound = canPlayAttackSound;
     }
 
 }

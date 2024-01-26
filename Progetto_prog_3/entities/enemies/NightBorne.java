@@ -33,11 +33,6 @@ public class NightBorne extends AbstractEnemy {
         }
         updateAnimationTick();
 
-        if (state == NIGHT_BORNE_HITTED) {
-            this.invulnerability = true;
-        } else {
-            this.invulnerability = false;
-        }
     }
 
     //Implementazione del metodo astratto della classe madre per il template method pattern

@@ -24,7 +24,7 @@ public abstract class AbstractEnemy extends Entity{
     protected int wlakDir = LEFT;
     protected int enemyTileY;
     protected float attackDistance, visionDistance;
-    protected boolean attackChecked = false, invulnerability = false;
+    protected boolean attackChecked = false;
 
     //Variabile per osservare se è morto oppure no
     protected boolean active = true;
@@ -148,13 +148,12 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //Questo metodo ci poermette di causare danno ad un nemico se questo viene colpito dal player
-    public void hurt(int amount, AudioPlayer ap){
+    public void hurt(int amount){
 
         currentHealth -= amount;
 
         if (currentHealth <= 0) {
             newState(NIGHT_BORNE_DIE);
-            ap.playEffect(AudioPlayer.NIGHTBORRNE_DIE);
         } else {
             newState(NIGHT_BORNE_HITTED);
         }
@@ -163,7 +162,7 @@ public abstract class AbstractEnemy extends Entity{
 
     //questo metodo invece ci permette di applicare danno al player se il nemico lo colpisce
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.getHitbox())) {
+        if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
             attackChecked = true;
@@ -247,7 +246,8 @@ public abstract class AbstractEnemy extends Entity{
         airSpeed = memento.getAirSpeed();
         active = memento.getActive();
         firstUpdate = memento.getFirstUpdate();
-        invulnerability = memento.getFirstUpdate();
+        invulnerability = memento.getInvulnerability();
+        System.out.println(invulnerability);
         currentHealth = memento.getCurrentHealth();
         newState(memento.getState());
 
@@ -271,14 +271,6 @@ public abstract class AbstractEnemy extends Entity{
 
     public void setAniSpeed(int value){
         this.aniSpeed = value;
-    }
-
-    public void setInvulnerability(boolean invulnerability) {
-        this.invulnerability = invulnerability;
-    }
-
-    public boolean getInvulnerability(){
-        return invulnerability;
     }
 
     public float getAirSpeed() {

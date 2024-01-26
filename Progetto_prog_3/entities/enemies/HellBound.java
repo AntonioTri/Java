@@ -48,12 +48,6 @@ public class HellBound extends AbstractEnemy{
             } else updateAnimationTick();
         }
 
-        if (state == HELL_BOUND_HIT) {
-            this.invulnerability = true;
-        } else {
-            this.invulnerability = false;
-        }
-
         if (state == HELL_BOUND_DIE && aniIndex == getSpriteAmount(enemyType, state) - 1) {
             active = false;
         }
@@ -228,7 +222,7 @@ public class HellBound extends AbstractEnemy{
 
     //Questo metodo ci poermette di causare danno ad un nemico se questo viene colpito dal player
     @Override
-    public void hurt(int amount, AudioPlayer ap){
+    public void hurt(int amount){
 
         currentHealth -= amount;
 

@@ -27,6 +27,7 @@ public abstract class Entity {
     //Variabile per il salto
     protected float airSpeed = 0f;
     protected boolean inAir = true;
+    protected boolean invulnerability = false;
 
     //Variabile per lo stato
     protected int state;
@@ -98,6 +99,18 @@ public abstract class Entity {
 
     public void setWalkSpeed(float walkSpeed) {
         this.walkSpeed = walkSpeed;
+    }
+    
+    public void setInvulnerability(boolean invulnerability) {
+        this.invulnerability = invulnerability;
+    }
+
+    public boolean getInvulnerability(){
+        return invulnerability;
+    }
+
+    public StatusManager getStatusManager(){
+        return statusManager;
     }
 
 }

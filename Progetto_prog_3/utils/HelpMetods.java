@@ -81,10 +81,8 @@ public class HelpMetods {
                 if(value == 124){
                     if (x<5) {
                         list.add(new Potion(i * Game.TILES_SIZE, j * Game.TILES_SIZE, RED_POTION));
-                        System.out.println("Creata una nuova pozione Rossa");
                     } else {
                         list.add(new Potion(i * Game.TILES_SIZE, j * Game.TILES_SIZE, BLUE_POTION));
-                        System.out.println("Creata una nuova pozione Blu");
                     }
                 } 
             }

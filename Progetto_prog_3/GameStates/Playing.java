@@ -121,7 +121,6 @@ public class Playing extends State implements StateMethods{
         
         //Se il livello è stato completato si esegue l'update del level completed overlay
         } else if (levelCompleted) {
-            System.out.println("Vita al coompletamento del livello = " +player.getCurrentHealth());
             levelCompletedOverlay.update();
 
         } else if (gameOver) {
@@ -405,8 +404,6 @@ public class Playing extends State implements StateMethods{
     private void calculateLevelOffset() {
         maxLevelOffsetX = levelManager.getCurrentLevel().getLevelOffset();
         maxLevelOffsetY = levelManager.getCurrentLevel().getLevelOffsetY();
-        System.out.println(maxLevelOffsetX);
-        System.out.println(maxLevelOffsetY);
     }
 
     public void loadNextLevel(){

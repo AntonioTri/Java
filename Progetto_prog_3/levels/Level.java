@@ -122,8 +122,6 @@ public class Level {
         maxTileOffsetY = levelTileHeight - Game.TILES_IN_HEIGHT;
         maxLevelOffsetY = Game.TILES_SIZE * maxTileOffsetY;
 
-        System.out.println("Image width: " + levelTileWide + ", height: " + levelTileHeight);
-        System.out.println("MaxLevelOffset. X: " + maxLevelOffsetX + ". Y: " + maxLevelOffsetY);
     }
 
     //Funzione che ritorna il valore RGB riconosciuto durante l'estrazione delle informazioni dalle immagini levelData

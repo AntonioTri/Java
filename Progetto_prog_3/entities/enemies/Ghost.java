@@ -239,7 +239,7 @@ public class Ghost extends AbstractEnemy {
     }
 
     protected void checkEnemyHitEllipse(Ellipse2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.getHitbox())) {
+        if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
             statusManager.applySlow(player, 2, 0.7f);
@@ -288,7 +288,7 @@ public class Ghost extends AbstractEnemy {
     }
 
     @Override
-    public void hurt(int amount, AudioPlayer ap){
+    public void hurt(int amount){
 
         currentHealth -= amount;
 

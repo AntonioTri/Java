@@ -455,7 +455,7 @@ public class Constants {
                     return 5; 
 
                 case HURT:
-                    return 3; 
+                    return 7; 
 
                 case DIE:
                     return 4;
