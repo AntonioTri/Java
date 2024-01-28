@@ -60,7 +60,7 @@ public class ObjectManager {
     //Questa funzione ci permette di controllare se il player hoverlaps, cammina sopra, una pozione, in tal caso, la pozione viene 
     //settata in stato di falso e quindi non sarà più raccoglibile e scomparirà dalla scena, ed al Player viene associato l'effetto
     //della pozione che ha appena raccolto
-    public void checkPlayerTouched(Rectangle2D.Float hitbox){
+    public void checkPlayerTouchedPotions(Rectangle2D.Float hitbox){
         
         for (Potion potion : potions) {
             if (potion.isActive()) {
@@ -74,7 +74,6 @@ public class ObjectManager {
     }
 
     //La funzione che applica al player l'effetto della pozione raccolta
-    //!!QUA CI STA UN DESIGN PATERN AL 100%
     public void applyEffectToPlayer(Potion potion){
 
         if (potion.getObjType() == RED_POTION) {
@@ -166,20 +165,28 @@ public class ObjectManager {
 
     //La classica funzione update per eseguire l'incremento dell'animation tick dell'oggetto
     public void update(int[][] levelData, Player player){
+        
+        updateLootBoxes();
+        updatePotions();
+        updateCanons(levelData, player);
+        updateProjectiles(levelData, player);
+    }
+
+    private void updatePotions(){
+
         for (Potion potion : potions) {
             if (potion.isActive()) {
                 potion.update();
             }
         }
+    }
 
+    private void updateLootBoxes(){
         for (LootBox box : lootBoxes) {
             if (box.isActive()) {
                 box.update();
             }
         }
-
-        updateCanons(levelData, player);
-        updateProjectiles(levelData, player);
     }
 
     /*
@@ -189,6 +196,7 @@ public class ObjectManager {
      * se si trova di frontee
      * il canone deve sparare
      */
+
     private void updateCanons(int[][] levelData, Player player) {
         for (Cannon c : cannons) {
             if (!c.doAnimation 
@@ -234,13 +242,11 @@ public class ObjectManager {
                 player.changeHealth(0);
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
-                //POSSIBILE IMPLEMENTAZIONE DEL POOL DESIGNPATTERN
 
             //Controllo della collisione con un muro
             } else if (projectileHittingWall(cb, levelData)) {
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
-                //POSSIBILE IMPLEMENTAZIONE DEL POOL DESIGNPATTERN
 
             }
         }

@@ -45,12 +45,6 @@ public class Game implements Runnable{
     public Game(){
 
         initClasses();
-
-        gamePanel = new GamePanel(this);
-        gameWindow = new GameWindow(gamePanel);
-        gamePanel.setFocusable(true);
-        gamePanel.requestFocus();
-
         StartGameLoop();
 
     }
@@ -62,11 +56,16 @@ public class Game implements Runnable{
 
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
+        
         audioOptions = new AudioOptions(this);
         audioPlayer = new AudioPlayer();
         gameOptions = new GameOptions(this);
         menu = new Menu(this);
         playing = new Playing(this);
+        gamePanel = new GamePanel(this);
+        gameWindow = new GameWindow(gamePanel);
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocus();
         
     }
 
@@ -130,6 +129,7 @@ public class Game implements Runnable{
     public void windowFocusLost() { 
         if (GameState.state == GameState.PLAYING) {
             playing.getPlayer().resetMovement();
+            playing.setGamePaused();
         }
     }
 

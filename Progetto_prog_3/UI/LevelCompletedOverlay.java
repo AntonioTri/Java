@@ -96,6 +96,7 @@ public class LevelCompletedOverlay implements MenusOverlayInterface {
         } else if (mouseHovering(nextButton, e) && nextButton.getMousePressed()) {
             //In questa sezione andiamo aa salvare la vita corrente del player quando carichiamo un nuovo livello
             playing.loadNextLevel();
+            playing.getGame().getAudioPlayer().playSong(1);
 
         }
 

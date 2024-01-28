@@ -14,7 +14,6 @@ import Progetto_prog_3.entities.RenderChain.RenderInterface;
 import Progetto_prog_3.entities.RenderChain.RenderNightBorne;
 import Progetto_prog_3.entities.RenderChain.RenderingRequest;
 import Progetto_prog_3.entities.enemies.AbstractEnemy;
-import Progetto_prog_3.entities.enemies.NightBorne;
 import Progetto_prog_3.levels.Level;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
@@ -68,12 +67,8 @@ public class EnemyManager {
 
         drawEnemies(g, xLevelOffset, yLevelOffset);
         
-
     };
 
-    //  ATTENZIONE !!!!!!!!!
-    //LA HITBOX STA SEMPRE NELLO STESSO MODO E NON C'E' MODO DI SPOSTARLA, SE SI VUOLE CENTRARE IL TIZIO DENTRO LA HITBOX, BISOGNA
-    //SPOSTARE IL DISEGNO QUANDO VIENE DISEGNATO LO SPRITE, ALTRIMENTI A VOGLIA DI IMPAZZIRE
     private void drawEnemies(Graphics g, int xLevelOffset, int yLevelOffset) {
 
         for(AbstractEnemy ab : enemyList){
@@ -96,7 +91,7 @@ public class EnemyManager {
                 //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti i nemici
                 //invece che fermarsi al primo nemico colpito con il return della funzione
                 if (areaAttack == 0) return;
-            
+                
             }
         }
     }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.utils.Constants.EnemtConstants;
 import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
@@ -114,7 +113,14 @@ public class Ghost extends AbstractEnemy {
                 //Per permettere di fare danno nel prosimo attacco
                 if(!attackChecked && aniIndex >= 4) checkEnemyHitEllipse(circularAttackbox, player);
                 break;
-        
+                
+            case GHOST_HIT:
+                aniSpeed = 25;
+                break;
+
+            case GHOST_DIE:
+                aniSpeed = 25;
+                
             default:
                 break;
         }

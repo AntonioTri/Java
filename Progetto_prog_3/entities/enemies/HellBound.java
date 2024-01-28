@@ -1,7 +1,6 @@
 package Progetto_prog_3.entities.enemies;
 
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Player;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
 import static Progetto_prog_3.utils.Constants.Directions.LEFT;
@@ -102,11 +101,14 @@ public class HellBound extends AbstractEnemy{
 
             case HELL_BOUND_HIT:
                 
+                //Se il cane viene colpito a mezz'aria prima che colpisca il player, questo non applicherà il danno al player
                 if (jumping) {
                     updateInAir(levelData);
                     jumping = false;
+                    attackChecked = true;
                 }
                 break;
+
             case HELL_BOUND_DIE: 
                 aniSpeed = 20;
 
@@ -231,6 +233,7 @@ public class HellBound extends AbstractEnemy{
             newState(HELL_BOUND_DIE);
         } else {
             newState(HELL_BOUND_HIT);
+            attackChecked = true;
         }
         
     }

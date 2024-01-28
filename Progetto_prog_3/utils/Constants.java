@@ -192,6 +192,8 @@ public class Constants {
                         case GHOST_IDLE: return 7;
                         case GHOST_ATTACK: return 15;
                         case GHOST_TELEPORT: return 7;
+                        case GHOST_HIT: return 5;
+                        case GHOST_DIE: return 8;
                         default: return 1;
                         
                     }
@@ -330,23 +332,6 @@ public class Constants {
         }
     }
 
-    //Variabili statiche per definire la grandezza dell'ambiente
-    public static class Environment {
-		public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;
-		public static final int BIG_CLOUD_HEIGHT_DEFAULT = 101;
-		public static final int SMALL_CLOUD_WIDTH_DEFAULT = 74;
-		public static final int SMALL_CLOUD_HEIGHT_DEFAULT = 24;
-
-		public static final int BIG_CLOUD_WIDTH = (int) (BIG_CLOUD_WIDTH_DEFAULT * Game.SCALE);
-		public static final int BIG_CLOUD_HEIGHT = (int) (BIG_CLOUD_HEIGHT_DEFAULT * Game.SCALE);
-		public static final int SMALL_CLOUD_WIDTH = (int) (SMALL_CLOUD_WIDTH_DEFAULT * Game.SCALE);
-		public static final int SMALL_CLOUD_HEIGHT = (int) (SMALL_CLOUD_HEIGHT_DEFAULT * Game.SCALE);
-
-        
-	}
-
-
-
     public static class UI{
         //Variabili statiche per definire la grandezza dei bottoni
         public static class Buttons{
@@ -446,7 +431,7 @@ public class Constants {
                     return 7; 
 
                 case LIGHT_ATTACK:
-                    return 4; 
+                    return 6; 
 
                 case HEAVY_ATTACK:
                     return 10; 

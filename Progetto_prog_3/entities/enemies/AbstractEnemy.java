@@ -55,12 +55,11 @@ public abstract class AbstractEnemy extends Entity{
     //Successivamente il nemico si muoverà secondo le sue regole, che il template method implemenerà
     //nelle soottoclassi
     protected final void act(int[][] levelData, Player player){
+
         if (firstUpdate) firstUpdateCheck(levelData);
-        if (inAir) {
-            updateInAir(levelData);
-        } else {
-            makeMovement(levelData, player);
-        }
+        if (inAir) { updateInAir(levelData);
+        } else { makeMovement(levelData, player); }
+        
     } 
 
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
@@ -247,7 +246,6 @@ public abstract class AbstractEnemy extends Entity{
         active = memento.getActive();
         firstUpdate = memento.getFirstUpdate();
         invulnerability = memento.getInvulnerability();
-        System.out.println(invulnerability);
         currentHealth = memento.getCurrentHealth();
         newState(memento.getState());
 

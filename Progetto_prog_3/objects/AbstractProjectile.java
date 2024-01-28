@@ -1,6 +1,8 @@
 package Progetto_prog_3.objects;
 
 import java.awt.geom.Rectangle2D;
+
+import static Progetto_prog_3.utils.Constants.GRAVITY;
 import static Progetto_prog_3.utils.Constants.Projectiles.*;
 
 //Questa clase definisce tutta la famiglia di oggetti di tipo proiettile

@@ -6,7 +6,7 @@ import Progetto_prog_3.Game;
 
 //La classe cannone agiunge i cannoni all'interno della mappa, questi sparano al player se è visibile e sono indistruttibili.
 //Sono fissi in un posto e sono rivolti solo a destra o a sinistra
-public class Cannon extends AbstractObject{
+public class Cannon extends AbstractObject {
 
     private int cannonTileY;
     private CannonBall cannonBall;

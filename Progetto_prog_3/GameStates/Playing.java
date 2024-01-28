@@ -20,11 +20,11 @@ import Progetto_prog_3.utils.LoadSave;
 public class Playing extends State implements StateMethods{
     
     private Player player;
-    private LevelManager levelManager;
     private EnemyManager enemyManager;
+    private LevelManager levelManager;
+    private ObjectManager objectManager;
     private GameOverOverlay gameOverOverlay;
     private LevelCompletedOverlay levelCompletedOverlay;
-    private ObjectManager objectManager;
 
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
@@ -87,29 +87,6 @@ public class Playing extends State implements StateMethods{
         
         loadBackground();
 
-    }
-
-    private void loadStartLevel() {
-        enemyManager.addEnemies(levelManager.getCurrentLevel());
-        objectManager.loadObjects(levelManager.getCurrentLevel());
-    }
-
-    //I seguenti 4 metodi invece controllano se il player sta toccando determinati oggetti nela scena, se sta attaccando un nemico
-    //Una pozione, una spina, tante cose
-    public void checkPotionTouched(Rectangle2D.Float hitbox) {
-        objectManager.checkPlayerTouched(hitbox);
-    }
-
-    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack) {
-        enemyManager.checkPlayerHitEnemy(attackBox, areaAttack);
-    }
-
-    public void checkObjectHit(Rectangle2D.Float attackBox, int areaAttack) {
-        objectManager.checkObjectHit(attackBox, areaAttack);
-    }
-
-    public void checkSpikesTouched(Player p) {
-        objectManager.checkSpikesTouched(player);
     }
 
     //Override dei metodi dell'interfaccia implementata
@@ -201,11 +178,6 @@ public class Playing extends State implements StateMethods{
         backgroundImage = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_1);
         layer1 = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_2);
         layer2 = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_3);
-
-        // smallCloudPos = new int[8];
-        // for (int i = 0; i < smallCloudPos.length; i++) {
-        //     smallCloudPos[i] = (int)(random.nextInt((int)( 100 * Game.SCALE)) + (90 * Game.SCALE));
-        // }
 
     }
 
@@ -411,6 +383,29 @@ public class Playing extends State implements StateMethods{
         levelManager.loadNextLevel();
     }
 
+    private void loadStartLevel() {
+        enemyManager.addEnemies(levelManager.getCurrentLevel());
+        objectManager.loadObjects(levelManager.getCurrentLevel());
+    }
+
+    //I seguenti 4 metodi invece controllano se il player sta toccando determinati oggetti nela scena, se sta attaccando un nemico
+    //Una pozione, una spina, tante cose
+    public void checkPotionTouched(Rectangle2D.Float hitbox) {
+        objectManager.checkPlayerTouchedPotions(hitbox);
+    }
+
+    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack) {
+        enemyManager.checkPlayerHitEnemy(attackBox, areaAttack);
+    }
+
+    public void checkObjectHit(Rectangle2D.Float attackBox, int areaAttack) {
+        objectManager.checkObjectHit(attackBox, areaAttack);
+    }
+
+    public void checkSpikesTouched(Player p) {
+        objectManager.checkSpikesTouched(player);
+    }
+
     public void setMaxLevelOffsetX(int levelOffset){
         this.maxLevelOffsetX = levelOffset;
     }
@@ -421,6 +416,10 @@ public class Playing extends State implements StateMethods{
 
     public void unpauseGame(){
         paused = false;
+    }
+
+    public void setGamePaused(){
+        paused = true;
     }
     
     public void windowFocusLost() { 

@@ -83,7 +83,6 @@ public class Player extends Entity {
     public Player(float x, float y, int width, int height, Playing playing){
         super(x, y, width, height);
         this.playing = playing;
-        this.invulnerability = false;
         initStates();
         loadAnimations();
         initHitbox(x, y, 25 * Game.SCALE, 31 * Game.SCALE);
@@ -95,10 +94,11 @@ public class Player extends Entity {
         this.state = IDLE;
         this.maxHealth = 100;
         this.currentHealth = maxHealth;
+        this.invulnerability = false;
     }
 
     private void initAttackBoxes(){
-        attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(25 * Game.SCALE));
+        attackBox = new Rectangle2D.Float(x, y, (int)(20 * Game.SCALE), (int)(30 * Game.SCALE));
         ultimateAttackBox = new Rectangle2D.Float(x, y, (int)(PLAYER_EXPLOSION_WIDTH * 0.85 ), (int)(PLAYER_EXPLOSION_HEIGHT * 0.85));
     }
 
@@ -146,10 +146,13 @@ public class Player extends Entity {
 
         updateAttackBox();
         updatePosition();
+
         //Se il player si sta muovendo può interagire con gli oggetti della mappa
         if (moving) {
+
             checkPotionTouched();
             checkSpikesTouched();
+
             tyleY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
 
             if (powerAttackActive) {
@@ -163,7 +166,8 @@ public class Player extends Entity {
 
         }
 
-        if (attacking || ultimateActive) checkAttack();
+        //Se il player ha la flag di attacco o di ultimate attiva, e non sta subendo danno, viene fatto il controllo sull'attacco
+        if ((attacking || ultimateActive)  && state != HURT) checkAttack();
         
         updateAnimationTick();
         setAnimation();
@@ -198,11 +202,11 @@ public class Player extends Entity {
             attackBox.x = hitbox.x + hitbox.width;
 
         } else if (left || (powerAttackActive && flipW == -1)) {
-            attackBox.x = hitbox.x - hitbox.width + (int)(Game.SCALE * 9);
+            attackBox.x = hitbox.x - hitbox.width + (int)(Game.SCALE * 4);
 
         }
 
-        attackBox.y = hitbox.y + (Game.SCALE * 5);
+        attackBox.y = hitbox.y + (Game.SCALE * 1);
 
         ultimateAttackBox.x = hitbox.x + hitbox.width - PLAYER_EXPLOSION_WIDTH/2;
         ultimateAttackBox.y = hitbox.y + hitbox.height - PLAYER_EXPLOSION_HEIGHT/2;
@@ -358,6 +362,7 @@ public class Player extends Entity {
         
         playing.getGame().getAudioPlayer().playWalkingSound(moving, inAir, currentHealth);
         
+        //Per ogni flag che viene attivata, uno stato viene impostato, ad ogni stato corrisponde una velocità di animazione diversa
         if (moving) {
             aniSpeed = 15;
             state = RUNNING;
@@ -370,6 +375,9 @@ public class Player extends Entity {
         if (hurted) {
             aniSpeed = 20;
             state = HURT;
+            //Se il player viene colpito con il return viene impedito di fare qualsiasi
+            //azione sottostante
+            return;
         }
 
         if (inAir) {
@@ -387,14 +395,15 @@ public class Player extends Entity {
         }
         
         if (powerAttackActive) {
-            state = LIGHT_ATTACK;
-            aniIndex = 1;
+            state = RUNNING;
+            aniIndex = 0;
             aniTick = 0;
             return;
         }
 
         
-        if (attacking) {
+        if (attacking && state != HURT) {
+            aniSpeed = 14;
             state = LIGHT_ATTACK;
 
             //Per evitare che venga eseguito ad ogni tick dell'animazione dell'attacco il sound effect di questo
@@ -432,7 +441,7 @@ public class Player extends Entity {
 		moving = false;
 
         //Salto
-		if (jump) jump();
+		if (jump && state != HURT) jump();
     
         //Impedimento di movimenti e azioni concorrenti
         if ( ultimateActive || (!inAir && !powerAttackActive && ((!left && !right) || (right && left)))) {
@@ -444,14 +453,15 @@ public class Player extends Entity {
 		float xSpeed = 0;
 
         //Questi due if servono a settare delle variabili oltre che al movimento anche al modo in cui vengono disegnati gli sprite
-        //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto 
-		if (left && !right){
+        //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto
+        //Se il player sta attaccando gli viene impedito il moovimento 
+		if (left && !right && !attacking){
 			xSpeed -= walkSpeed;
             flipX = hitBoxWidth - (int)(22.5f * Game.SCALE);
             flipW = -1;
         }
         
-        if (right && !left){
+        if (right && !left && !attacking){
 			xSpeed += walkSpeed;
             flipX = (int)(8 * Game.SCALE);
             flipW = 1;
@@ -520,7 +530,7 @@ public class Player extends Entity {
         if (value <= 0) {
             hurted = true;
             playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_HURT);
-            getStatusManager().giveInvulnerability(this, 3f);
+            getStatusManager().giveInvulnerability(this, 1f);
         }
 
         if (currentHealth <= 0) {

@@ -23,16 +23,14 @@ public class LevelManager {
     public LevelManager(Game game){
         this.game = game;
         importSprite();
-        levels = new ArrayList<>();
         buildAllLevels();
-
+        
     }
-
-    //!!!!!!! QUESTO MI PARE IL BRIDGE !!!!!!
+    
     private void buildAllLevels() {
+        levels = new ArrayList<>();
         BufferedImage[] alllevels = LoadSave.getAllLevels();
         for (BufferedImage img : alllevels) {
-            //!!!!!!! QUESTO MI PARE IL BRIDGE !!!!!!
             levels.add(new Level(img));
         }
     }
