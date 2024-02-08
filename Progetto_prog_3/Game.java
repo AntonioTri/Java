@@ -6,6 +6,7 @@ import Progetto_prog_3.GameStates.GameOptions;
 import Progetto_prog_3.GameStates.GameState;
 import Progetto_prog_3.GameStates.Menu;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.GameStates.StateMethods;
 import Progetto_prog_3.UI.AudioOptions;
 
 public class Game implements Runnable{
@@ -29,22 +30,21 @@ public class Game implements Runnable{
     public final static int GAME_WIDTH = (TILES_SIZE * TILES_IN_WIDTH);
     public final static int GAME_HEIGHT = (TILES_SIZE * TILES_IN_HEIGHT);
 
+    private AudioOptions audioOptions;
+    private AudioPlayer audioPlayer;
+    
+    //State design pattern
+    private StateMethods stateToUpdate;
+    private GameState currentGameState;
+    
     //Game States
     private Playing playing;
     private Menu menu;
     private GameOptions gameOptions;
-    private AudioOptions audioOptions;
-    private AudioPlayer audioPlayer;
 
     public Game(){
 
         initClasses();
-
-        gamePanel = new GamePanel(this);
-        gameWindow = new GameWindow(gamePanel);
-        gamePanel.setFocusable(true);
-        gamePanel.requestFocus();
-
         StartGameLoop();
 
     }
@@ -56,66 +56,80 @@ public class Game implements Runnable{
 
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
+        
         audioOptions = new AudioOptions(this);
         audioPlayer = new AudioPlayer();
         gameOptions = new GameOptions(this);
         menu = new Menu(this);
         playing = new Playing(this);
+        gamePanel = new GamePanel(this);
+        gameWindow = new GameWindow(gamePanel);
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocus();
+        
     }
 
     //Funzione per updatare lo stato degli elementi inizializzati correnti
     private void update() { 
+
+        checkGameStateChanged();
         //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
         //Specifici stati come il menù di pausa, di inizio oppure il gioco stesso
-        switch (GameState.state) {
-            case MENU:
-                menu.update();
-                break;
+        stateToUpdate.update();
 
-            case PLAYING:
-                playing.update();
-                break;
-
-            case OPTION:
-                gameOptions.update();
-                break;
-
-            case QUIT:
-                System.exit(0);
-                break;
-
-            default:
-                //Esce dal programma, lo termina
-                System.exit(0);
-                break;
-        }
     }
+
     //Funzione per fare la paint degli elementi correnti
     public void render(Graphics g){ 
-        //Lo switch osserva il current game state ed eseguirà soltanto specifiche azioni, qusto ci permette si eseguire 
-        //Specifici stati come il menù di pausa, di inizio oppure il gioco stesso
-        switch (GameState.state) {
-            case MENU:
-                menu.draw(g);
-                break;
-            
-            case PLAYING:
-                playing.draw(g);
-                break;
+        
+        try {
+            stateToUpdate.draw(g);
+        } catch (Exception e) { }
 
-            case OPTION:
-                gameOptions.draw(g);
-                break;
+    }
 
-            default:
-                break;
+    //Implementazione dello State pattern, una interfaccia polimorfa prende le sembianze di uno di tre macro stati
+    //Playing, in cui si vede il player i nemici ed il gioco effettivo
+    //Menu, dove l'utente può interfacciarsi con i bottoni per iniziare a giocare, le impostazioni ed il quit
+    //Options, è il menù delle opzioni da cui làutente cambia principalmente i volumi
+    private void checkGameStateChanged() {
+
+        if (currentGameState != GameState.state) {
+            currentGameState = GameState.state;
+
+            switch (GameState.state) {
+                case MENU:
+                    stateToUpdate = this.menu;
+                    break;
+    
+                case PLAYING:
+                    stateToUpdate = this.playing;
+                    break;
+    
+                case OPTION:
+                    stateToUpdate = this.gameOptions;
+                    break;
+
+                case QUIT:
+                    System.exit(0);
+                    break;
+    
+                default:
+                    //Esce dal programma, lo termina
+                    System.exit(0);
+                    break;
+
+            }
         }
     }
+
+
     
     //Funzione per gestire la perdita del focus dalla finestra di gioco
     public void windowFocusLost() { 
         if (GameState.state == GameState.PLAYING) {
             playing.getPlayer().resetMovement();
+            playing.setGamePaused();
         }
     }
 

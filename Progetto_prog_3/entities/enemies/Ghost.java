@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.utils.Constants.EnemtConstants;
 import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
@@ -64,71 +63,69 @@ public class Ghost extends AbstractEnemy {
 
     }
 
-    //La funzione act è quella che per gli altri vale come updateMove, il ghost non si muove, si teletrasporta
+
+    //La funzione makeMoovement qui viene implementata in modo particolare, il ghost non si muove, si teletrasporta
     //Questa funzione serve a gestire il suo movimento peculiare andando a gestire i suoi stati 
     //con flag e speciali funzioni dedicate/Overloadate
-    private void act(int[][] levelData, Player player) {
+    @Override
+    public void makeMovement(int[][] levelData, Player player) {
+        switch (state) {
 
-        if (firstUpdate)
-            firstUpdateCheck(levelData);
-        if (inAir) {
-            updateInAir(levelData);
+            case EnemtConstants.Ghost.GHOST_NOT_SPAWNED:
+                if (isPlayerInRangeOfVision(player)) {
+                    newState(GHOST_SPAWN);
+                }
+                break;
 
-        } else {
+            case GHOST_SPAWN:
+                //Se può spawnare viene eseguito il teletrasporto
+                if (canTeleport && !firstSpawn) {
+                    //Si blocca l'entrata a questa funzione fino a quando non riavverà l'animazione di teletrasporto
+                    canTeleport = false;
+                    teleport(levelData);
+                } 
+                //Dopo il primo spawn questa flag rimane su false
+                //ed ogni nuovo spawn del ciclo farà spawnare il ghost in una nuova posizione
+                break;
             
-            switch (state) {
-
-                case EnemtConstants.Ghost.GHOST_NOT_SPAWNED:
-                    if (isPlayerInRangeOfVision(player)) {
-                        newState(GHOST_SPAWN);
-                    }
-                    break;
-
-                case GHOST_SPAWN:
-                    //Se può spawnare viene eseguito il teletrasporto
-                    if (canTeleport && !firstSpawn) {
-                        //Si blocca l'entrata a questa funzione fino a quando non riavverà l'animazione di teletrasporto
-                        canTeleport = false;
-                        teleport(levelData);
-                    } 
-                    //Dopo il primo spawn questa flag rimane su false
-                    //ed ogni nuovo spawn del ciclo farà spawnare il ghost in una nuova posizione
-                    break;
-                
-                //Nel caso di ritorno in stato di Idle, viene settata l'invulnerabilità guadagnata durante il teletrasporto a falso
-                case GHOST_IDLE:
-                    //L'attack timer serve a non far spammare l'attacco dal ghost, comunque è un attacco ad area molto potente,
-                    //Ok la difficoltà ma teniamolo bilanciato
-                    attackTimer++;
-                    aniSpeed = 20;
-                    invulnerability = false;
-                    attackChecked = false;
-                    updateTeleportTick();
-                    //Se è passato abbastanza tempo viene eseguito l'attacco
-                    if(attackTimer >= 300 && isPlayerCloseForAttack(player)){
-                        attackTimer = 0;
-                        audioPlayer.playEffect(AudioPlayer.GHOST_ATTACK_1);
-                        newState(GHOST_ATTACK);
-                    }
-                    break;
-                
-                //Il timer del teletrasporto non si ferma nemmeno quando il ghost attacca
-                case GHOST_ATTACK:
-                    aniSpeed = 17;
-                    updateTeleportTick();
-                    //Come al solito, la funzione per applicare il danno viene bloccata da se stessa durante la prima esecusione
-                    //Quando si ritorna nello stato di idle per poi rifare i controlli di attackdistance, viene resettata a falso
-                    //Per permettere di fare danno nel prosimo attacco
-                    if(!attackChecked && aniIndex >= 4) checkEnemyHitEllipse(circularAttackbox, player);
-                    break;
+            //Nel caso di ritorno in stato di Idle, viene settata l'invulnerabilità guadagnata durante il teletrasporto a falso
+            case GHOST_IDLE:
+                //L'attack timer serve a non far spammare l'attacco dal ghost, comunque è un attacco ad area molto potente,
+                //Ok la difficoltà ma teniamolo bilanciato
+                attackTimer++;
+                aniSpeed = 20;
+                invulnerability = false;
+                attackChecked = false;
+                updateTeleportTick();
+                //Se è passato abbastanza tempo viene eseguito l'attacco
+                if(attackTimer >= 300 && isPlayerCloseForAttack(player)){
+                    attackTimer = 0;
+                    newState(GHOST_ATTACK);
+                }
+                break;
             
-                default:
-                    break;
-            }
+            //Il timer del teletrasporto non si ferma nemmeno quando il ghost attacca
+            case GHOST_ATTACK:
+                aniSpeed = 17;
+                updateTeleportTick();
+                //Come al solito, la funzione per applicare il danno viene bloccata da se stessa durante la prima esecusione
+                //Quando si ritorna nello stato di idle per poi rifare i controlli di attackdistance, viene resettata a falso
+                //Per permettere di fare danno nel prosimo attacco
+                if(!attackChecked && aniIndex >= 4) checkEnemyHitEllipse(circularAttackbox, player);
+                break;
+                
+            case GHOST_HIT:
+                aniSpeed = 25;
+                break;
 
-           
+            case GHOST_DIE:
+                aniSpeed = 25;
+                
+            default:
+                break;
         }
     }
+    
 
     //La funzione teleport definisce un nuovo punto di spawn quando viene richiamata
     //settando poi la posizione del Ghost in uno dei punti si spawn possibili trovati
@@ -248,7 +245,7 @@ public class Ghost extends AbstractEnemy {
     }
 
     protected void checkEnemyHitEllipse(Ellipse2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.getHitbox())) {
+        if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
             statusManager.applySlow(player, 2, 0.7f);
@@ -297,7 +294,7 @@ public class Ghost extends AbstractEnemy {
     }
 
     @Override
-    public void hurt(int amount, AudioPlayer ap){
+    public void hurt(int amount){
 
         currentHealth -= amount;
 
@@ -334,6 +331,8 @@ public class Ghost extends AbstractEnemy {
     public int flipW() {
         return 0;
     }
+
+    
 
 
     

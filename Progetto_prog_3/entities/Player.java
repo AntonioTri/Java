@@ -11,9 +11,11 @@ import java.awt.image.BufferedImage;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.GameStates.Playing;
+import Progetto_prog_3.entities.MementoSavings.Memento;
+import Progetto_prog_3.entities.MementoSavings.PlayerMemento;
 import Progetto_prog_3.utils.LoadSave;
 
-public class Player extends Entity{
+public class Player extends Entity {
 
     //Variabili per la gestione dei frame
     private int aniSpeed = 15;
@@ -70,7 +72,7 @@ public class Player extends Entity{
     private boolean powerAttackActive, ultimateActive;
     private int powerAttackTick, powerGrowSpeed = 15, powerGrowTick;
     // private int ultimateTick, ultimateGrowSpeed = 15, ultimateGrowTick;
-	private boolean attackChecked;
+	private boolean attackChecked, canPlayAttackSound, hurted = false;
     
     private Rectangle2D.Float ultimateAttackBox;
     private int damage = 5;
@@ -92,10 +94,11 @@ public class Player extends Entity{
         this.state = IDLE;
         this.maxHealth = 100;
         this.currentHealth = maxHealth;
+        this.invulnerability = false;
     }
 
     private void initAttackBoxes(){
-        attackBox = new Rectangle2D.Float(x, y, (int)(16 * Game.SCALE), (int)(25 * Game.SCALE));
+        attackBox = new Rectangle2D.Float(x, y, (int)(20 * Game.SCALE), (int)(30 * Game.SCALE));
         ultimateAttackBox = new Rectangle2D.Float(x, y, (int)(PLAYER_EXPLOSION_WIDTH * 0.85 ), (int)(PLAYER_EXPLOSION_HEIGHT * 0.85));
     }
 
@@ -143,10 +146,13 @@ public class Player extends Entity{
 
         updateAttackBox();
         updatePosition();
+
         //Se il player si sta muovendo può interagire con gli oggetti della mappa
         if (moving) {
+
             checkPotionTouched();
             checkSpikesTouched();
+
             tyleY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
 
             if (powerAttackActive) {
@@ -160,7 +166,8 @@ public class Player extends Entity{
 
         }
 
-        if (attacking || ultimateActive) checkAttack();
+        //Se il player ha la flag di attacco o di ultimate attiva, e non sta subendo danno, viene fatto il controllo sull'attacco
+        if ((attacking || ultimateActive)  && state != HURT) checkAttack();
         
         updateAnimationTick();
         setAnimation();
@@ -183,6 +190,7 @@ public class Player extends Entity{
                 attacking = false;
                 attackChecked = false;
                 ultimateActive = false;
+                hurted = false;
             }
         }
     }
@@ -194,11 +202,11 @@ public class Player extends Entity{
             attackBox.x = hitbox.x + hitbox.width;
 
         } else if (left || (powerAttackActive && flipW == -1)) {
-            attackBox.x = hitbox.x - hitbox.width + (int)(Game.SCALE * 9);
+            attackBox.x = hitbox.x - hitbox.width + (int)(Game.SCALE * 4);
 
         }
 
-        attackBox.y = hitbox.y + (Game.SCALE * 5);
+        attackBox.y = hitbox.y + (Game.SCALE * 1);
 
         ultimateAttackBox.x = hitbox.x + hitbox.width - PLAYER_EXPLOSION_WIDTH/2;
         ultimateAttackBox.y = hitbox.y + hitbox.height - PLAYER_EXPLOSION_HEIGHT/2;
@@ -354,6 +362,7 @@ public class Player extends Entity{
         
         playing.getGame().getAudioPlayer().playWalkingSound(moving, inAir, currentHealth);
         
+        //Per ogni flag che viene attivata, uno stato viene impostato, ad ogni stato corrisponde una velocità di animazione diversa
         if (moving) {
             aniSpeed = 15;
             state = RUNNING;
@@ -361,6 +370,14 @@ public class Player extends Entity{
         } else {
             aniSpeed = 20;
             state = IDLE;
+        }
+
+        if (hurted) {
+            aniSpeed = 20;
+            state = HURT;
+            //Se il player viene colpito con il return viene impedito di fare qualsiasi
+            //azione sottostante
+            return;
         }
 
         if (inAir) {
@@ -378,16 +395,27 @@ public class Player extends Entity{
         }
         
         if (powerAttackActive) {
-            state = LIGHT_ATTACK;
-            aniIndex = 1;
+            state = RUNNING;
+            aniIndex = 0;
             aniTick = 0;
             return;
         }
 
         
-        if (attacking) {
+        if (attacking && state != HURT) {
+            aniSpeed = 14;
             state = LIGHT_ATTACK;
-            playing.getGame().getAudioPlayer().playattack();
+
+            //Per evitare che venga eseguito ad ogni tick dell'animazione dell'attacco il sound effect di questo
+            //c'è una flg che funge da switch che blocca l'ingresso alla funzione, dentro di questa viene passato player
+            //In modo che quando il suono sia finito, la flag venga riportata a true
+            if (canPlayAttackSound) {
+                canPlayAttackSound = false;
+                playing.getGame().getAudioPlayer().playattack();
+            } else {
+                playing.getGame().getAudioPlayer().resetPlayerSoundBools(this);
+            }
+
         }
 
         /*Se la animazione di arrivo e' diversa dalla animazione di fine funzione
@@ -413,7 +441,7 @@ public class Player extends Entity{
 		moving = false;
 
         //Salto
-		if (jump) jump();
+		if (jump && state != HURT) jump();
     
         //Impedimento di movimenti e azioni concorrenti
         if ( ultimateActive || (!inAir && !powerAttackActive && ((!left && !right) || (right && left)))) {
@@ -425,14 +453,15 @@ public class Player extends Entity{
 		float xSpeed = 0;
 
         //Questi due if servono a settare delle variabili oltre che al movimento anche al modo in cui vengono disegnati gli sprite
-        //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto 
-		if (left && !right){
+        //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto
+        //Se il player sta attaccando gli viene impedito il moovimento 
+		if (left && !right && !attacking){
 			xSpeed -= walkSpeed;
             flipX = hitBoxWidth - (int)(22.5f * Game.SCALE);
             flipW = -1;
         }
         
-        if (right && !left){
+        if (right && !left && !attacking){
 			xSpeed += walkSpeed;
             flipX = (int)(8 * Game.SCALE);
             flipW = 1;
@@ -496,10 +525,12 @@ public class Player extends Entity{
     public void changeHealth(int value){
 
         currentHealth += value;
-
-        if (value < 0) {
-            //Effetto del danno
+        //Vengono dati dei frame di invulnerabilità dopo essere stati colpiti
+        //Viene eseguito il suono del danno del player
+        if (value <= 0) {
+            hurted = true;
             playing.getGame().getAudioPlayer().playSetOfEffect(AudioPlayer.PLAYER_HURT);
+            getStatusManager().giveInvulnerability(this, 1f);
         }
 
         if (currentHealth <= 0) {
@@ -523,7 +554,6 @@ public class Player extends Entity{
 
     }
 
-
     //Questo metodo ci serve a resettare tutte le caratteristiche del giocatore se ne si trova il bisogno
     public void resetAll() {
 
@@ -532,15 +562,24 @@ public class Player extends Entity{
         attacking = false;
         moving = false;
         state = IDLE;
-        currentHealth = maxHealth;
 
-        //Resetta la posizione del personaggio nelle variabili x ed y memorizate e mai usate
-        hitbox.x = x;
-        hitbox.y = y;
+        //Tramite il pattern del memento vengono resettate le posizioni e la vita di partenza del livello
+        int levelIndex = playing.getLevelManager().getLevelIndex();
+        restoreState(playing.getMementoManager().getPlayerMemento(levelIndex));
 
         if (!isEntityOnFloor(hitbox, levelData)) {
             inAir = true;
         }
+
+    }
+    
+    public void restoreState(PlayerMemento playerMemento){
+
+        this.hitbox.x = playerMemento.getHitboxX();
+        this.hitbox.y = playerMemento.getHitboxY();
+        this.attackBox.x = playerMemento.getAttackBoxX();
+        this.attackBox.y = playerMemento.getAttackBoxY();
+        this.currentHealth = playerMemento.getCurrentHealth();
 
     }
 
@@ -613,8 +652,16 @@ public class Player extends Entity{
         jump = false;
     }
 
+    public Memento saveState(){
+        return new PlayerMemento(this);
+    }
+
     public boolean getLeft() {
         return left;
+    }
+
+    public Playing getPlaying() {
+        return playing;
     }
 
     public void setLeft(boolean left) {
@@ -673,10 +720,8 @@ public class Player extends Entity{
         return maxHealth;
     }
 
-    
-
-    
-
-    
+    public void setCanPlayAtacksooound(boolean canPlayAttackSound) {
+        this.canPlayAttackSound = canPlayAttackSound;
+    }
 
 }

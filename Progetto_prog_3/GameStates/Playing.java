@@ -12,6 +12,7 @@ import Progetto_prog_3.UI.LevelCompletedOverlay;
 import Progetto_prog_3.UI.PauseOverlay;
 import Progetto_prog_3.entities.EnemyManager;
 import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.MementoSavings.MementoManager;
 import Progetto_prog_3.levels.LevelManager;
 import Progetto_prog_3.objects.ObjectManager;
 import Progetto_prog_3.utils.LoadSave;
@@ -19,11 +20,11 @@ import Progetto_prog_3.utils.LoadSave;
 public class Playing extends State implements StateMethods{
     
     private Player player;
-    private LevelManager levelManager;
     private EnemyManager enemyManager;
+    private LevelManager levelManager;
+    private ObjectManager objectManager;
     private GameOverOverlay gameOverOverlay;
     private LevelCompletedOverlay levelCompletedOverlay;
-    private ObjectManager objectManager;
 
     private boolean paused = false;
     private PauseOverlay pauseOverlay;
@@ -55,6 +56,9 @@ public class Playing extends State implements StateMethods{
     //level complited
     private boolean levelCompleted;
 
+    //Variabili per il Memento
+    private MementoManager mementoManager;
+
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -65,43 +69,24 @@ public class Playing extends State implements StateMethods{
     //Funzione per inizializzare le classi delle entita presenti
     private void initClasses() { 
 
+        mementoManager = new MementoManager();
+        
         levelManager = new LevelManager(game);
         enemyManager = new EnemyManager(this);
+        objectManager = new ObjectManager(this);
 
         player = new Player(200, 400, (int) (64*Game.SCALE), (int)(64*Game.SCALE), this); 
         player.loadLevelData(levelManager.getCurrentLevel().getLD());
         player.setSpawnPoint(levelManager.getCurrentLevel().getPlayerSpawnPoint());
-        
+
+        //Salvo lo stato iniziale del livello del player
+
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
         levelCompletedOverlay = new LevelCompletedOverlay(this);
-        objectManager = new ObjectManager(this);
         
         loadBackground();
 
-    }
-
-    private void loadStartLevel() {
-        enemyManager.addEnemies(levelManager.getCurrentLevel());
-        objectManager.loadObjects(levelManager.getCurrentLevel());
-    }
-
-    //I seguenti 4 metodi invece controllano se il player sta toccando determinati oggetti nela scena, se sta attaccando un nemico
-    //Una pozione, una spina, tante cose
-    public void checkPotionTouched(Rectangle2D.Float hitbox) {
-        objectManager.checkPlayerTouched(hitbox);
-    }
-
-    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack) {
-        enemyManager.checkPlayerHitEnemy(attackBox, areaAttack);
-    }
-
-    public void checkObjectHit(Rectangle2D.Float attackBox, int areaAttack) {
-        objectManager.checkObjectHit(attackBox, areaAttack);
-    }
-
-    public void checkSpikesTouched(Player p) {
-        objectManager.checkSpikesTouched(player);
     }
 
     //Override dei metodi dell'interfaccia implementata
@@ -123,8 +108,9 @@ public class Playing extends State implements StateMethods{
 
         //Altrimenti viene fatto l'update del player e del livello, e di tutti gli oggetti all'interrno di esso
         } else if (!gameOver){
-            enemyManager.update(levelManager.getCurrentLevel().getLD(), player);
+
             levelManager.update();
+            enemyManager.update(levelManager.getCurrentLevel().getLD(), player);
             objectManager.update(levelManager.getCurrentLevel().getLD(), player);
             player.update();
             checkCloseToBorder();
@@ -193,11 +179,6 @@ public class Playing extends State implements StateMethods{
         layer1 = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_2);
         layer2 = LoadSave.getSpriteAtlas(LoadSave.FOREST_LAYER_3);
 
-        // smallCloudPos = new int[8];
-        // for (int i = 0; i < smallCloudPos.length; i++) {
-        //     smallCloudPos[i] = (int)(random.nextInt((int)( 100 * Game.SCALE)) + (90 * Game.SCALE));
-        // }
-
     }
 
     
@@ -237,15 +218,11 @@ public class Playing extends State implements StateMethods{
             yLevelOffset += differenceY - upperBorder;
         }
 
-
-        if (yLevelOffset > maxLevelOffsetY) {
+        if (yLevelOffset >= maxLevelOffsetY) {
             yLevelOffset = maxLevelOffsetY;
-        } else if (yLevelOffset < 0) {
+        } else if (yLevelOffset <= 0) {
             yLevelOffset = 0;
         }
-
-
-
     }
 
     //I seguenti metodi in override servono a passare le keyevent, i tasti premuti della tastiera e del mouse
@@ -375,27 +352,58 @@ public class Playing extends State implements StateMethods{
 
     //Getters e Setters
     public void resetAll(){
+        
+        resetBools();
+        
+        //Si utilizza il Memento design pattern per resettare il livello al suo stato di partenza/Di crezione
+        //All'interno di ogni reset dedicato ai singoli manager
+        player.resetAll();
+        enemyManager.resetAllEnemyes();
+        objectManager.resetAllObjects();
+
+    }
+
+    //Funzione per resettare tutti i valori booleani
+    public void resetBools(){
+
         gameOver = false;
         paused = false;
         levelCompleted = false;
         playerDying = false;
-        player.resetAll();
-        enemyManager.resetAllEnemyes();
-        objectManager.resetAllObjects();
+
     }
 
     private void calculateLevelOffset() {
         maxLevelOffsetX = levelManager.getCurrentLevel().getLevelOffset();
         maxLevelOffsetY = levelManager.getCurrentLevel().getLevelOffsetY();
-        System.out.println(maxLevelOffsetX);
-        System.out.println(maxLevelOffsetY);
     }
 
-
     public void loadNextLevel(){
-        resetAll();
+        resetBools();
         levelManager.loadNextLevel();
-        player.setSpawnPoint(levelManager.getCurrentLevel().getPlayerSpawnPoint());
+    }
+
+    private void loadStartLevel() {
+        enemyManager.addEnemies(levelManager.getCurrentLevel());
+        objectManager.loadObjects(levelManager.getCurrentLevel());
+    }
+
+    //I seguenti 4 metodi invece controllano se il player sta toccando determinati oggetti nela scena, se sta attaccando un nemico
+    //Una pozione, una spina, tante cose
+    public void checkPotionTouched(Rectangle2D.Float hitbox) {
+        objectManager.checkPlayerTouchedPotions(hitbox);
+    }
+
+    public void checkPlayerHitEnemy(Rectangle2D.Float attackBox, int areaAttack) {
+        enemyManager.checkPlayerHitEnemy(attackBox, areaAttack);
+    }
+
+    public void checkObjectHit(Rectangle2D.Float attackBox, int areaAttack) {
+        objectManager.checkObjectHit(attackBox, areaAttack);
+    }
+
+    public void checkSpikesTouched(Player p) {
+        objectManager.checkSpikesTouched(player);
     }
 
     public void setMaxLevelOffsetX(int levelOffset){
@@ -403,11 +411,15 @@ public class Playing extends State implements StateMethods{
     }
 
     public void setMaxLevelOffsetY(int yLevelOffset){
-        this.yLevelOffset = yLevelOffset;
+        this.maxLevelOffsetY = yLevelOffset;
     }
 
     public void unpauseGame(){
         paused = false;
+    }
+
+    public void setGamePaused(){
+        paused = true;
     }
     
     public void windowFocusLost() { 
@@ -453,7 +465,9 @@ public class Playing extends State implements StateMethods{
         return playerDying;
     }
 
-
+    public MementoManager getMementoManager(){
+        return mementoManager;
+    }
     
 
     

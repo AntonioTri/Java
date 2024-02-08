@@ -9,18 +9,11 @@ import java.util.Random;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.entities.Player;
-import Progetto_prog_3.entities.enemies.Ghost;
-import Progetto_prog_3.entities.enemies.HellBound;
-import Progetto_prog_3.entities.enemies.NightBorne;
 import Progetto_prog_3.objects.AbstractProjectile;
 import Progetto_prog_3.objects.Cannon;
 import Progetto_prog_3.objects.LootBox;
 import Progetto_prog_3.objects.Potion;
 import Progetto_prog_3.objects.Spike;
-
-import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.GHOST;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.HELL_BOUND;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.NIGHT_BORNE;
 import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
 
 
@@ -66,70 +59,6 @@ public class HelpMetods {
         }
 
        return new Point(1 * Game.TILES_SIZE, 1 * Game.TILES_SIZE);
-
-    }
-
-    //Metodo che ci permette data una immagine levelData, ovvero un livello, di posizionare i nemici nella mappa di gioco
-    public static ArrayList<NightBorne> getNightBornes(BufferedImage img){
-
-        ArrayList<NightBorne> list = new ArrayList<>();
-
-        for( int j = 0; j<img.getHeight(); j++){
-            for (int i = 0; i < img.getWidth(); i++) {
-
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getBlue();
-                
-                if(value == NIGHT_BORNE){
-                    list.add(new NightBorne(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
-                }
-            }
-        }
-
-        return list;
-
-    }
-
-    //Metodo che ci permette data una immagine levelData, ovvero un livello, di posizionare i nemici nella mappa di gioco
-    public static ArrayList<HellBound> gettHellBounds(BufferedImage img){
-
-        ArrayList<HellBound> list = new ArrayList<>();
-
-        for( int j = 0; j<img.getHeight(); j++){
-            for (int i = 0; i < img.getWidth(); i++) {
-
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getBlue();
-                
-                if(value == HELL_BOUND){
-                    list.add(new HellBound(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
-                }
-            }
-        }
-
-        return list;
-
-    }
-
-     //Metodo che ci permette data una immagine levelData, ovvero un livello, di posizionare i nemici nella mappa di gioco
-    public static ArrayList<Ghost> getGhosts(BufferedImage img){
-
-        ArrayList<Ghost> list = new ArrayList<>();
-
-        for( int j = 0; j<img.getHeight(); j++){
-            for (int i = 0; i < img.getWidth(); i++) {
-
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getBlue();
-                
-                //é importante osservare come al ghost viene dato un level data, per fargli sapere dove può teletrasportarsi
-                if(value == GHOST){
-                    list.add(new Ghost( i * Game.TILES_SIZE, j * Game.TILES_SIZE, getLevelData(img)));
-                }
-            }
-        }
-
-        return list;
 
     }
 

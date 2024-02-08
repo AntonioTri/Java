@@ -4,7 +4,7 @@ import Progetto_prog_3.entities.Entity;
 public class StatusManager {
 
     public void applySlow(Entity entity, int duration, float slowValue){
-        
+
         //Si conserva lo stato attuale della velocità di movimento della entità
         float startingWalkSpeed = entity.getWalkSpeed();
         //Viene creato un nuovo thread che gestisce il debuff
@@ -26,4 +26,31 @@ public class StatusManager {
         slowThread.start();
 
     }
+
+
+    //Questa funzione setta l'invulnerabilità per un determinato periodo ad una entità
+    public void giveInvulnerability(Entity entity, float duration){
+
+        //Si crea un nuovo thread che effettua una sleep sulla invulnerabilità della entità
+        //dopo averla setata a true, per poi riportarla a false
+        Thread invulnerability= new Thread(() -> {
+
+            entity.setInvulnerability(true);
+
+            try {
+                Thread.sleep((int)(duration * 1000));
+            } catch (Exception e) {
+                System.out.println("Qualcosa è andato storto nello status invulnerability");
+                e.printStackTrace();
+            }
+
+            //Finita la sleep la caratteristica viene resettata a falsa
+            entity.setInvulnerability(false);
+
+        });
+
+        invulnerability.start();
+        
+    }
+
 }

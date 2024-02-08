@@ -1,5 +1,12 @@
 package Progetto_prog_3.entities.enemies;
 
+import java.awt.geom.Rectangle2D;
+import Progetto_prog_3.Game;
+import Progetto_prog_3.Audio.AudioPlayer;
+import Progetto_prog_3.entities.Entity;
+import Progetto_prog_3.entities.Player;
+import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
+
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
@@ -7,11 +14,6 @@ import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
 import static Progetto_prog_3.utils.HelpMetods.*;
 import static Progetto_prog_3.utils.Constants.Directions.*;
 import static Progetto_prog_3.utils.Constants.GRAVITY;
-import java.awt.geom.Rectangle2D;
-import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
-import Progetto_prog_3.entities.Entity;
-import Progetto_prog_3.entities.Player;
 
 public abstract class AbstractEnemy extends Entity{
 
@@ -22,7 +24,7 @@ public abstract class AbstractEnemy extends Entity{
     protected int wlakDir = LEFT;
     protected int enemyTileY;
     protected float attackDistance, visionDistance;
-    protected boolean attackChecked = false, invulnerability = false;
+    protected boolean attackChecked = false;
 
     //Variabile per osservare se è morto oppure no
     protected boolean active = true;
@@ -41,10 +43,24 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     public abstract void update(int[][] levelData, Player player);
+    //Funzione ereditaria da implementare nelle sottoclassi per far funzionare il template metod
+    public abstract void makeMovement(int[][] levelData, Player player);
     public abstract int flipX();
     public abstract int flipW();
     public abstract int flipXP(Player player);
     public abstract int flipWP(Player player);
+
+    //Template method design pattern che implementa la logica del movimento base
+    //Un nemico si trova in aria inizialmente, ed ha bisogno del check sul primo update
+    //Successivamente il nemico si muoverà secondo le sue regole, che il template method implemenerà
+    //nelle soottoclassi
+    protected final void act(int[][] levelData, Player player){
+
+        if (firstUpdate) firstUpdateCheck(levelData);
+        if (inAir) { updateInAir(levelData);
+        } else { makeMovement(levelData, player); }
+        
+    } 
 
     //Troviamo qui il metodo per permettere ad un nemico di muoversi verso il nostro player 
     protected void turnTowardsPlayer(Player player){
@@ -131,13 +147,12 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //Questo metodo ci poermette di causare danno ad un nemico se questo viene colpito dal player
-    public void hurt(int amount, AudioPlayer ap){
+    public void hurt(int amount){
 
         currentHealth -= amount;
 
         if (currentHealth <= 0) {
             newState(NIGHT_BORNE_DIE);
-            ap.playEffect(AudioPlayer.NIGHTBORRNE_DIE);
         } else {
             newState(NIGHT_BORNE_HITTED);
         }
@@ -146,7 +161,7 @@ public abstract class AbstractEnemy extends Entity{
 
     //questo metodo invece ci permette di applicare danno al player se il nemico lo colpisce
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.getHitbox())) {
+        if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
             attackChecked = true;
@@ -222,16 +237,18 @@ public abstract class AbstractEnemy extends Entity{
     }
 
     //Questo metodo ci permette di resettare i valori del nemico in questione ai valori di partenza del livello quando ne si trova bisogno
-    public void resetEnemy(){
+    //Sfruttando il memento design pattern
+    public void restoreState(EnemyMemento memento){
 
-        hitbox.x = x;
-        hitbox.y = y;
-        airSpeed = 0;
-        active = true;
-        firstUpdate = true;
-        invulnerability = false;
-        currentHealth = maxHealth;
-        newState(NIGHT_BORNE_IDLE);
+        hitbox.x = memento.getHitboxX();
+        hitbox.y = memento.getHitboxY();
+        airSpeed = memento.getAirSpeed();
+        active = memento.getActive();
+        firstUpdate = memento.getFirstUpdate();
+        invulnerability = memento.getInvulnerability();
+        currentHealth = memento.getCurrentHealth();
+        newState(memento.getState());
+
     }
 
     public boolean getActive(){
@@ -254,12 +271,12 @@ public abstract class AbstractEnemy extends Entity{
         this.aniSpeed = value;
     }
 
-    public void setInvulnerability(boolean invulnerability) {
-        this.invulnerability = invulnerability;
+    public float getAirSpeed() {
+        return airSpeed;
     }
 
-    public boolean getInvulnerability(){
-        return invulnerability;
+    public boolean getFirstUpdate() {
+        return firstUpdate;
     }
 
     

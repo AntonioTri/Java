@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 
 //Interfaccia per tutti i menu di overlay
 public interface MenusOverlayInterface {
+    
     public void update();
     public void draw(Graphics g);
     public void mousePressed(MouseEvent e);

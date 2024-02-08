@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.GameState;
+import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
+import Progetto_prog_3.entities.MementoSavings.PlayerMemento;
+import Progetto_prog_3.entities.enemies.AbstractEnemy;
 import Progetto_prog_3.utils.LoadSave;
 
 public class LevelManager {
@@ -15,20 +18,19 @@ public class LevelManager {
     BufferedImage[] levelSprite;
     private ArrayList<Level> levels;
     private int levelIndex = 0;
+    private boolean gameStarted = true;
 
     public LevelManager(Game game){
         this.game = game;
         importSprite();
-        levels = new ArrayList<>();
         buildAllLevels();
-
+        
     }
-
-    //!!!!!!! QUESTO MI PARE IL BRIDGE !!!!!!
+    
     private void buildAllLevels() {
+        levels = new ArrayList<>();
         BufferedImage[] alllevels = LoadSave.getAllLevels();
         for (BufferedImage img : alllevels) {
-            //!!!!!!! QUESTO MI PARE IL BRIDGE !!!!!!
             levels.add(new Level(img));
         }
     }
@@ -59,6 +61,15 @@ public class LevelManager {
         }
     }
 
+    //Questa funzione viene eseguita una sola volta in tutto il gioco. 
+    //Crea un punto di salvataggio nel memento con lo stato iniziale di tutte le entità per il primo livello
+    public void update(){
+        if (gameStarted) {
+            createSavingPoint();
+            gameStarted = false;
+        }
+    }
+
     /*
      * Il seguente metodo quando chiamato carica il prossimo livello
      * Esegue diversi passaggi, aumenta l'indice del livello, così da poter scorrere al successivo
@@ -79,22 +90,52 @@ public class LevelManager {
             GameState.state = GameState.MENU;
         }
         
+        //Si passa al livello successivo
         Level newLevel = levels.get(levelIndex);
-        game.getPlaying().getEnemyManager().addEnemies(newLevel);
-        game.getPlaying().getPlayer().loadLevelData(newLevel.getLD());
+
+        //Si caricano gli offset per la telecamera
         game.getPlaying().setMaxLevelOffsetX(newLevel.getLevelOffset());
         game.getPlaying().setMaxLevelOffsetY(newLevel.getLevelOffsetY());
+
+        //Si caricano le informazioni nel player
+        game.getPlaying().getPlayer().loadLevelData(newLevel.getLD());
+        game.getPlaying().getPlayer().setSpawnPoint(getCurrentLevel().getPlayerSpawnPoint());
+
+        //si aggiungoono nemici e lootboxes
+        game.getPlaying().getEnemyManager().addEnemies(newLevel);
         game.getPlaying().getObjectManager().loadObjects(newLevel);
+
+        createSavingPoint();
+
+        
+
     }
 
+    //La funzione che crea un punto di salvataggio
+    public void createSavingPoint(){
+        
+        //Con il seguente codice andiamo a salvare lo stato di tutti i nemici ad inizio di un livello
+        //Conserviamo lo stato uno ad uno dei nemici in un nuvo memento che aggiungiamo ad una array list di memento 
+        AbstractEnemy currentEnemy;
+        ArrayList<EnemyMemento> enemyMemento = new ArrayList<>();
+        int numberOfCurrentEnemyes = game.getPlaying().getEnemyManager().getEnemyList().size();
+        
+        for (int i = 0; i < numberOfCurrentEnemyes; i++) {
+            
+            currentEnemy = game.getPlaying().getEnemyManager().getEnemyList().get(i);
+            enemyMemento.add(new EnemyMemento(currentEnemy));
+            
+        }
+        
+        //Creiamo poi il memento del player e dei nemici presenti all'inizio del livello
+        game.getPlaying().getMementoManager().addPlayerMemento(new PlayerMemento(game.getPlaying().getPlayer()));
+        game.getPlaying().getMementoManager().addEnemyMemento(enemyMemento);
+
+    }
 
     //Getters e Setters
     public Level getCurrentLevel(){
         return levels.get(levelIndex);
-    }
-
-    public void update(){
-
     }
 
     public int getAmountOfLevels(){

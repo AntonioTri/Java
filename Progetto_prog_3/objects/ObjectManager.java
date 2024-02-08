@@ -9,6 +9,7 @@ import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.Playing;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.levels.Level;
+import Progetto_prog_3.objects.Prototype.Cloningfactory;
 import Progetto_prog_3.utils.LoadSave;
 import static Progetto_prog_3.utils.Constants.ObjectConstants.*;
 import static Progetto_prog_3.utils.Constants.Projectiles.CannonBall.CANNON_BALL_HEIGHT;
@@ -28,8 +29,9 @@ public class ObjectManager {
     private ArrayList<LootBox> lootBoxes;
     private ArrayList<Spike> spikes;
     private ArrayList<Cannon> cannons;
-    private ArrayList<CannonBall> cannonBalls = new ArrayList<>();;
-
+    private ArrayList<CannonBall> cannonBalls = new ArrayList<>();
+    //Cloning factory per il prototype pattern
+    private Cloningfactory cloningfactory = new Cloningfactory();
 
     public ObjectManager(Playing playing){
         this.playing = playing;
@@ -58,7 +60,7 @@ public class ObjectManager {
     //Questa funzione ci permette di controllare se il player hoverlaps, cammina sopra, una pozione, in tal caso, la pozione viene 
     //settata in stato di falso e quindi non sarà più raccoglibile e scomparirà dalla scena, ed al Player viene associato l'effetto
     //della pozione che ha appena raccolto
-    public void checkPlayerTouched(Rectangle2D.Float hitbox){
+    public void checkPlayerTouchedPotions(Rectangle2D.Float hitbox){
         
         for (Potion potion : potions) {
             if (potion.isActive()) {
@@ -72,7 +74,6 @@ public class ObjectManager {
     }
 
     //La funzione che applica al player l'effetto della pozione raccolta
-    //!!QUA CI STA UN DESIGN PATERN AL 100%
     public void applyEffectToPlayer(Potion potion){
 
         if (potion.getObjType() == RED_POTION) {
@@ -113,7 +114,6 @@ public class ObjectManager {
                                             (int)(box.getHitbox().y - offset),
                                             type));
                     box.setCanSpawnPotion(false);
-                    System.out.println("Spawned a Potion");
                 }
 
                 //Nel caso arrivi una flag di attacco ad area, viene fatto il controllo su tutti gli oggetti
@@ -165,25 +165,29 @@ public class ObjectManager {
 
     //La classica funzione update per eseguire l'incremento dell'animation tick dell'oggetto
     public void update(int[][] levelData, Player player){
+        
+        updateLootBoxes();
+        updatePotions();
+        updateCanons(levelData, player);
+        updateProjectiles(levelData, player);
+    }
+
+    private void updatePotions(){
+
         for (Potion potion : potions) {
             if (potion.isActive()) {
                 potion.update();
             }
         }
+    }
 
+    private void updateLootBoxes(){
         for (LootBox box : lootBoxes) {
             if (box.isActive()) {
                 box.update();
             }
         }
-
-        updateCanons(levelData, player);
-        updateProjectiles(levelData, player);
     }
-
-    
-
-    
 
     /*
      * Se il cannone non sta faceendo l'animazione
@@ -192,6 +196,7 @@ public class ObjectManager {
      * se si trova di frontee
      * il canone deve sparare
      */
+
     private void updateCanons(int[][] levelData, Player player) {
         for (Cannon c : cannons) {
             if (!c.doAnimation 
@@ -210,23 +215,18 @@ public class ObjectManager {
                 shootCannon(c);
             }
         }
-
     }
 
     private void shootCannon(Cannon c) {
+
         c.setAnimation(true);
-        
-        int direction = 1;
 
-        if (c.getObjType() == CANNON_LEFT) {
-            direction = -1;
-        }
-
-        cannonBalls.add(new CannonBall((int)c.getHitbox().x, (int)c.getHitbox().y, direction));
-
+        CannonBall cannonBall = (CannonBall)cloningfactory.getClone(c.getCannonBall());
+        //adjustCannonBall(cannonBall, c);
+        //!!QUA PROVIAMO AD AGGIUNGERE UN PROTOTYPE
+        cannonBalls.add(cannonBall);
 
     }
-
 
     //Questo metodo esegue i controlli sulla palla di cannone, se questa è attiva si esegue l'update dlla sua posizione
     //Si controlla successivamente se sta colpeendo il player, in tal caso gli si applica il danno
@@ -242,16 +242,15 @@ public class ObjectManager {
                 player.changeHealth(0);
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
+
             //Controllo della collisione con un muro
             } else if (projectileHittingWall(cb, levelData)) {
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
+
             }
         }
     }
-
-    
-
 
     //Classico metodo draw che richiama tutti i metodi draw per disegnare i singoli oggetti
     public void draw(Graphics g, int xLevelOffset, int yLevelOffset){
@@ -262,8 +261,6 @@ public class ObjectManager {
         drawCannonBall(g, xLevelOffset, yLevelOffset);
     }
 
-
-   
     //Metodo per disegnare i cannoni
     private void drawCannons(Graphics g, int xLevelOffset, int yLevelOffset) {
         for (Cannon c : cannons) {
@@ -367,7 +364,13 @@ public class ObjectManager {
 
     }
 
+    public ArrayList<LootBox> getLootBoxs(){
+        return lootBoxes;
+    }
 
+    public void setLootBoxs(ArrayList<LootBox> lootBoxes){
+        this.lootBoxes = lootBoxes;
+    }
     
 
 }

@@ -16,7 +16,6 @@ public class LevelCompletedOverlay implements MenusOverlayInterface {
     private PRHButtons menuButton, nextButton;
     private BufferedImage img;
     private int bgX, bgY, bgWidth, bgHeight;
-    private  int currentPlayerHealth; 
 
     public LevelCompletedOverlay(Playing playing){
         this.playing = playing;
@@ -96,10 +95,9 @@ public class LevelCompletedOverlay implements MenusOverlayInterface {
 
         } else if (mouseHovering(nextButton, e) && nextButton.getMousePressed()) {
             //In questa sezione andiamo aa salvare la vita corrente del player quando carichiamo un nuovo livello
-            currentPlayerHealth = playing.getGame().getPlaying().getPlayer().getCurrentHealth();
             playing.loadNextLevel();
-            playing.getGame().getPlaying().getPlayer().setCurrentHealth(currentPlayerHealth);
-            playing.getGame().getAudioPlayer().setLevelSong(0);
+            playing.getGame().getAudioPlayer().playSong(1);
+
         }
 
         menuButton.resetBools();
@@ -111,7 +109,5 @@ public class LevelCompletedOverlay implements MenusOverlayInterface {
     public void mouseDragged(MouseEvent e) {
     }
 
-    public int getPlayerHealth(){
-        return currentPlayerHealth;
-    }
+
 }
