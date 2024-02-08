@@ -74,6 +74,7 @@ public class Player extends Entity {
     // private int ultimateTick, ultimateGrowSpeed = 15, ultimateGrowTick;
 	private boolean attackChecked, canPlayAttackSound, hurted = false;
     
+    
     private Rectangle2D.Float ultimateAttackBox;
     private int damage = 5;
     private Playing playing;
@@ -238,8 +239,10 @@ public class Player extends Entity {
 
         }
 
-        drawHitbox(g, xLevelOffset, yLevelOffset);
-        drowAttackBox(g, xLevelOffset, yLevelOffset);
+        //Queste due funzioni possono essere decommentate per mostrare la posizione delle aree di collisione
+        //drawHitbox(g, xLevelOffset, yLevelOffset);
+        //drowAttackBox(g, xLevelOffset, yLevelOffset);
+        
         drawUI(g);
 
 
@@ -372,7 +375,7 @@ public class Player extends Entity {
             state = IDLE;
         }
 
-        if (hurted) {
+        if (hurted || gainingKnockack) {
             aniSpeed = 20;
             state = HURT;
             //Se il player viene colpito con il return viene impedito di fare qualsiasi
@@ -455,13 +458,13 @@ public class Player extends Entity {
         //Questi due if servono a settare delle variabili oltre che al movimento anche al modo in cui vengono disegnati gli sprite
         //Variabili che poi vengono utilizzata funzione draw come addendi o moltiplicatori per flipare le immagini e riposizionarle sull'asse giusto
         //Se il player sta attaccando gli viene impedito il moovimento 
-		if (left && !right && !attacking){
+		if (left && !right && !attacking && !gainingKnockack){
 			xSpeed -= walkSpeed;
             flipX = hitBoxWidth - (int)(22.5f * Game.SCALE);
             flipW = -1;
         }
         
-        if (right && !left && !attacking){
+        if (right && !left && !attacking && !gainingKnockack){
 			xSpeed += walkSpeed;
             flipX = (int)(8 * Game.SCALE);
             flipW = 1;
@@ -480,7 +483,7 @@ public class Player extends Entity {
         }
 
 		if (!inAir){
-			if (!isEntityOnFloor(hitbox, levelData)){
+			if (!isEntityOnFloor(hitbox, levelData) && !gainingKnockack){
 				inAir = true;
             }
         }
@@ -510,13 +513,15 @@ public class Player extends Entity {
 
     private void updateXPos(float xSpeed){
 
-        if (canMoveHere(hitbox.x+xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
-            hitbox.x += xSpeed;
-        } else {
-            hitbox.x = getEntityXPosNextWall(hitbox, xSpeed);
-            if (powerAttackActive) {
-                powerAttackActive = false;
-                powerAttackTick = 0;
+        if (!gainingKnockack) {
+            if (canMoveHere(hitbox.x+xSpeed, hitbox.y, hitbox.width, hitbox.height, levelData)) {
+                hitbox.x += xSpeed;
+            } else {
+                hitbox.x = getEntityXPosNextWall(hitbox, xSpeed);
+                if (powerAttackActive) {
+                    powerAttackActive = false;
+                    powerAttackTick = 0;
+                }
             }
         }
     }
@@ -550,6 +555,15 @@ public class Player extends Entity {
             powerValue = powerMaxValue;
         } else if (powerValue <= 0) {
             powerValue = 0;
+        }
+
+    }
+
+    public void burn(int value){
+
+        currentHealth +=value;
+        if (currentHealth <=0) {
+            currentHealth = 0;
         }
 
     }

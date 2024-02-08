@@ -2,7 +2,6 @@ package Progetto_prog_3.entities.enemies;
 
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Entity;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
@@ -164,7 +163,24 @@ public abstract class AbstractEnemy extends Entity{
         if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
+            //Uno switch case gestisce lo status da aplicare al player in base al tipo di nemico
+            switch (enemyType) {
+
+                case NIGHT_BORNE:
+                    int direction = (wlakDir == LEFT) ? 1 : -1;
+                    statusManager.knockBack(player, player.getPlaying().getLevelManager().getCurrentLevel().getLD(), direction, -3.25f);
+                    break;
+
+                case HELL_BOUND:
+                    statusManager.burn(player, 1.3f);    
+                    break;
+
+                default:
+                    break;
+            }
+
             attackChecked = true;
+        
         }
     }
 

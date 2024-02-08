@@ -29,6 +29,9 @@ public abstract class Entity {
     protected boolean inAir = true;
     protected boolean invulnerability = false;
 
+    //Variabile per identificare se l'entità sta subendo un knockback
+    protected boolean gainingKnockack = false;
+
     //Variabile per lo stato
     protected int state;
 
@@ -111,6 +114,14 @@ public abstract class Entity {
 
     public StatusManager getStatusManager(){
         return statusManager;
+    }
+
+    public void setGainingKnockback(boolean gainingKnockack){
+       this.gainingKnockack = gainingKnockack;
+    }
+
+    public boolean getGainingKnockback(){
+        return gainingKnockack;
     }
 
 }

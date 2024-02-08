@@ -24,8 +24,9 @@ public class RenderNightBorne implements RenderInterface {
                             (NIGHT_BORNE_WIDHT + 25) * enemy.flipW(),
                              NIGHT_BORNE_HEIGHT + 25, null);
 
-            enemy.drawHitbox(g, xLevelOffset, yLevelOffset);
-            enemy.drowAttackBox(g, xLevelOffset, yLevelOffset);
+            //Queste due righe di codice possono essere decommentate per mostrare la hitbox ed attackbox del nightborne
+            //enemy.drawHitbox(g, xLevelOffset, yLevelOffset);
+            //enemy.drowAttackBox(g, xLevelOffset, yLevelOffset);
 
             if (enemy.getState() == NIGHT_BORNE_DIE) {
                 enemy.setAniSpeed(20);

@@ -24,8 +24,9 @@ public class RenderHellBound implements RenderInterface{
                             HELL_BOUND_WIDTH * enemy.flipW(),
                             HELL_BOUND_HEIGHT, null);
 
-            enemy.drawHitbox(g, xLevelOffset, yLevelOffset);
-            enemy.drowAttackBox(g, xLevelOffset, yLevelOffset);
+            //Queste due righe di codice possono essere decommentate per mostrare la hitbox ed attackbox dell'hellbound
+            //enemy.drawHitbox(g, xLevelOffset, yLevelOffset);
+            //enemy.drowAttackBox(g, xLevelOffset, yLevelOffset);
 
             if (enemy.getState() == HELL_BOUND_DIE) {
                 enemy.setAniSpeed(20);

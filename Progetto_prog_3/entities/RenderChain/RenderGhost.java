@@ -25,8 +25,9 @@ public class RenderGhost implements RenderInterface {
                             GHOST_WIDTH * enemy.flipWP(player),
                             GHOST_HEIGHT, null);
 
-            enemy.drawHitbox(g, xLevelOffset, yLevelOffset);
-            enemy.drowCircularAttackBox(g, xLevelOffset, yLevelOffset);
+            //Queste due righe di codice possono essere decommentate per mostrare la hitbox ed attackbox del ghost
+            //enemy.drawHitbox(g, xLevelOffset, yLevelOffset);
+            //enemy.drowCircularAttackBox(g, xLevelOffset, yLevelOffset);
 
             if (enemy.getState() == GHOST_ATTACK) {
                 g.drawImage(requests[enemy.getEnemyType()].getSpecialAttack()[enemy.getAniIndex()],
