@@ -7,6 +7,7 @@ import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.GHOST;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
@@ -227,6 +228,8 @@ public abstract class AbstractEnemy extends Entity{
         } else {
             inAir = false;
             hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
+            //Si riposiziona di un pixel più in alto il nemico più alto di un blocco per via di uno strano bug
+            if (enemyType == NIGHT_BORNE || enemyType == GHOST) hitbox.y -=1;
             //Otteniamo in questo modo la posiizone in y
             enemyTileY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
         }

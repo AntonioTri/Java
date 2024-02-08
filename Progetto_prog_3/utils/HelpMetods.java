@@ -364,8 +364,7 @@ public class HelpMetods {
 			// Falling - touching floor
 			int tileYPos = currentTile * Game.TILES_SIZE;
 			int yOffset = (int) (Game.TILES_SIZE - hitbox.height);
-            return tileYPos + yOffset - 1;
-            
+            return tileYPos + yOffset;
 
 		} else
 			// Jumping
