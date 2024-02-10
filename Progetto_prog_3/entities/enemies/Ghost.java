@@ -10,16 +10,14 @@ import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.utils.Constants.EnemtConstants;
 import static Progetto_prog_3.utils.HelpMetods.isTileSolid;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.*;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.getAttackDistance;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getEnemyDamage;
-import static Progetto_prog_3.utils.Constants.EnemtConstants.getVisionDistance;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.getSpriteAmount;
 
 public class Ghost extends AbstractEnemy {
 
     //Variabili d abimente
     int attackBoxOffset = (int)(125 * Game.SCALE);
-    int teleportTimer = 0, timeToTeleport = 1000, attackTimer = 0;;
+    int teleportTimer = 0, timeToTeleport = 1000, attackTimer = 0;
     private List<Point2D> spawnPoints = new ArrayList<>(); 
     private boolean canTeleport = true, firstSpawn = true;
     Random random = new Random();
@@ -32,8 +30,6 @@ public class Ghost extends AbstractEnemy {
         initAttackBox();
 
         spawnPoints = new ArrayList<>();
-        this.visionDistance = getVisionDistance(enemyType);
-        this.attackDistance = getAttackDistance(enemyType);
         this.state = EnemtConstants.Ghost.GHOST_NOT_SPAWNED;
         
     }

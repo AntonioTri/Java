@@ -2,12 +2,12 @@ package Progetto_prog_3.entities.enemies;
 
 import java.awt.geom.Rectangle2D;
 import Progetto_prog_3.Game;
-import Progetto_prog_3.Audio.AudioPlayer;
 import Progetto_prog_3.entities.Entity;
 import Progetto_prog_3.entities.Player;
 import Progetto_prog_3.entities.MementoSavings.EnemyMemento;
 
 import static Progetto_prog_3.utils.Constants.EnemtConstants.*;
+import static Progetto_prog_3.utils.Constants.EnemtConstants.Ghost.GHOST;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.NightBorne.*;
 import static Progetto_prog_3.utils.Constants.EnemtConstants.HellBound.*;
 import static Progetto_prog_3.utils.Constants.PlayerConstants.IDLE;
@@ -164,7 +164,24 @@ public abstract class AbstractEnemy extends Entity{
         if (attackBox.intersects(player.getHitbox()) && !player.getInvulnerability()) {
             //Il segno meno serve a mandare una somma negativa alla vita del player, non lo stiamo curando, lo stiamo picchindo
             player.changeHealth(-getEnemyDamage(enemyType));
+            //Uno switch case gestisce lo status da aplicare al player in base al tipo di nemico
+            switch (enemyType) {
+
+                case NIGHT_BORNE:
+                    int direction = (wlakDir == LEFT) ? 1 : -1;
+                    statusManager.knockBack(player, player.getPlaying().getLevelManager().getCurrentLevel().getLD(), direction, -3.25f);
+                    break;
+
+                case HELL_BOUND:
+                    statusManager.burn(player, 1.3f);    
+                    break;
+
+                default:
+                    break;
+            }
+
             attackChecked = true;
+        
         }
     }
 
@@ -211,6 +228,8 @@ public abstract class AbstractEnemy extends Entity{
         } else {
             inAir = false;
             hitbox.y = getEntityYPosFloorRoofRelative(hitbox, airSpeed);
+            //Si riposiziona di un pixel più in alto il nemico più alto di un blocco per via di uno strano bug
+            if (enemyType == NIGHT_BORNE || enemyType == GHOST) hitbox.y -=1;
             //Otteniamo in questo modo la posiizone in y
             enemyTileY = (int)((hitbox.y + hitbox.height - 1) / Game.TILES_SIZE);
         }

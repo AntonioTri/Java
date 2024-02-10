@@ -318,6 +318,8 @@ public class Playing extends State implements StateMethods{
                 case KeyEvent.VK_E:
                     player.ultimateAbility();
                     break;
+                case KeyEvent.VK_UP:
+                    player.setAttck(true);
             }
         }
     }

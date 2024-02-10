@@ -74,7 +74,6 @@ public class HellBound extends AbstractEnemy{
 
             case HELL_BOUND_RUN:
                 this.walkSpeed = 1.8f;
-                aniSpeed = 17;
                 
                 if (isPlayerCloseForAttack(player)) {
                     newState(HELL_BOUND_JUMP);

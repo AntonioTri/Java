@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 
 import Progetto_prog_3.Game;
 import Progetto_prog_3.GameStates.Playing;
@@ -33,9 +34,12 @@ public class ObjectManager {
     //Cloning factory per il prototype pattern
     private Cloningfactory cloningfactory = new Cloningfactory();
 
+    private Random rand;
+
     public ObjectManager(Playing playing){
         this.playing = playing;
         loadImages();
+        rand = new Random();
     }
 
     public void loadObjects(Level level) {
@@ -77,9 +81,11 @@ public class ObjectManager {
     public void applyEffectToPlayer(Potion potion){
 
         if (potion.getObjType() == RED_POTION) {
+            //Alla pozione rossa viene associato un recuper istantante di salute
             playing.getPlayer().changeHealth(RED_POTION_VALUE);
         } else {
-            playing.getPlayer().changePower(BLUE_POTION_VALUE);
+            //Alla pozione bli viene associata una maggiore rigenerazione dell'energia
+            playing.getPlayer().getStatusManager().fastEnergyRecharge(playing.getPlayer(), 5);
         }
 
     }
@@ -99,12 +105,12 @@ public class ObjectManager {
             if (box.isActive() && box.getHitbox().intersects(playerAttackBox)) {
         
                 box.setAnimation(true);
-                    
-                int type = 0;
+                
+                int percentile = rand.nextInt(10);
+                int type = (percentile > 5) ? 0 : 1;
                 int offset = 9;
 
                 if (box.getObjType() == BARREL) {
-                    type = 1;
                     offset = 0;
                 }
 
@@ -239,7 +245,7 @@ public class ObjectManager {
             }
             //Controllo della collisione con il player
             if (player.getHitbox().intersects(cb.getHitbox()) && cb.getCanDoDamage()) {
-                player.changeHealth(0);
+                player.changeHealth(-10);
                 cb.setActive(false);
                 cb.setCanDoDamage(false);
 

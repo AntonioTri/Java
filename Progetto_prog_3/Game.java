@@ -17,12 +17,12 @@ public class Game implements Runnable{
     private Thread gameThread;
     private final int SET_FPS = 120;
     private final int SET_UPS = 180;
-    public int frame = 0;
-    public int update = 0;
+    private int frame = 0;
+    private int update = 0;
     
 
     //Variabili per la mappa
-    public final static float SCALE = 2f;
+    public final static float SCALE = 2.5f;
     public final static int TILES_DEFAULT_SIZE = 32;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
