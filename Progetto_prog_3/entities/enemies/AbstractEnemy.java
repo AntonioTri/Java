@@ -213,7 +213,6 @@ public abstract class AbstractEnemy extends Entity{
                             this.active = false;
                         }
                     }
-
                 } 
             }
         }

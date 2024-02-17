@@ -16,6 +16,7 @@ public class RenderNightBorne implements RenderInterface {
 
     @Override
     public void renderEntity(Graphics g, Player player, RenderingRequest[] requests, AbstractEnemy enemy, int xLevelOffset, int yLevelOffset) {
+        
         if (enemy.getEnemyType() == NIGHT_BORNE) {
             
             g.drawImage(requests[enemy.getEnemyType()].getSprites()[enemy.getState()][enemy.getAniIndex()],

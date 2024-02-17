@@ -18,7 +18,7 @@ import Progetto_prog_3.objects.ObjectManager;
 import Progetto_prog_3.utils.LoadSave;
 
 public class Playing extends State implements StateMethods{
-    
+
     private Player player;
     private EnemyManager enemyManager;
     private LevelManager levelManager;

@@ -18,7 +18,7 @@ public class Ghost extends AbstractEnemy {
     //Variabili d abimente
     int attackBoxOffset = (int)(125 * Game.SCALE);
     int teleportTimer = 0, timeToTeleport = 1000, attackTimer = 0;
-    private List<Point2D> spawnPoints = new ArrayList<>(); 
+    private List<Point2D> spawnPoints = new ArrayList<>();
     private boolean canTeleport = true, firstSpawn = true;
     Random random = new Random();
 
@@ -182,7 +182,6 @@ public class Ghost extends AbstractEnemy {
                 }
             }
         }
-
     }
 
     
