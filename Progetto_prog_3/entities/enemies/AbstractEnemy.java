@@ -197,12 +197,14 @@ public abstract class AbstractEnemy extends Entity{
                 aniIndex = 0;
                 //Se avviene un cambiamento di stato, andremo a fare solo una animazione di quello stato
                 if (enemyType == NIGHT_BORNE) {
+                    
                     switch (state) {
                         case NIGHT_BORNE_ATTACK, NIGHT_BORNE_HITTED -> state = IDLE;
                         case NIGHT_BORNE_DIE -> this.active = false;
                     }
 
                 } else if (enemyType == HELL_BOUND) {
+                    
                     switch (state) {
                         case HELL_BOUND_JUMP, HELL_BOUND_RUN, HELL_BOUND_SLIDE -> state = HELL_BOUND_WALK;
                         case HELL_BOUND_HIT -> {
@@ -213,6 +215,7 @@ public abstract class AbstractEnemy extends Entity{
                             this.active = false;
                         }
                     }
+                    
                 } 
             }
         }
